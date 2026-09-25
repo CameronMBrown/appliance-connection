@@ -1,0 +1,211 @@
+---
+// ac/partners — "Our Selling Partners": one ruled cell per retail partner with
+// logo tile, contact table (phone / email / address) and a greyscale map with a
+// Directions tag. The light "trusted by retail partners" nod (decision 1).
+import type { BlockContext, EditorBlock, PartnersAttrs } from '../../lib/blocks/types';
+
+interface Props extends PartnersAttrs {
+  innerBlocks?: EditorBlock[];
+  context?: BlockContext;
+}
+
+const { heading = 'Our Selling Partners', partners = [], background = 'alt' } = Astro.props;
+---
+
+{
+  partners.length > 0 && (
+    <section class:list={['band', { 'band--alt': background === 'alt' }]}>
+      <div class="container">
+        <h2 class="pt__h">{heading}</h2>
+        <div class="pt__grid">
+          {partners.map((p) => (
+            <div class="pt__cell">
+              <a class="pt__logo" href={p.url} target="_blank" rel="noopener">
+                {p.logoUrl ? <img src={p.logoUrl} alt={p.name} loading="lazy" /> : <span>{p.name}</span>}
+              </a>
+              <div class="pt__body">
+                {p.area && <p class="pt__area">{p.area}</p>}
+                <div class="pt__table">
+                  {p.phone && (
+                    <>
+                      <span class="pt__k">Phone</span>
+                      <a class="pt__v pt__v--phone" href={`tel:${p.tel}`}>
+                        {p.phone}
+                      </a>
+                    </>
+                  )}
+                  {p.email && (
+                    <>
+                      <span class="pt__k">Email</span>
+                      <a class="pt__v pt__v--email" href={`mailto:${p.email}`}>
+                        {p.email}
+                      </a>
+                    </>
+                  )}
+                  {p.address && (
+                    <>
+                      <span class="pt__k">Address</span>
+                      <span class="pt__v pt__v--addr">
+                        {p.address.map((line, i) => (
+                          <>
+                            {i > 0 && <br />}
+                            {line}
+                          </>
+                        ))}
+                      </span>
+                    </>
+                  )}
+                </div>
+              </div>
+              {p.mapEmbedUrl && (
+                <div class="pt__map">
+                  <iframe src={p.mapEmbedUrl} title={`Map — ${p.address?.join(', ') ?? p.name}`} loading="lazy" />
+                  {p.directionsUrl && (
+                    <a class="pt__dir" href={p.directionsUrl} target="_blank" rel="noopener">
+                      Directions
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .band {
+    padding-block: clamp(3rem, 7vw, 5rem);
+  }
+  .pt__h {
+    font-size: var(--text-xl);
+    margin: 0 0 var(--space-md);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-border-strong);
+  }
+  .pt__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border-strong);
+    border-left: 1px solid var(--color-border-strong);
+    /* Cells rule their own right/bottom edges with inset shadows (an outward
+       shadow gets painted over by the next grid cell). The frame's inset rule
+       closes the right/bottom edge where a short last row leaves space. */
+    box-shadow:
+      inset -1px -1px 0 var(--color-border-strong),
+      var(--shadow-md);
+    margin-top: var(--space-xl);
+  }
+  .pt__cell {
+    background: var(--color-surface);
+    box-shadow:
+      inset -1px -1px 0 var(--color-border-strong);
+    display: flex;
+    flex-direction: column;
+  }
+  .pt__logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 9rem;
+    padding: var(--space-xl);
+    border-bottom: 1px solid var(--color-border-strong);
+    background-color: var(--color-bg);
+    background-image: var(--grid-image);
+    background-size: var(--grid-size) var(--grid-size);
+    text-decoration: none;
+    transition: background-color var(--dur) var(--ease-standard);
+  }
+  .pt__logo:hover {
+    background-color: var(--color-accent-tint);
+  }
+  .pt__logo img {
+    width: 100%;
+    max-width: 17rem;
+    height: auto;
+  }
+  .pt__body {
+    padding: var(--space-lg) var(--space-xl);
+  }
+  .pt__area {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-md);
+  }
+  .pt__table {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    font-size: var(--text-sm);
+    border-top: 1px solid var(--color-border);
+  }
+  .pt__k,
+  .pt__v {
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .pt__k:nth-last-child(2),
+  .pt__v:last-child {
+    border-bottom: 0;
+  }
+  .pt__k {
+    color: var(--color-text-muted);
+  }
+  .pt__v--phone {
+    color: var(--color-text);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    letter-spacing: var(--tracking-tight);
+  }
+  .pt__v--phone:hover {
+    color: var(--link);
+  }
+  .pt__v--email {
+    color: var(--link);
+    text-decoration: none;
+    word-break: break-word;
+  }
+  .pt__v--email:hover {
+    color: var(--link-hover);
+  }
+  .pt__v--addr {
+    color: var(--color-text-soft);
+  }
+  .pt__map {
+    margin-top: auto;
+    border-top: 1px solid var(--color-border-strong);
+    position: relative;
+  }
+  .pt__map iframe {
+    width: 100%;
+    height: 170px;
+    border: 0;
+    display: block;
+    filter: grayscale(1) contrast(1.05);
+  }
+  .pt__dir {
+    position: absolute;
+    right: var(--space-sm);
+    bottom: var(--space-sm);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    box-shadow: var(--shadow-sm);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-text);
+    text-decoration: none;
+    padding: 0.4em 0.7em;
+  }
+  .pt__dir:hover {
+    background: var(--cta-bg);
+    color: var(--cta-text);
+  }
+</style>

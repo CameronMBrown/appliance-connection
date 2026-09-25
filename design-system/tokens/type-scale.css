@@ -1,0 +1,30 @@
+/* Fluid type scale, weights, line-height, tracking. Font FAMILIES live in
+   font-families.css — kept separate so size/clamp() tokens never sit in the
+   same block as comma-separated font-family lists. */
+:root {
+  --text-xs: 0.79rem;
+  --text-sm: 0.889rem;
+  --text-base: 1rem;
+  --text-md: 1.125rem;
+  --text-lg: clamp(1.2rem, 1.10rem + 0.5vw, 1.44rem); /* @kind other */
+  --text-xl: clamp(1.5rem, 1.30rem + 1.0vw, 1.95rem); /* @kind other */
+  --text-2xl: clamp(1.95rem, 1.60rem + 1.8vw, 2.75rem); /* @kind other */
+  --text-3xl: clamp(2.6rem, 2.00rem + 3.0vw, 3.9rem); /* @kind other */
+  --text-display: clamp(3.2rem, 2.20rem + 5.0vw, 5.5rem); /* @kind other */
+
+  --leading-none: 1;
+  --leading-tight: 1.08;
+  --leading-snug: 1.2;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-display: 400;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.08em;
+}

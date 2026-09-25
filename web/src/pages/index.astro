@@ -1,11 +1,5 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import BlockRenderer from '../components/blocks/BlockRenderer.astro';
-import { getPage } from '../lib/content';
-
-const page = getPage('/')!;
+import PageView from '../components/PageView.astro';
 ---
 
-<BaseLayout title={page.title} description={page.description}>
-  <BlockRenderer blocks={page.blocks} />
-</BaseLayout>
+<PageView path="/" />

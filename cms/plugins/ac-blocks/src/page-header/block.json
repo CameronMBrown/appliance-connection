@@ -1,0 +1,53 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/page-header",
+  "title": "Page header",
+  "category": "ac",
+  "icon": "heading",
+  "description": "Title band: eyebrow, headline, intro line, Contact + region phone buttons, and an illustration.",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "eyebrow": {
+      "type": "string",
+      "default": ""
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "intro": {
+      "type": "string",
+      "default": ""
+    },
+    "illustrationId": {
+      "type": "number"
+    },
+    "illustrationUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "illustrationAlt": {
+      "type": "string",
+      "default": ""
+    },
+    "primaryLabel": {
+      "type": "string",
+      "default": "Contact Us"
+    },
+    "primaryUrl": {
+      "type": "string",
+      "default": "/contact/"
+    },
+    "showPhone": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "supports": {
+    "html": false,
+    "multiple": false
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

@@ -2,14 +2,16 @@
 // Walks a list of editorBlocks and renders each via the registry. Recurses for
 // InnerBlocks (a ServiceGrid renders its ServiceCard children through this same
 // component). Unknown blocks are flagged in dev, skipped in prod.
+// `context` (page region, etc.) is handed to every renderer alongside attributes.
 import { registry } from '../../lib/blocks/registry';
-import type { EditorBlock } from '../../lib/blocks/types';
+import type { BlockContext, EditorBlock } from '../../lib/blocks/types';
 
 interface Props {
   blocks?: EditorBlock[];
+  context?: BlockContext;
 }
 
-const { blocks = [] } = Astro.props;
+const { blocks = [], context = {} } = Astro.props;
 const components = registry as Record<string, any>;
 ---
 
@@ -21,7 +23,7 @@ const components = registry as Record<string, any>;
         <div class="ac-missing-block">⚠ No renderer registered for “{block.name}”</div>
       ) : null;
     }
-    return <Component {...block.attributes} innerBlocks={block.innerBlocks ?? []} />;
+    return <Component {...block.attributes} innerBlocks={block.innerBlocks ?? []} context={context} />;
   })
 }
 
@@ -32,6 +34,5 @@ const components = registry as Record<string, any>;
     padding: var(--space-md);
     margin: var(--space-md) 0;
     font-size: var(--text-sm);
-    border-radius: var(--radius-sm);
   }
 </style>

@@ -1,0 +1,81 @@
+---
+// Static port of design-system/components/blocks/SectionHeader.jsx — the
+// standard opener: eyebrow, heading, optional sub-line and right-aligned link,
+// all sitting on one ink rule. Not a block itself; section blocks use it.
+import type { SectionHeaderAttrs } from '../lib/blocks/types';
+
+interface Props extends SectionHeaderAttrs {
+  level?: 1 | 2 | 3 | 4;
+}
+
+const { eyebrow, heading, text, linkLabel, linkUrl, level = 2 } = Astro.props;
+const H = `h${level}` as 'h2';
+---
+
+{
+  (eyebrow || heading) && (
+    <div class="ac-sh">
+      <div class="ac-sh__copy">
+        {eyebrow && <p class="ac-sh__eyebrow">{eyebrow}</p>}
+        {heading && <H class="ac-sh__h">{heading}</H>}
+        {text && <p class="ac-sh__text">{text}</p>}
+      </div>
+      {linkLabel && (
+        <a class="ac-sh__link" href={linkUrl || '#'}>
+          {linkLabel} →
+        </a>
+      )}
+    </div>
+  )
+}
+
+<style>
+  .ac-sh {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-md) var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--color-border-strong);
+  }
+  .ac-sh__copy {
+    flex: 1 1 20rem;
+  }
+  .ac-sh__eyebrow {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-sm);
+  }
+  .ac-sh__h {
+    font-size: var(--text-2xl);
+    margin: 0;
+  }
+  .ac-sh__text {
+    margin: var(--space-sm) 0 0;
+    color: var(--color-text-soft);
+  }
+  .ac-sh__link {
+    align-self: flex-end;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--link);
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 0.15em;
+    white-space: nowrap;
+  }
+  .ac-sh__link:hover {
+    color: var(--link-hover);
+  }
+  @media (max-width: 600px) {
+    .ac-sh {
+      gap: var(--space-md);
+    }
+    .ac-sh__link {
+      align-self: flex-start;
+    }
+  }
+</style>

@@ -5,16 +5,37 @@
   "title": "CTA band",
   "category": "ac",
   "icon": "megaphone",
-  "description": "A full-width call-to-action band with an optional dark treatment.",
+  "description": "Boxed closing pitch with the wood corner tick; dark by default, optional region phone button.",
   "textdomain": "ac-blocks",
   "attributes": {
-    "heading": { "type": "string", "default": "" },
-    "text": { "type": "string", "default": "" },
-    "ctaLabel": { "type": "string", "default": "Request a quote" },
-    "ctaUrl": { "type": "string", "default": "" },
-    "isDark": { "type": "boolean", "default": true }
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "text": {
+      "type": "string",
+      "default": ""
+    },
+    "ctaLabel": {
+      "type": "string",
+      "default": "Contact Us"
+    },
+    "ctaUrl": {
+      "type": "string",
+      "default": "/contact/"
+    },
+    "isDark": {
+      "type": "boolean",
+      "default": true
+    },
+    "showPhone": {
+      "type": "boolean",
+      "default": false
+    }
   },
-  "supports": { "html": false },
+  "supports": {
+    "html": false
+  },
   "editorScript": "file:./index.js",
   "render": "file:./render.php"
 }

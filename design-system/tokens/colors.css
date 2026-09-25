@@ -1,0 +1,112 @@
+/* The Appliance Connection — Colour tokens. True-neutral monochrome (paper white
+   → ink black) carries everything; one pale wood accent (#d9b27c) fills primary
+   actions, one deeper wood (#7a4e2a) carries links and hover. Components consume
+   SEMANTIC roles only — never primitives. */
+:root {
+  /* Primitives — true neutrals */
+  --neutral-0: #ffffff;
+  --neutral-50: #fafafa;
+  --neutral-100: #f4f4f4;
+  --neutral-200: #e9e9e9;
+  --neutral-300: #d4d4d4;
+  --neutral-400: #a8a8a8;
+  --neutral-500: #787878;
+  --neutral-600: #565656;
+  --neutral-700: #333333;
+  --neutral-800: #1e1e1e;
+  --neutral-900: #111111;
+
+  /* Primitives — wood (the only hue in the system) */
+  --wood-100: #f7efe2;
+  --wood-200: #ecdcc2;
+  --wood-300: #d9b27c;
+  --wood-500: #b5854a;
+  --wood-700: #7a4e2a;
+  --wood-900: #4a2e17;
+
+  /* Primitives — support (form feedback only) */
+  --green-700: #1f6b47;
+  --red-700: #a1301f;
+
+  /* Semantic — surfaces */
+  --color-bg: var(--neutral-0);
+  --color-bg-alt: var(--neutral-50);
+  --color-bg-sunken: var(--neutral-100);
+  --color-surface: var(--neutral-0);
+
+  /* Semantic — text */
+  --color-text: var(--neutral-900);
+  --color-text-soft: var(--neutral-700);
+  --color-text-muted: var(--neutral-600);
+  --color-text-onbrand: var(--neutral-0);
+
+  /* Semantic — lines. Hairline rules the grid; strong is full ink — the thin
+     black box outline this system is built on. */
+  --color-border: var(--neutral-300);
+  --color-border-strong: var(--neutral-900);
+
+  /* Graph-paper ruling (8px module, see effects.css) */
+  --grid-line: rgba(17, 17, 17, 0.065);
+
+  /* Semantic — brand (monochrome: the brand colour is ink) */
+  --color-brand: var(--neutral-900);
+  --color-brand-deep: var(--neutral-900);
+  --color-brand-tint: var(--neutral-100);
+
+  /* Semantic — wood accent (punctuation) */
+  --color-accent: var(--wood-300);
+  --color-accent-deep: var(--wood-700);
+  --color-accent-tint: var(--wood-100);
+
+  /* Semantic — inverse (dark bands: footer, hero panel, CTA bands) */
+  --color-inverse-bg: var(--neutral-900);
+  --color-inverse-bg-alt: var(--neutral-800);
+  --color-inverse-text: var(--neutral-0);
+  --color-inverse-text-soft: var(--neutral-300);
+  --color-brand-on-dark: var(--wood-300);
+
+  /* Semantic — actions. Pale wood takes ink text; hover deepens to walnut and
+     flips the label to paper so contrast holds either way. */
+  --cta-bg: var(--color-accent);
+  --cta-bg-hover: var(--wood-700);
+  --cta-text: var(--neutral-900);
+  --cta-text-hover: var(--neutral-0);
+  --cta2-bg: var(--color-surface);
+  --cta2-border: var(--neutral-900);
+  --cta2-text: var(--neutral-900);
+
+  /* Semantic — links */
+  --link: var(--wood-700);
+  --link-hover: var(--neutral-900);
+
+  /* Semantic — feedback */
+  --color-success: var(--green-700);
+  --color-error: var(--red-700);
+
+  /* Semantic — focus */
+  --focus-ring: 0 0 0 3px rgba(17, 17, 17, 0.35);
+  --focus-color: var(--neutral-900);
+}
+
+/* Apply to any section to flip semantic roles to the inverse set — components
+   keep referencing --color-text / --color-bg etc; only the mapping changes.
+   The graph-paper ruling flips to white hairlines on ink. */
+.on-dark {
+  --color-bg: var(--color-inverse-bg);
+  --color-bg-alt: var(--color-inverse-bg-alt);
+  --color-bg-sunken: #000000;
+  --color-surface: var(--color-inverse-bg-alt);
+  --color-text: var(--color-inverse-text);
+  --color-text-soft: var(--color-inverse-text-soft);
+  --color-text-muted: var(--neutral-400);
+  --color-border: rgba(255, 255, 255, 0.2);
+  --color-border-strong: var(--neutral-0);
+  --grid-line: rgba(255, 255, 255, 0.075);
+  --color-brand: var(--neutral-0);
+  --link: var(--wood-300);
+  --link-hover: var(--neutral-0);
+  --cta2-bg: transparent;
+  --cta2-border: var(--neutral-0);
+  --cta2-text: var(--neutral-0);
+  --focus-color: var(--neutral-0);
+}

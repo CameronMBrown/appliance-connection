@@ -1,0 +1,30 @@
+<!-- @dsCard group="Components" viewport="820x640" name="Accordion & Tabs" subtitle="FAQ rows with a wood +/– tick; ruled tab strip over one panel" -->
+<!doctype html><html><head>
+<meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<style>body{padding:28px;margin:0}.stack{display:flex;flex-direction:column;gap:32px}</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+</head><body>
+<div id="root"></div>
+<script type="text/babel">
+const { Accordion, Tabs } = window.TheApplianceConnectionDesignSystem_d4d2d2;
+function Demo(){
+  return (
+    <div className="stack">
+      <Accordion defaultOpen={[0]} items={[
+        {question:"Do you supply the appliance, or just install it?",answer:"Either. We install what you've bought anywhere, and we work with Paddy's Market in Durham and Peterborough Appliances in Peterborough if you'd rather buy through a partner."},
+        {question:"Are you licensed for gas?",answer:"Yes. Gas fitting is licensed and insured, and every gas job is warrantied like the rest of our work."},
+        {question:"How soon can you come out?",answer:"We respond to quote requests within 24 hours and can usually book within the week."}
+      ]} />
+      <Tabs label="Service detail" tabs={[
+        {label:"What's included",content:<p style={{margin:0,color:'var(--color-text-soft)'}}>Uncrating, levelling, water and gas connection, venting, anti-tip hardware, and a full test run before we leave. We take the packaging with us.</p>},
+        {label:"What it costs",content:<p style={{margin:0,color:'var(--color-text-soft)'}}>Flat-rate quotes, given before we start. No hourly surprises, no charge for the quote itself.</p>},
+        {label:"Warranty",content:<p style={{margin:0,color:'var(--color-text-soft)'}}>Every install is warrantied. If something we connected fails, we come back and fix it.</p>}
+      ]} />
+    </div>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script>
+</body></html>

@@ -1,120 +1,25 @@
-/* Base reset + global element styles.
-   Design tokens are imported separately in BaseLayout (design-system/tokens/tokens.css).
-   Everything here consumes SEMANTIC tokens only. */
+/* App-level additions on top of the Claude Design system.
+   Tokens + element base come from design-system/ (imported in BaseLayout);
+   this file only holds what the app needs beyond them. Semantic tokens only. */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html {
-  -webkit-text-size-adjust: 100%;
-}
-
+/* ITC Benguiat — licensed, so it is NOT in the repo. private/setup.sh links it
+   to web/public/fonts/headings.woff2. Without it --font-display falls back to
+   the serif stack. (design-system/tokens/fonts.css points at the design
+   project's own asset path, so the app declares its own @font-face.) */
 @font-face {
   font-family: "ITC Benguiat";
   src: url("/fonts/headings.woff2") format("woff2");
-  font-weight: 700;
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
-body {
-  margin: 0;
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-body);
-  font-size: var(--text-base);
-  line-height: var(--leading-normal);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-h1,
-h2,
-h3,
-h4 {
-  font-family: var(--font-display);
-  font-weight: var(--weight-display);
-  line-height: var(--leading-snug);
-  letter-spacing: var(--tracking-tight);
-  text-wrap: balance;
-  margin: 0 0 var(--space-md);
-}
-
-p {
-  margin: 0 0 var(--space-md);
-  max-width: var(--measure);
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-a {
-  color: var(--link);
-}
-a:hover {
-  color: var(--link-hover);
-}
-
-:focus-visible {
-  outline: 3px solid var(--focus-color);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
-}
-
-/* Layout helpers */
-.container {
-  max-width: var(--container-max);
-  margin-inline: auto;
-  padding-inline: var(--gutter);
-}
-.section {
-  padding-block: var(--space-4xl);
-}
-
-/* Shared bits used across block renderers */
-.eyebrow {
-  font-size: var(--text-sm);
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
-  color: var(--color-accent-deep);
-  font-weight: 600;
-  margin-bottom: var(--space-sm);
-}
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5em;
-  font: inherit;
-  font-weight: 600;
-  line-height: 1;
-  text-decoration: none;
-  border-radius: var(--radius-md);
-  padding: 0.85em 1.5em;
-  border: 1px solid transparent;
-  cursor: pointer;
-}
-.btn--primary {
-  background: var(--cta-bg);
-  color: var(--cta-text);
-}
-.btn--primary:hover {
-  background: var(--cta-bg-hover);
-  color: var(--cta-text);
-}
-.btn--secondary {
-  background: transparent;
-  color: var(--color-text);
-  border-color: var(--color-text);
-}
-.btn--secondary:hover {
-  background: var(--color-text);
-  color: var(--color-bg);
+/* Astro wraps slotted children passed to React components in these elements.
+   Take them out of layout so grids/flex see the real children. */
+astro-island,
+astro-slot,
+astro-static-slot {
+  display: contents;
 }
 
 /* Accessibility: skip link */
@@ -130,4 +35,57 @@ a:hover {
 .skip-link:focus {
   left: var(--space-md);
   top: var(--space-md);
+}
+
+/* Section band used by the page templates: a ruled top edge, optional alt
+   ground, fluid block padding. */
+.band {
+  border-top: 1px solid var(--color-border-strong);
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+}
+.band--alt {
+  background: var(--color-bg-alt);
+}
+.band--flush {
+  border-top: 0;
+}
+.container--narrow {
+  max-width: var(--container-narrow);
+}
+
+/* Photo placeholder: ruled cell + labelled tag, so an unshot slot always reads
+   as "photo not yet supplied". */
+.photo-ph {
+  position: relative;
+  background-color: var(--color-bg-sunken);
+  background-image: var(--grid-image);
+  background-size: var(--grid-size) var(--grid-size);
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-md);
+}
+.photo-ph__tag {
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 0.3em 0.6em;
+}
+
+/* The system's one ornament: a 10px wood square in a box's top-left corner. */
+.corner-tick {
+  position: relative;
+}
+.corner-tick::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  background: var(--color-accent);
+  z-index: 1;
 }

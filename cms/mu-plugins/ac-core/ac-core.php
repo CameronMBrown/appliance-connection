@@ -18,6 +18,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Admin labels for a CPT. Without these WordPress falls back to "Post" (or
+ * "Page" for hierarchical types), so a Location's editor would say "Edit Page".
+ */
+function ac_core_cpt_labels( string $single, string $plural ): array {
+	return array(
+		'name'          => $plural,
+		'singular_name' => $single,
+		/* translators: %s: singular post type name. */
+		'add_new_item'  => sprintf( __( 'Add New %s', 'ac-core' ), $single ),
+		/* translators: %s: singular post type name. */
+		'edit_item'     => sprintf( __( 'Edit %s', 'ac-core' ), $single ),
+		/* translators: %s: singular post type name. */
+		'view_item'     => sprintf( __( 'View %s', 'ac-core' ), $single ),
+		/* translators: %s: plural post type name. */
+		'all_items'     => sprintf( __( 'All %s', 'ac-core' ), $plural ),
+		/* translators: %s: singular post type name. */
+		'parent_item_colon' => sprintf( __( 'Parent %s:', 'ac-core' ), $single ),
+	);
+}
+
 /* -------------------------------------------------------------------------
  * Custom post types
  * ---------------------------------------------------------------------- */
@@ -40,6 +61,7 @@ add_action(
 				$common,
 				array(
 					'label'               => __( 'Services', 'ac-core' ),
+					'labels'              => ac_core_cpt_labels( __( 'Service', 'ac-core' ), __( 'Services', 'ac-core' ) ),
 					'menu_icon'           => 'dashicons-hammer',
 					'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail', 'custom-fields' ),
 					'rewrite'             => array( 'slug' => 'services' ),
@@ -50,24 +72,34 @@ add_action(
 			)
 		);
 
-		// Location — region hub + city page. Structure is LOCKED (dev owns layout).
+		// Location — region hub (top level) + town page (child of its hub), so the
+		// hierarchy mirrors the front-end URLs: /durham/ and /durham/oshawa/.
+		// Structure is LOCKED (dev owns layout).
 		register_post_type(
 			'ac_location',
 			array_merge(
 				$common,
 				array(
 					'label'               => __( 'Locations', 'ac-core' ),
+					'labels'              => ac_core_cpt_labels( __( 'Location', 'ac-core' ), __( 'Locations', 'ac-core' ) ),
 					'menu_icon'           => 'dashicons-location',
-					'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail', 'custom-fields' ),
+					'hierarchical'        => true,
+					'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail', 'custom-fields', 'page-attributes' ),
 					'rewrite'             => array( 'slug' => 'locations' ),
 					'has_archive'         => false,
 					'graphql_single_name' => 'Location',
 					'graphql_plural_name' => 'Locations',
 					// templateLock: a fixed block skeleton the client can fill but not restructure.
+					// Mirrors the Claude Design "Location" template (design-system/templates/location).
 					'template'            => array(
-						array( 'ac/hero' ),
+						array( 'ac/page-header', array( 'eyebrow' => 'Service area', 'showPhone' => true ) ),
+						array( 'ac/stat-block' ),
 						array( 'ac/service-grid' ),
-						array( 'ac/cta-band' ),
+						array( 'ac/media-text' ),
+						array( 'ac/town-grid' ),
+						array( 'ac/testimonials' ),
+						array( 'ac/faq' ),
+						array( 'ac/cta-band', array( 'showPhone' => true ) ),
 					),
 					'template_lock'       => 'all',
 				)
@@ -81,6 +113,7 @@ add_action(
 				$common,
 				array(
 					'label'               => __( 'Projects', 'ac-core' ),
+					'labels'              => ac_core_cpt_labels( __( 'Project', 'ac-core' ), __( 'Projects', 'ac-core' ) ),
 					'menu_icon'           => 'dashicons-portfolio',
 					'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail', 'custom-fields' ),
 					'rewrite'             => array( 'slug' => 'projects' ),
@@ -98,6 +131,7 @@ add_action(
 				$common,
 				array(
 					'label'               => __( 'Testimonials', 'ac-core' ),
+					'labels'              => ac_core_cpt_labels( __( 'Testimonial', 'ac-core' ), __( 'Testimonials', 'ac-core' ) ),
 					'menu_icon'           => 'dashicons-format-quote',
 					'supports'            => array( 'title', 'editor', 'custom-fields' ),
 					'has_archive'         => false,
@@ -114,6 +148,7 @@ add_action(
 				$common,
 				array(
 					'label'               => __( 'Brands', 'ac-core' ),
+					'labels'              => ac_core_cpt_labels( __( 'Brand', 'ac-core' ), __( 'Brands', 'ac-core' ) ),
 					'menu_icon'           => 'dashicons-awards',
 					'supports'            => array( 'title', 'thumbnail', 'custom-fields' ),
 					'has_archive'         => false,
@@ -159,12 +194,19 @@ add_action(
  * postType => [ metaKey => [ 'type' => wpType, 'graphql' => fieldName, 'gqlType' => graphqlType ] ]
  */
 function ac_core_meta_config(): array {
+	// SEO title/description — every routable type gets them.
+	$seo = array(
+		'ac_seo_title'       => array( 'type' => 'string', 'graphql' => 'seoTitle',       'gqlType' => 'String' ),
+		'ac_seo_description' => array( 'type' => 'string', 'graphql' => 'seoDescription', 'gqlType' => 'String' ),
+	);
 	return array(
-		'ac_service'  => array(
+		'page'        => $seo,
+		'ac_service'  => $seo + array(
 			'ac_icon'  => array( 'type' => 'string',  'graphql' => 'icon',         'gqlType' => 'String' ),
 			'ac_order' => array( 'type' => 'integer', 'graphql' => 'serviceOrder', 'gqlType' => 'Int' ),
 		),
-		'ac_location' => array(
+		'ac_location' => $seo + array(
+			// Region hubs only: the number shown site-wide for that region.
 			'ac_phone' => array( 'type' => 'string', 'graphql' => 'phone', 'gqlType' => 'String' ),
 			'ac_lat'   => array( 'type' => 'number', 'graphql' => 'lat',   'gqlType' => 'Float' ),
 			'ac_lng'   => array( 'type' => 'number', 'graphql' => 'lng',   'gqlType' => 'Float' ),
@@ -203,6 +245,7 @@ function ac_core_register_graphql_meta(): void {
 		return;
 	}
 	$graphql_type_for = array(
+		'page'        => 'Page',
 		'ac_service'  => 'Service',
 		'ac_location' => 'Location',
 	);
@@ -237,3 +280,24 @@ function ac_core_register_graphql_meta(): void {
 	}
 }
 add_action( 'graphql_register_types', 'ac_core_register_graphql_meta' );
+
+/* -------------------------------------------------------------------------
+ * Navigation menus. Registered here (not in the theme) so they exist whatever
+ * theme is active. WPGraphQL exposes menus assigned to a location publicly:
+ * menuItems( where: { location: PRIMARY } ).
+ * ---------------------------------------------------------------------- */
+
+add_action(
+	'after_setup_theme',
+	function (): void {
+		register_nav_menus(
+			array(
+				'primary' => __( 'Primary navigation', 'ac-core' ),
+				'footer'  => __( 'Footer — site links', 'ac-core' ),
+				'legal'   => __( 'Footer — legal links', 'ac-core' ),
+			)
+		);
+	}
+);
+
+require_once __DIR__ . '/headless.php';

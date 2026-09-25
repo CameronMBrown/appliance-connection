@@ -1,0 +1,77 @@
+---
+// ac/testimonials — SectionHeader + a row of design-system Testimonial boxes
+// (static port). Attributed "Homeowner, {town}", never a full name.
+// Later: source from the ac_testimonial CPT, filtered by the page's region.
+import SectionHeader from '../SectionHeader.astro';
+import type { BlockContext, EditorBlock, TestimonialsAttrs } from '../../lib/blocks/types';
+
+interface Props extends TestimonialsAttrs {
+  innerBlocks?: EditorBlock[];
+  context?: BlockContext;
+}
+
+const { eyebrow, heading, text, linkLabel, linkUrl, items = [], background = 'paper' } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <section class:list={['band', { 'band--alt': background === 'alt' }]}>
+      <div class="container">
+        <SectionHeader eyebrow={eyebrow} heading={heading} text={text} linkLabel={linkLabel} linkUrl={linkUrl} />
+        <div class="tm__row">
+          {items.map((t) => (
+            <blockquote class="ac-quote">
+              <p>“{t.quote}”</p>
+              <cite>{t.cite}</cite>
+            </blockquote>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .tm__row {
+    display: grid;
+    gap: var(--space-xl);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    margin-top: var(--space-xl);
+  }
+  .ac-quote {
+    position: relative;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-lg);
+    margin: 0;
+  }
+  .ac-quote::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    background: var(--color-accent);
+  }
+  .ac-quote p {
+    font-family: var(--font-display);
+    font-weight: var(--weight-display);
+    font-size: var(--text-lg);
+    line-height: var(--leading-snug);
+    margin: 0 0 var(--space-md);
+    max-width: none;
+  }
+  .ac-quote cite {
+    display: block;
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-sm);
+    font-style: normal;
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-muted);
+  }
+</style>

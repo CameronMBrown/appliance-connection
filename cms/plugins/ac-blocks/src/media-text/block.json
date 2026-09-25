@@ -1,0 +1,44 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/media-text",
+  "title": "Text + illustration",
+  "category": "ac",
+  "icon": "align-pull-left",
+  "description": "Ruled heading and paragraphs beside an illustration.",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "paragraphs": {
+      "type": "array",
+      "default": []
+    },
+    "imageId": {
+      "type": "number"
+    },
+    "imageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "imageAlt": {
+      "type": "string",
+      "default": ""
+    },
+    "background": {
+      "type": "string",
+      "enum": [
+        "paper",
+        "alt"
+      ],
+      "default": "paper"
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

@@ -1,11 +1,108 @@
-import type { PageData } from '../lib/blocks/types';
+import type { EditorBlock, PageData, ServiceCardAttrs } from '../lib/blocks/types';
+import type { RegionSlug } from '../lib/site';
 
 /**
  * Mock content shaped exactly like a resolved `editorBlocks` tree, keyed by URL
  * path. This proves the whole render pipeline before WordPress is wired.
  * When WP is live, content.ts swaps this out for a GraphQL fetch — routes and
  * renderers don't change.
+ *
+ * Page composition + copy follow the Claude Design templates
+ * (design-system/templates/{homepage,location,contact}). Placeholder copy is
+ * labelled as such in visible text — never passed off as real.
  */
+
+// --- Shared content ---------------------------------------------------------
+
+const SERVICES: Array<ServiceCardAttrs & { slug: string; subheading: string }> = [
+  {
+    slug: 'appliance-installation',
+    title: 'Appliance installation',
+    description: 'Every make and model, freestanding and built-in, with panels and venting.',
+    subheading:
+      'Freestanding and built-in — ranges, cooktops, wall ovens, dishwashers, OTR microwaves, laundry, and custom panels.',
+  },
+  {
+    slug: 'gas-piping',
+    title: 'Gas piping',
+    description: 'Licensed gas fitting for ranges, dryers, BBQs and garage heaters.',
+    subheading:
+      'Licensed gas fitting for ranges, dryers, BBQs, garage & shop heaters, pool and water heaters — above and below grade.',
+  },
+  {
+    slug: 'kitchens',
+    title: 'Kitchens',
+    description: 'Full kitchen work, from rough-in through to the finished install.',
+    subheading: 'Full kitchen work, from rough-in through to the finished install — every appliance installed to code.',
+  },
+  {
+    slug: 'laundry-rooms',
+    title: 'Laundry rooms',
+    description: 'Washers, dryers, venting and relocations, including upstairs moves.',
+    subheading: 'Washers, dryers, venting and relocations, including upstairs moves.',
+  },
+  {
+    slug: 'plumbing-fixtures',
+    title: 'Plumbing fixtures',
+    description: 'Sinks, taps, water lines and shut-offs, done to code.',
+    subheading: 'Sinks, taps, water lines and shut-offs, done to code.',
+  },
+  {
+    slug: 'heaters',
+    title: 'Heaters',
+    description: 'Shop and garage heaters, pool heaters and water heaters.',
+    subheading: 'Shop and garage heaters, pool heaters and water heaters.',
+  },
+];
+
+const serviceCards = (): EditorBlock[] =>
+  SERVICES.map(({ title, description, slug }) => ({
+    name: 'ac/service-card',
+    attributes: { title, description, url: `/services/${slug}/` },
+  }));
+
+const STATS: EditorBlock = {
+  name: 'ac/stat-block',
+  attributes: {
+    stats: [
+      { value: '30+', label: 'Years installing appliances across Durham and Peterborough' },
+      { value: 'Licensed', label: 'Fully licensed and insured, gas fitting included', mark: true },
+      { value: 'Warrantied', label: 'Every job we do is warrantied', mark: true },
+      { value: '1000s', label: 'Installs completed' },
+    ],
+  },
+};
+
+const PLACEHOLDER_QUOTES = [
+  'They installed our double wall oven and cooktop in an afternoon — spotless, and it just worked.',
+  'Ran a new gas line for the range and took the old one out. Showed up when they said they would.',
+  'Whole laundry room moved upstairs. Clean work, fair price, no surprises on the bill.',
+];
+
+const testimonials = (cites: string[], heading: string, background: 'paper' | 'alt'): EditorBlock => ({
+  name: 'ac/testimonials',
+  attributes: {
+    eyebrow: 'What customers say',
+    heading,
+    text: 'Placeholder quotes — swap in real ones before launch.',
+    items: PLACEHOLDER_QUOTES.map((quote, i) => ({ quote, cite: cites[i] })),
+    background,
+  },
+});
+
+const contactCta = (heading: string, showPhone = false): EditorBlock => ({
+  name: 'ac/cta-band',
+  attributes: {
+    heading,
+    text: 'Questions, advice or a quote — we respond within 24 hours.',
+    ctaLabel: 'Contact Us',
+    ctaUrl: '/contact/',
+    isDark: true,
+    showPhone,
+  },
+});
+
+// --- Home (templates/homepage) ---------------------------------------------
 
 const home: PageData = {
   title: 'The Appliance Connection — Complete Home Appliance Installation',
@@ -14,165 +111,438 @@ const home: PageData = {
     {
       name: 'ac/hero',
       attributes: {
-        eyebrow: 'Durham & Peterborough, Ontario',
-        heading: 'Complete home appliance installation, done right.',
-        subheading:
-          'Licensed, insured, and warrantied — 30+ years installing the built-ins a general handyman won’t touch.',
-        primaryLabel: 'Request a quote',
-        primaryUrl: '/contact',
-        secondaryLabel: 'Our services',
-        secondaryUrl: '/services/appliance-installation',
+        // No heading → the arched wordmark leads.
+        videoUrl: '/video/hero-install.mp4',
+        subheading: 'Complete home appliance installations',
+        primaryLabel: 'Our services',
+        primaryShortLabel: 'Services',
+        primaryUrl: '/services/',
+        secondaryLabel: 'Contact Us',
+        secondaryShortLabel: 'Contact',
+        secondaryUrl: '/contact/',
+        scrim: 'standard',
+        showPhones: true,
       },
     },
+    {
+      name: 'ac/trust-strip',
+      attributes: { items: ['Over 30 years experience', 'Fully licensed & insured', 'All work warrantied'] },
+    },
+    {
+      name: 'ac/intro',
+      attributes: {
+        eyebrow: 'About us',
+        heading: 'Complete Home Appliance Installations',
+        paragraphs: [
+          'Welcome to The Appliance Connection. We are your one stop shop for all your appliance installation and essential home service needs. We have a long list of services we provide and no job is too big or too small.',
+          'We have over 30 years experience, we are fully licensed and insured and of course, we warranty all of our work. We will provide you with excellent service at a fair price.',
+          'Please visit the <a href="/about/">About Us page</a> for more information of all of the services we provide.',
+        ],
+        photos: [
+          { label: 'Photo — finished kitchen install' },
+          { label: 'Photo — gas line' },
+          { label: 'Photo — laundry' },
+        ],
+      },
+    },
+    {
+      name: 'ac/partners',
+      attributes: {
+        heading: 'Our Selling Partners',
+        background: 'alt',
+        partners: [
+          {
+            name: 'Paddy’s Market — The Appliance Specialist',
+            url: 'https://www.paddysmarket.ca/',
+            logoUrl: '/logo/partners/paddys-market.png',
+            area: 'Serving Durham Region',
+            phone: '906.263.8369',
+            tel: '19062638369',
+            email: 'sales@paddysmarket.ca',
+            address: ['2212 Taunton Rd', 'Hampton, ON L0B 1J0'],
+            mapEmbedUrl:
+              'https://www.openstreetmap.org/export/embed.html?bbox=-78.7560%2C43.9390%2C-78.7340%2C43.9510&layer=mapnik&marker=43.9450%2C-78.7450',
+            directionsUrl: 'https://www.openstreetmap.org/search?query=2212%20Taunton%20Rd%2C%20Hampton%2C%20ON',
+          },
+          {
+            name: 'Peterborough Appliances',
+            url: 'https://www.peterboroughappliances.com/',
+            logoUrl: '/logo/partners/peterborough-appliances.png',
+            area: 'Serving Peterborough',
+            phone: '705.748.9781',
+            tel: '17057489781',
+            email: 'sales@peterboroughappliances.com',
+            address: ['2849 Lakefield Rd', 'Selwyn, ON K9J 6X5'],
+            mapEmbedUrl:
+              'https://www.openstreetmap.org/export/embed.html?bbox=-78.3160%2C44.3390%2C-78.2940%2C44.3510&layer=mapnik&marker=44.3450%2C-78.3050',
+            directionsUrl: 'https://www.openstreetmap.org/search?query=2849%20Lakefield%20Rd%2C%20Selwyn%2C%20ON',
+          },
+        ],
+      },
+    },
+  ],
+};
+
+// --- Services ----------------------------------------------------------------
+
+const servicesIndex: PageData = {
+  title: 'Services — The Appliance Connection',
+  description: 'Appliance installation, gas piping, kitchens, laundry rooms, plumbing fixtures and heaters.',
+  blocks: [
+    {
+      name: 'ac/page-header',
+      attributes: {
+        eyebrow: 'Services',
+        heading: 'Everything we install',
+        intro: 'One crew for the whole job — no job too big or too small. Licensed, insured and warrantied.',
+        illustrationUrl: '/illustrations/craig-harley-carrying-box.webp',
+        illustrationAlt: 'Craig and Harley carrying an appliance box',
+        primaryLabel: 'Contact Us',
+        primaryUrl: '/contact/',
+      },
+    },
+    STATS,
     {
       name: 'ac/service-grid',
-      attributes: { heading: 'What we install' },
-      innerBlocks: [
-        {
-          name: 'ac/service-card',
-          attributes: {
-            title: 'Appliance installation',
-            description: 'Every make & model — freestanding and built-in, with custom panels and venting.',
-            url: '/services/appliance-installation',
-          },
-        },
-        {
-          name: 'ac/service-card',
-          attributes: {
-            title: 'Gas piping',
-            description: 'Licensed gas fitting for ranges, dryers, BBQs and garage heaters.',
-            url: '/services/gas-piping',
-          },
-        },
-        {
-          name: 'ac/service-card',
-          attributes: {
-            title: 'Kitchens',
-            description: 'Full kitchen renovations, from rough-in to finish.',
-            url: '/services/kitchens',
-          },
-        },
-      ],
+      attributes: { eyebrow: 'What we do', heading: 'Every install, one crew', numbered: true },
+      innerBlocks: serviceCards(),
     },
-    {
-      name: 'ac/cta-band',
-      attributes: {
-        heading: 'Booking your install?',
-        text: 'Tell us what you need — we respond within 24 hours.',
-        ctaLabel: 'Get a free quote',
-        ctaUrl: '/contact',
-        isDark: true,
-      },
-    },
+    contactCta('Have a question?'),
   ],
 };
 
-const serviceApplianceInstall: PageData = {
-  title: 'Appliance Installation — The Appliance Connection',
+const servicePage = (s: (typeof SERVICES)[number]): PageData => ({
+  title: `${s.title} — The Appliance Connection`,
   blocks: [
     {
-      name: 'ac/hero',
+      name: 'ac/page-header',
       attributes: {
         eyebrow: 'Service',
-        heading: 'Appliance installation',
-        subheading:
-          'Freestanding and built-in — ranges, cooktops, wall ovens, dishwashers, OTR microwaves, laundry, and custom panels.',
-        primaryLabel: 'Request a quote',
-        primaryUrl: '/contact',
+        heading: s.title,
+        intro: s.subheading,
+        illustrationUrl: '/illustrations/craig-harley-carrying-box.webp',
+        illustrationAlt: 'Craig and Harley carrying an appliance box',
+        primaryLabel: 'Contact Us',
+        primaryUrl: '/contact/',
       },
     },
-    {
-      name: 'ac/cta-band',
-      attributes: {
-        heading: 'Ready to book?',
-        text: 'Serving Durham & Peterborough. Licensed, insured, warrantied.',
-        ctaLabel: 'Get a free quote',
-        ctaUrl: '/contact',
-        isDark: true,
-      },
-    },
+    STATS,
+    contactCta('Have a question?'),
   ],
-};
+});
 
-const serviceGasPiping: PageData = {
-  title: 'Gas Piping — The Appliance Connection',
+// --- Regions (templates/location) --------------------------------------------
+
+interface RegionContent {
+  slug: RegionSlug;
+  name: string;
+  short: string;
+  intro: string;
+  body: string;
+  towns: (string | { name: string; href: string })[];
+  cites: string[];
+}
+
+const REGIONS: RegionContent[] = [
+  {
+    slug: 'durham',
+    name: 'Durham Region',
+    short: 'Durham',
+    intro:
+      'Licensed, insured and warrantied — over 30 years installing built-in appliances, gas lines and laundry rooms across Durham Region.',
+    body: 'We have been on Durham roads for over 30 years, from Pickering out to Bowmanville. Our selling partner here is Paddy’s Market, so if you still need the appliance we can point you there first.',
+    towns: [
+      { name: 'Oshawa', href: '/durham/oshawa/' },
+      { name: 'Whitby', href: '/durham/whitby/' },
+      { name: 'Pickering', href: '/durham/pickering/' },
+      'Ajax',
+      'Bowmanville',
+      'Courtice',
+      'Port Perry',
+      'Uxbridge',
+      'Brooklin',
+      'Clarington',
+    ],
+    cites: ['Homeowner, Whitby', 'Homeowner, Oshawa', 'Homeowner, Pickering'],
+  },
+  {
+    slug: 'peterborough',
+    name: 'Peterborough',
+    short: 'Peterborough',
+    intro:
+      'Licensed, insured and warrantied — over 30 years installing built-in appliances, gas lines and laundry rooms across Peterborough and the Kawarthas.',
+    body: 'We cover Peterborough and the townships around it, from Lakefield down to Millbrook. Our selling partner here is Peterborough Appliances, so if you still need the appliance we can point you there first.',
+    towns: [
+      { name: 'Lakefield', href: '/peterborough/lakefield/' },
+      { name: 'Bridgenorth', href: '/peterborough/bridgenorth/' },
+      { name: 'Ennismore', href: '/peterborough/ennismore/' },
+      'Selwyn',
+      'Douro',
+      'Keene',
+      'Millbrook',
+      'Norwood',
+      'Buckhorn',
+      'Apsley',
+    ],
+    cites: ['Homeowner, Lakefield', 'Homeowner, Peterborough', 'Homeowner, Bridgenorth'],
+  },
+];
+
+const REGION_FAQS = [
+  {
+    question: 'Do you supply the appliance, or just install it?',
+    answer:
+      'Either. We install what you have already bought, and we work with a local selling partner if you would rather buy through one.',
+  },
+  {
+    question: 'Are you licensed for gas?',
+    answer: 'Yes. Gas fitting is licensed and insured, and every gas job is warrantied like the rest of our work.',
+  },
+  {
+    question: 'How soon can you come out?',
+    answer: 'We respond to quote requests within 24 hours and can usually book within the week.',
+  },
+  {
+    question: 'Do you charge for travel within the region?',
+    answer: 'Placeholder answer — confirm travel policy for outlying towns before launch.',
+  },
+];
+
+const regionHub = (r: RegionContent): PageData => ({
+  title: `Appliance Installation in ${r.name} — The Appliance Connection`,
+  region: r.slug,
   blocks: [
     {
-      name: 'ac/hero',
+      name: 'ac/page-header',
       attributes: {
-        eyebrow: 'Service',
-        heading: 'Gas piping',
-        subheading:
-          'Licensed gas fitting for ranges, dryers, BBQs, garage & shop heaters, pool and water heaters — above and below grade.',
-        primaryLabel: 'Request a quote',
-        primaryUrl: '/contact',
+        eyebrow: 'Service area',
+        heading: `Appliance installation in ${r.name}`,
+        intro: r.intro,
+        illustrationUrl: '/illustrations/craig-harley-waving.webp',
+        illustrationAlt: 'Craig and Harley',
+        primaryLabel: 'Contact Us',
+        primaryUrl: '/contact/',
+        showPhone: true,
       },
     },
-  ],
-};
-
-const durham: PageData = {
-  title: 'Appliance Installation in Durham Region — The Appliance Connection',
-  blocks: [
-    {
-      name: 'ac/hero',
-      attributes: {
-        eyebrow: 'Durham Region',
-        heading: 'Your Durham Region appliance installers',
-        subheading: 'Oshawa, Whitby, Ajax, Pickering, Bowmanville and across Durham. Call 905·259·6545.',
-        primaryLabel: 'Request a quote',
-        primaryUrl: '/contact',
-      },
-    },
+    STATS,
     {
       name: 'ac/service-grid',
-      attributes: { heading: 'Services across Durham' },
-      innerBlocks: [
-        { name: 'ac/service-card', attributes: { title: 'Appliance installation', url: '/services/appliance-installation' } },
-        { name: 'ac/service-card', attributes: { title: 'Gas piping', url: '/services/gas-piping' } },
-        { name: 'ac/service-card', attributes: { title: 'Kitchens', url: '/services/kitchens' } },
-      ],
+      attributes: {
+        eyebrow: 'What we do here',
+        heading: 'Every install, one crew',
+        text: 'The same work across the whole region — no job too big or too small.',
+        linkLabel: 'All services',
+        linkUrl: '/services/',
+        numbered: true,
+        background: 'alt',
+      },
+      innerBlocks: serviceCards(),
     },
+    {
+      name: 'ac/media-text',
+      attributes: {
+        heading: 'Local crew, local calls',
+        paragraphs: [
+          r.body,
+          'We quote flat rates before the work starts, we clean up after ourselves, and we warranty everything we install. Same crew on the truck every time — you will know who is coming.',
+        ],
+        imageUrl: '/illustrations/harley-dolly-fridge.webp',
+        imageAlt: 'Delivering an appliance',
+      },
+    },
+    {
+      name: 'ac/town-grid',
+      attributes: {
+        eyebrow: 'Coverage',
+        heading: 'Towns we cover',
+        text: 'Towns with their own page are linked. The rest are on the route all the same.',
+        regions: [{ name: r.name, note: 'Same-week booking', towns: r.towns }],
+        background: 'alt',
+      },
+    },
+    testimonials(r.cites, 'Recent work nearby', 'paper'),
+    {
+      name: 'ac/faq',
+      attributes: { eyebrow: 'Before you book', heading: 'Frequently asked questions', items: REGION_FAQS },
+    },
+    contactCta(`Need a hand in ${r.short}?`, true),
   ],
-};
+});
 
-const peterborough: PageData = {
-  title: 'Appliance Installation in Peterborough — The Appliance Connection',
+/**
+ * City pages. Decision 10 + the doorway-page warning in docs/03: each city page
+ * must carry genuinely unique local content before launch. Until the client
+ * supplies it, these say so in visible copy rather than faking it.
+ *
+ * Same 8-block skeleton as the hubs: the Location post type locks its block
+ * template (ac-core), so every location carries every section. Sections left
+ * empty (local story, towns, quotes, FAQ) don't render.
+ */
+const cityPage = (region: RegionSlug, town: string): PageData => ({
+  title: `Appliance Installation in ${town} — The Appliance Connection`,
+  region,
   blocks: [
     {
-      name: 'ac/hero',
+      name: 'ac/page-header',
       attributes: {
-        eyebrow: 'Peterborough',
-        heading: 'Your Peterborough appliance installers',
-        subheading: 'Peterborough, Lakefield, Bridgenorth and the Kawarthas. Call 705·742·0306.',
-        primaryLabel: 'Request a quote',
-        primaryUrl: '/contact',
+        eyebrow: region === 'durham' ? 'Durham Region' : 'Peterborough',
+        heading: `Appliance installation in ${town}`,
+        intro: `Placeholder — unique ${town} content (local jobs, nearby projects, local testimonials) goes here before launch.`,
+        illustrationUrl: '/illustrations/craig-harley-waving.webp',
+        illustrationAlt: 'Craig and Harley',
+        primaryLabel: 'Contact Us',
+        primaryUrl: '/contact/',
+        showPhone: true,
+      },
+    },
+    STATS,
+    {
+      name: 'ac/service-grid',
+      attributes: {
+        eyebrow: `What we do in ${town}`,
+        heading: 'Every install, one crew',
+        linkLabel: 'All services',
+        linkUrl: '/services/',
+        numbered: true,
+        background: 'alt',
+      },
+      innerBlocks: serviceCards(),
+    },
+    { name: 'ac/media-text', attributes: {} },
+    { name: 'ac/town-grid', attributes: {} },
+    { name: 'ac/testimonials', attributes: {} },
+    { name: 'ac/faq', attributes: {} },
+    contactCta(`Need a hand in ${town}?`, true),
+  ],
+});
+
+// --- Contact (templates/contact) ---------------------------------------------
+
+const contact: PageData = {
+  title: 'Contact Us — The Appliance Connection',
+  description: 'Questions, advice or a quote — we respond within 24 hours.',
+  blocks: [
+    {
+      name: 'ac/page-header',
+      attributes: {
+        heading: 'Contact us',
+        intro:
+          'Questions, advice or a quote — send us a message and we will get back to you within 24 hours. Prefer to talk it through? Call the number for your region.',
+        illustrationUrl: '/illustrations/craig-and-harley.webp',
+        illustrationAlt: 'Craig and Harley, The Appliance Connection',
+      },
+    },
+    {
+      name: 'ac/contact',
+      attributes: {
+        hours: [
+          { day: 'Mon–Fri', time: '7:00am – 6:00pm' },
+          { day: 'Saturday', time: 'By appointment' },
+          { day: 'Sunday', time: 'Closed' },
+        ],
+        hoursNote: 'Placeholder hours — confirm before launch.',
+        areaText:
+          'Durham Region and Peterborough, Ontario. Not sure if you are in range? Call and ask — we will tell you straight.',
+      },
+    },
+    {
+      name: 'ac/testimonials',
+      attributes: {
+        eyebrow: 'What customers say',
+        heading: 'Recent installs',
+        text: 'Placeholder quotes — swap in real ones before launch.',
+        items: PLACEHOLDER_QUOTES.map((quote, i) => ({
+          quote,
+          cite: ['Homeowner, Whitby', 'Homeowner, Oshawa', 'Homeowner, Lakefield'][i],
+        })),
+        background: 'alt',
+      },
+    },
+    {
+      name: 'ac/faq',
+      attributes: {
+        eyebrow: 'Before you book',
+        heading: 'Frequently asked questions',
+        background: 'paper',
+        footnote: 'Still have a question? Call us or send it through the form above.',
+        items: [
+          {
+            question: 'Do you supply the appliance, or just install it?',
+            answer:
+              'Either. We install what you have already bought, and we work with Paddy’s Market in Durham and Peterborough Appliances in Peterborough if you would rather buy through a partner.',
+          },
+          REGION_FAQS[1],
+          REGION_FAQS[2],
+          {
+            question: 'What does a quote cost?',
+            answer: 'Nothing. Quotes are free and flat-rate, given before we start, so there are no hourly surprises.',
+          },
+          {
+            question: 'Do you take the old appliance away?',
+            answer: 'Placeholder answer — confirm removal and disposal policy before launch.',
+          },
+        ],
       },
     },
   ],
 };
 
-const durhamOshawa: PageData = {
-  title: 'Appliance Installation in Oshawa — The Appliance Connection',
+// --- About -------------------------------------------------------------------
+// No Claude Design template yet — composed from the same blocks.
+
+const about: PageData = {
+  title: 'About — The Appliance Connection',
   blocks: [
     {
-      name: 'ac/hero',
+      name: 'ac/page-header',
       attributes: {
-        eyebrow: 'Durham Region · Oshawa',
-        heading: 'Appliance installation in Oshawa',
-        subheading: 'Same-day-quality installs for Oshawa homeowners. Licensed, insured, warrantied.',
-        primaryLabel: 'Request a quote',
-        primaryUrl: '/contact',
+        eyebrow: 'About',
+        heading: 'Thirty years of doing it right',
+        intro:
+          'The Appliance Connection has installed complete home appliances across Durham and Peterborough for over 30 years — licensed, insured, and warrantied. Owner story, credentials, and the trucks go here (real content + photos to follow).',
+        illustrationUrl: '/illustrations/craig-and-harley.webp',
+        illustrationAlt: 'Craig and Harley, The Appliance Connection',
+        primaryLabel: 'Contact Us',
+        primaryUrl: '/contact/',
+      },
+    },
+    STATS,
+    contactCta('Have a question?'),
+  ],
+};
+
+// --- Utility pages -------------------------------------------------------------
+
+const legalPage = (heading: string, eyebrow: string): PageData => ({
+  title: `${heading} — The Appliance Connection`,
+  blocks: [
+    {
+      name: 'ac/page-header',
+      attributes: {
+        eyebrow,
+        heading,
+        intro: `Placeholder — the ${heading.toLowerCase()} text is still to be supplied before launch.`,
       },
     },
   ],
-};
+});
+
+// --- Route table -------------------------------------------------------------
 
 export const pages: Record<string, PageData> = {
   '/': home,
-  '/services/appliance-installation': serviceApplianceInstall,
-  '/services/gas-piping': serviceGasPiping,
-  '/durham': durham,
-  '/peterborough': peterborough,
-  '/durham/oshawa': durhamOshawa,
+  '/services': servicesIndex,
+  ...Object.fromEntries(SERVICES.map((s) => [`/services/${s.slug}`, servicePage(s)])),
+  ...Object.fromEntries(REGIONS.map((r) => [`/${r.slug}`, regionHub(r)])),
+  '/durham/oshawa': cityPage('durham', 'Oshawa'),
+  '/durham/whitby': cityPage('durham', 'Whitby'),
+  '/durham/pickering': cityPage('durham', 'Pickering'),
+  '/peterborough/lakefield': cityPage('peterborough', 'Lakefield'),
+  '/peterborough/bridgenorth': cityPage('peterborough', 'Bridgenorth'),
+  '/peterborough/ennismore': cityPage('peterborough', 'Ennismore'),
+  '/about': about,
+  '/contact': contact,
+  '/privacy': legalPage('Privacy policy', 'Privacy'),
+  '/legal': legalPage('Legal', 'Legal'),
 };

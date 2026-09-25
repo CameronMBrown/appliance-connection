@@ -1,19 +1,24 @@
 ---
-import type { EditorBlock, ServiceCardAttrs } from '../../lib/blocks/types';
+// ac/service-card — static port of design-system ServiceCard. Square, thin
+// ink outline, text-first (no image slot by design). Inside a ServiceGrid the
+// --cell-* custom properties swap the outline for the grid's shared ruling.
+import type { BlockContext, EditorBlock, ServiceCardAttrs } from '../../lib/blocks/types';
 
 interface Props extends ServiceCardAttrs {
   innerBlocks?: EditorBlock[];
+  context?: BlockContext;
 }
 
-const { title, description, url } = Astro.props;
+const { title, description, url, index } = Astro.props;
 ---
 
-<article class="service-card">
-  {title && <h3 class="service-card__title">{title}</h3>}
-  {description && <p class="service-card__desc">{description}</p>}
+<article class="ac-service-card">
+  {index && <span class="ac-service-card__index">{index}</span>}
+  {title && <h3 class="ac-service-card__title">{title}</h3>}
+  {description && <p class="ac-service-card__desc">{description}</p>}
   {
     url && (
-      <a class="service-card__link" href={url}>
+      <a class="ac-service-card__link" href={url}>
         Learn more →
       </a>
     )
@@ -21,30 +26,49 @@ const { title, description, url } = Astro.props;
 </article>
 
 <style>
-  .service-card {
+  .ac-service-card {
     background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: var(--space-lg);
-    box-shadow: var(--shadow-sm);
+    border: var(--cell-border, 1px solid var(--color-border-strong));
+    box-shadow: var(--cell-shadow, var(--shadow-sm));
+    padding: var(--cell-pad, var(--space-lg));
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
+    transition:
+      box-shadow var(--dur) var(--ease-standard),
+      background var(--dur) var(--ease-standard);
   }
-  .service-card__title {
+  .ac-service-card:hover {
+    background: var(--color-bg-alt);
+    box-shadow: var(--cell-shadow-hover, var(--shadow-md));
+  }
+  .ac-service-card__index {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-muted);
+  }
+  .ac-service-card__title {
     font-size: var(--text-lg);
     margin: 0;
   }
-  .service-card__desc {
+  .ac-service-card__desc {
     color: var(--color-text-soft);
     font-size: var(--text-sm);
     margin: 0;
+    max-width: none;
   }
-  .service-card__link {
+  .ac-service-card__link {
     color: var(--link);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: var(--weight-semibold);
     font-size: var(--text-sm);
     margin-top: auto;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border);
+  }
+  .ac-service-card__link:hover {
+    color: var(--link-hover);
   }
 </style>

@@ -1,0 +1,147 @@
+---
+// ac/page-header — the title band used by the Location and Contact templates:
+// eyebrow, display headline, one line of intro, actions (Contact + the region's
+// phone), and a Craig & Harley illustration on the right.
+import type { BlockContext, EditorBlock, PageHeaderAttrs } from '../../lib/blocks/types';
+
+interface Props extends PageHeaderAttrs {
+  innerBlocks?: EditorBlock[];
+  context?: BlockContext;
+}
+
+const {
+  eyebrow,
+  heading,
+  intro,
+  illustrationUrl,
+  illustrationAlt = '',
+  primaryLabel,
+  primaryUrl,
+  showPhone = false,
+  context = {},
+} = Astro.props;
+
+const phone = showPhone && context.region ? context.phones?.[0] : undefined;
+const shortName = phone?.name.replace(' Region', '');
+---
+
+<section class="ph">
+  <div class="ph__in">
+    <div class="ph__copy">
+      {eyebrow && <p class="ph__eyebrow">{eyebrow}</p>}
+      {heading && <h1 class="ph__h">{heading}</h1>}
+      {intro && <p class="ph__intro">{intro}</p>}
+      {
+        (primaryLabel || phone) && (
+          <div class="ph__actions">
+            {primaryLabel && (
+              <a class="btn btn--primary" href={primaryUrl || '/contact/'}>
+                {primaryLabel}
+              </a>
+            )}
+            {phone && (
+              <a class="ph__phone" href={`tel:${phone.tel}`}>
+                <span>Call {shortName}</span>
+                <strong>{phone.phone}</strong>
+              </a>
+            )}
+          </div>
+        )
+      }
+    </div>
+    {
+      illustrationUrl && (
+        <div class="ph__art">
+          <img src={illustrationUrl} alt={illustrationAlt} width="720" height="720" />
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .ph__in {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding: clamp(2.5rem, 6vw, 4.5rem) var(--gutter) clamp(2rem, 4vw, 3rem);
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: clamp(1rem, 4vw, 3rem);
+  }
+  .ph__copy {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .ph__eyebrow {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-md);
+  }
+  .ph__h {
+    font-size: var(--text-3xl);
+    line-height: var(--leading-tight);
+    margin: 0 0 var(--space-lg);
+    max-width: 18ch;
+  }
+  .ph__intro {
+    color: var(--color-text-soft);
+    font-size: var(--text-md);
+    max-width: 54ch;
+    margin: 0;
+  }
+  .ph__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    align-items: center;
+    margin-top: var(--space-xl);
+  }
+  .ph__actions .btn {
+    padding: 0.9em 1.7em;
+  }
+  .ph__phone {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.1em;
+    text-decoration: none;
+    color: var(--color-text);
+    border: 1px solid var(--color-border-strong);
+    padding: 0.6em 1.4em;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+  }
+  .ph__phone:hover {
+    background: var(--color-bg-alt);
+    color: var(--color-text);
+  }
+  .ph__phone span {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+  .ph__phone strong {
+    font-family: var(--font-display);
+    font-weight: var(--weight-display);
+    font-size: var(--text-lg);
+    letter-spacing: var(--tracking-tight);
+  }
+  .ph__art {
+    flex: 0 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 0;
+  }
+  .ph__art img {
+    height: clamp(7rem, 18vw, 14rem);
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+  }
+</style>

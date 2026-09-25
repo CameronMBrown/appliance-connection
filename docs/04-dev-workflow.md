@@ -12,7 +12,7 @@
 
 ```
 docs/             This documentation
-design-system/    tokens.json / tokens.css (source of truth) + style-guide.html
+design-system/    Claude Design mirror: tokens/*.css, base.css, components/, templates/ (SOURCE.md)
 cms/              WP custom code (symlinked into Local's wp-content)
   plugins/ac-blocks/     native blocks (block.json + edit.js + index.js)
   mu-plugins/ac-core/    CPTs, region taxonomy, post meta, WPGraphQL fields
@@ -41,6 +41,18 @@ Then in Local's WP admin: activate the **AC Blocks** plugin and the **AC Headles
 **WPGraphQL** + **WPGraphQL Content Blocks** (via the plugin installer or Composer). `ac-core` loads
 automatically as an mu-plugin.
 
+```bash
+# Point Astro at WordPress (Local's "Site host", e.g. http://localhost:10018)
+cp web/.env.example web/.env
+
+# Seed WP with the design-approved content: pages, services, locations,
+# region terms + phones, and the primary/footer/legal menus. Idempotent.
+npm run seed:export                          # fixtures → cms/scripts/seed/content.json
+wp eval-file cms/scripts/seed/seed.php       # run in Local's "Open site shell"
+```
+WP `home` and `siteurl` must both be the URL WordPress actually answers on (Settings → General).
+If they differ, the editor's REST calls go to the wrong host and fail.
+
 ## Everyday loops
 
 **Blocks (WP side)**
@@ -51,9 +63,22 @@ npm run blocks:build     # production build
 
 **Frontend (Astro)**
 ```bash
-npm run dev              # Astro dev server — renders from fixtures/ until WP is wired
-npm run build            # static build
+npm run dev              # Astro dev server on :4321. Reads WordPress live (refresh after a WP edit)
+npm run build            # static build. Fetches all WP content once
 ```
+With `WPGRAPHQL_URL` unset, both fall back to the typed fixtures (`web/src/fixtures/pages.ts`).
+
+**How WordPress and Astro connect**
+- **Pages:** every published page, `ac_service` and `ac_location` becomes a route (`web/src/pages/[...path].astro`):
+  page → `/{slug}/` (front page → `/`), service → `/services/{slug}/`, location → `/{hub}/` or `/{hub}/{town}/`.
+- **Sections:** `editorBlocks` → `registry.ts`. The GraphQL fragments are generated from each
+  `block.json` (`web/src/lib/graphql/blocks.ts`), so a new attribute is queried with no query edits.
+- **Nav:** Appearance → Menus, locations **primary** (header, dropdowns = child items), **footer**, **legal**.
+- **Phones:** the `ac_phone` meta on each region hub Location (Durham, Peterborough).
+- **SEO:** `ac_seo_title` / `ac_seo_description` meta. Falls back to "{title} — The Appliance Connection".
+- **WordPress's own front end redirects to Astro** (`ac-core/headless.php`), and admin "View" links
+  open the Astro page. Set `AC_FRONTEND_URL` in `wp-config.php` per environment (default `http://localhost:4321`).
+  So `npm run dev` must be running to see the site locally.
 
 **Types**
 ```bash
@@ -79,7 +104,7 @@ A section spans WP + Astro; keep both halves in **one commit** (that's why we're
 3. **Add the query field** in `web/src/lib/graphql/` and run `npm run codegen` for typed attributes.
 4. **Write the renderer** `web/src/components/blocks/<Name>.astro` — consume **semantic tokens only**.
 5. **Register it** in `web/src/lib/blocks/registry.ts` (`'ac/<name>' → <Name>`).
-6. **Add a fixture** in `fixtures/` so it renders before live WP.
+6. **Add a fixture** in `web/src/fixtures/pages.ts` so it renders without WP (and re-seeds cleanly).
 
 ## Conventions
 

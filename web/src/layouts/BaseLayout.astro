@@ -1,19 +1,40 @@
 ---
-// Shared design tokens (single source of truth) + base styles.
-import '../../../design-system/tokens/tokens.css';
+// Design system (Claude Design mirror in /design-system) — tokens + element base.
+// fonts.css is skipped on purpose: it points at the design project's asset path;
+// the app declares its own @font-face in global.css.
+import '@ds/tokens/colors.css';
+import '@ds/tokens/font-families.css';
+import '@ds/tokens/type-scale.css';
+import '@ds/tokens/spacing.css';
+import '@ds/tokens/effects.css';
+import '@ds/base.css';
 import '../styles/global.css';
-import Header from '../components/Header.astro';
+
+// Header is interactive (hover/keyboard menus, mobile drawer) so it ships as a
+// React island straight from the design system. Footer + call bar are static.
+import { Header } from '@ds/components/navigation/Header.jsx';
 import Footer from '../components/Footer.astro';
+import CallBar from '../components/CallBar.astro';
+import { ALL_PHONES, FOOTER_LINKS, LEGAL_LINKS, LOGO_SRC, NAV, navSection, type Phone } from '../lib/site';
+import type { SiteData } from '../lib/content';
 
 interface Props {
   title: string;
   description?: string;
+  /** Menus + phones (from WordPress when connected). */
+  site?: SiteData;
+  /** Region phones, the page's own region first. */
+  phones?: Phone[];
 }
 
 const {
   title,
   description = 'Complete home appliance installation across Durham & Peterborough. Licensed, insured, 30+ years.',
+  site,
+  phones = ALL_PHONES,
 } = Astro.props;
+
+const nav = site?.nav ?? NAV;
 ---
 
 <!doctype html>
@@ -24,18 +45,21 @@ const {
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link
-      rel="preload"
-      href="/fonts/headings.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
+    <link rel="preload" href="/fonts/headings.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <Header />
+    <Header
+      client:load
+      nav={nav}
+      phones={phones}
+      logoSrc={LOGO_SRC}
+      currentPath={navSection(Astro.url.pathname, nav)}
+      ctaLabel="Contact Us"
+      ctaHref="/contact/"
+    />
     <main id="main"><slot /></main>
-    <Footer />
+    <Footer phones={phones} links={site?.footerLinks ?? FOOTER_LINKS} legal={site?.legalLinks ?? LEGAL_LINKS} />
+    <CallBar numbers={phones} />
   </body>
 </html>

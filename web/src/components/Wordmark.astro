@@ -1,0 +1,64 @@
+---
+// Flat wordmark lockup — static port of design-system/components/core/Wordmark.jsx
+// (variant="flat"). Pure CSS, so no JS ships. The arched variant measures its
+// text at runtime and stays a React component (used inside the Hero island).
+interface Props {
+  tone?: 'light' | 'dark';
+  shadow?: boolean;
+  /** CSS font-size of the main line ("THE" is half). Inherits when omitted. */
+  size?: string;
+}
+
+const { tone = 'dark', shadow = false, size } = Astro.props;
+---
+
+<span
+  class:list={['ac-wm', 'ac-wm--flat', `ac-wm--${tone}`, { 'has-shadow': shadow }]}
+  style={size ? `font-size:${size}` : undefined}
+>
+  <span class="ac-wm__the">The</span>
+  <span class="ac-wm__main"><span>Appliance</span> <span>Connection</span></span>
+</span>
+
+<style>
+  .ac-wm {
+    margin: 0;
+    font-weight: var(--weight-display);
+    line-height: 1;
+  }
+  .ac-wm--flat {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .ac-wm__the {
+    font-size: 0.5em;
+    line-height: 1;
+    margin: 0 0 0.12em 0.05em;
+    letter-spacing: 0.06em;
+  }
+  .ac-wm__main {
+    font-size: 1em;
+    line-height: 1.05;
+    display: flex;
+    flex-direction: column;
+  }
+  .ac-wm--light {
+    color: var(--neutral-0);
+  }
+  .ac-wm--dark {
+    color: var(--neutral-900);
+  }
+  .ac-wm--light.has-shadow {
+    text-shadow:
+      2px 2px 0 var(--neutral-900),
+      0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+  .ac-wm--dark.has-shadow {
+    text-shadow: 1.5px 1.5px 0 var(--wood-300);
+  }
+</style>

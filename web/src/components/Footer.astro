@@ -1,71 +1,206 @@
 ---
-// Footer shell. `.on-dark` flips the semantic tokens to the inverse set — the
-// components below don't know or care they're on a dark ground.
+// Static port of design-system/components/navigation/Footer.jsx. Always-ink
+// band on the white graph-paper ruling; three ruled cells (brand + CTA, phones,
+// site links) over a legal row.
+import Wordmark from './Wordmark.astro';
+import { ALL_PHONES, FOOTER_LINKS, LEGAL_LINKS, LOGO_SRC, type NavItem, type Phone } from '../lib/site';
+
+interface Props {
+  phones?: Phone[];
+  /** "Site" column — WP menu location `footer`. */
+  links?: NavItem[];
+  /** Legal row — WP menu location `legal`. */
+  legal?: NavItem[];
+}
+
+const { phones = ALL_PHONES, links = FOOTER_LINKS, legal: utility = LEGAL_LINKS } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-<footer class="site-footer on-dark">
-  <div class="container site-footer__grid">
-    <div>
-      <p class="site-footer__brand">The Appliance Connection</p>
-      <p class="site-footer__muted">
-        Complete home appliance installation. Licensed &amp; insured. 30+ years.
-      </p>
+<footer class="ac-ft on-dark">
+  <div class="ac-ft__in">
+    <div class="ac-ft__grid">
+      <div class="ac-ft__cell ac-ft__cell--brand">
+        <a class="ac-ft__brand" href="/">
+          <img src={LOGO_SRC} alt="" width="520" height="490" loading="lazy" />
+          <Wordmark tone="light" />
+        </a>
+        <a class="ac-ft__cta" href="/contact/">Contact Us</a>
+      </div>
+      <div class="ac-ft__cell">
+        <h2 class="ac-ft__h">Call us</h2>
+        {
+          phones.map((r) => (
+            <a class="ac-ft__phone" href={`tel:${r.tel}`}>
+              {r.name}
+              <strong>{r.phone}</strong>
+            </a>
+          ))
+        }
+      </div>
+      <div class="ac-ft__cell">
+        <h2 class="ac-ft__h">Site</h2>
+        <nav class="ac-ft__links" aria-label="Footer">
+          {links.map((l) => <a href={l.href}>{l.label}</a>)}
+        </nav>
+      </div>
     </div>
-    <div>
-      <h2 class="site-footer__h">Call us</h2>
-      <p><a href="tel:19052596545">Durham — 905·259·6545</a></p>
-      <p><a href="tel:17057420306">Peterborough — 705·742·0306</a></p>
+    <div class="ac-ft__legal">
+      <p>© {year} The Appliance Connection. All rights reserved.</p>
+      <div class="ac-ft__utility">
+        {utility.map((u) => <a href={u.href}>{u.label}</a>)}
+      </div>
     </div>
-    <div>
-      <h2 class="site-footer__h">Service areas</h2>
-      <p class="site-footer__muted">Durham Region &amp; Peterborough, Ontario.</p>
-    </div>
-  </div>
-  <div class="container site-footer__legal">
-    <p class="site-footer__muted">© {year} The Appliance Connection</p>
   </div>
 </footer>
 
 <style>
-  .site-footer {
-    background: var(--color-bg); /* = inverse-bg under .on-dark */
-    color: var(--color-text);
-    padding-block: var(--space-3xl) var(--space-xl);
-    margin-top: var(--space-5xl);
+  .ac-ft {
+    --grid-line: rgba(255, 255, 255, 0.075);
+    background-color: var(--neutral-900);
+    background-image: var(--grid-image);
+    background-size: var(--grid-size) var(--grid-size);
+    color: var(--neutral-0);
+    border-top: 1px solid var(--color-border-strong);
   }
-  .site-footer__grid {
+  .ac-ft__in {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+  .ac-ft__grid {
     display: grid;
-    gap: var(--space-2xl);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: 1px;
+    background: rgba(255, 255, 255, 0.2);
   }
-  .site-footer__brand {
-    font-family: var(--font-display);
-    font-size: var(--text-lg);
-    margin-bottom: var(--space-xs);
+  .ac-ft__cell {
+    background: var(--neutral-900);
+    padding: var(--space-2xl) var(--space-lg);
   }
-  .site-footer__h {
+  .ac-ft__cell--brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    align-items: flex-start;
+  }
+  .ac-ft__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    text-decoration: none;
+    color: var(--neutral-0);
+    font-size: var(--text-md);
+  }
+  .ac-ft__brand img {
+    height: 2.75rem;
+    width: auto;
+  }
+  .ac-ft__cta {
+    display: inline-flex;
+    align-items: center;
+    background: var(--cta-bg);
+    color: var(--cta-text);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.85em 1.5em;
+    min-height: 44px;
+    border: 1px solid var(--neutral-0);
+    box-shadow: var(--shadow-md);
+  }
+  .ac-ft__cta:hover {
+    background: var(--cta-bg-hover);
+    color: var(--cta-text-hover);
+  }
+  .ac-ft__h {
     font-family: var(--font-body);
-    font-size: var(--text-sm);
-    text-transform: uppercase;
+    font-size: var(--text-xs);
     letter-spacing: var(--tracking-wide);
-    color: var(--color-text-muted);
-    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--neutral-400);
+    margin: 0 0 var(--space-md);
   }
-  .site-footer a {
-    color: var(--link);
+  .ac-ft__phone {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--neutral-400);
     text-decoration: none;
   }
-  .site-footer a:hover {
-    color: var(--link-hover);
+  .ac-ft__phone + .ac-ft__phone {
+    margin-top: var(--space-sm);
   }
-  .site-footer__muted {
-    color: var(--color-text-muted);
+  .ac-ft__phone strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-display);
+    letter-spacing: var(--tracking-tight);
+    color: var(--neutral-0);
   }
-  .site-footer__legal {
-    margin-top: var(--space-2xl);
-    padding-top: var(--space-lg);
-    border-top: 1px solid var(--color-border);
+  .ac-ft__phone:hover strong {
+    color: var(--wood-300);
+  }
+  .ac-ft__links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
     font-size: var(--text-sm);
+  }
+  .ac-ft__links a {
+    color: var(--wood-300);
+    text-decoration: none;
+    min-height: 24px;
+  }
+  .ac-ft__links a:hover {
+    color: var(--neutral-0);
+  }
+  .ac-ft__legal {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-block: var(--space-lg);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-lg);
+    align-items: center;
+    font-size: var(--text-sm);
+    color: var(--neutral-400);
+  }
+  .ac-ft__legal p {
+    margin: 0;
+  }
+  .ac-ft__utility {
+    display: flex;
+    gap: var(--space-lg);
+    margin-left: auto;
+  }
+  .ac-ft__utility a {
+    color: var(--neutral-400);
+    text-decoration: none;
+  }
+  .ac-ft__utility a:hover {
+    color: var(--neutral-0);
+  }
+  @media (max-width: 900px) {
+    .ac-ft__cell {
+      padding: var(--space-xl) var(--space-lg);
+    }
+  }
+  @media (max-width: 600px) {
+    .ac-ft__grid {
+      grid-template-columns: 1fr;
+    }
+    .ac-ft__cell {
+      padding-inline: 0;
+    }
+    .ac-ft__cell--brand {
+      gap: var(--space-lg);
+    }
+    .ac-ft__cta {
+      width: 100%;
+      justify-content: center;
+    }
+    .ac-ft__utility {
+      margin-left: 0;
+    }
   }
 </style>

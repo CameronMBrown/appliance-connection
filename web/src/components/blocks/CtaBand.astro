@@ -1,44 +1,85 @@
 ---
-import type { EditorBlock, CtaBandAttrs } from '../../lib/blocks/types';
+// ac/cta-band — static port of design-system CtaBand: a boxed closing pitch
+// with the wood corner tick, on the ruled band. `.on-dark` flips every semantic
+// role (ink band, white rule), so the same markup serves both grounds.
+// `showPhone` adds the page region's number as an outline button (Location template).
+import type { BlockContext, CtaBandAttrs, EditorBlock } from '../../lib/blocks/types';
 
 interface Props extends CtaBandAttrs {
   innerBlocks?: EditorBlock[];
+  context?: BlockContext;
 }
 
-const { heading, text, ctaLabel, ctaUrl, isDark = true } = Astro.props;
+const { heading, text, ctaLabel, ctaUrl, isDark = true, showPhone = false, context = {} } = Astro.props;
+const phone = showPhone ? context.phones?.[0] : undefined;
 ---
 
-<section class:list={['cta-band section', { 'on-dark': isDark }]}>
-  <div class="container cta-band__inner">
-    {heading && <h2 class="cta-band__heading">{heading}</h2>}
-    {text && <p class="cta-band__text">{text}</p>}
-    {
-      ctaLabel && (
-        <a class="btn btn--primary" href={ctaUrl || '#'}>
-          {ctaLabel}
-        </a>
-      )
-    }
+<section class:list={['ac-cta-band', 'grid-paper', { 'on-dark': isDark }]}>
+  <div class="container">
+    <div class="ac-cta-band__box corner-tick">
+      <div class="ac-cta-band__copy">
+        {heading && <h2 class="ac-cta-band__heading">{heading}</h2>}
+        {text && <p class="ac-cta-band__text">{text}</p>}
+      </div>
+      {
+        (ctaLabel || phone) && (
+          <div class="ac-cta-band__actions">
+            {ctaLabel && (
+              <a class="btn btn--primary" href={ctaUrl || '/contact/'}>
+                {ctaLabel}
+              </a>
+            )}
+            {phone && (
+              <a class="btn btn--secondary" href={`tel:${phone.tel}`}>
+                {phone.phone}
+              </a>
+            )}
+          </div>
+        )
+      }
+    </div>
   </div>
 </section>
 
 <style>
-  .cta-band {
-    background: var(--color-bg);
+  .ac-cta-band {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    border-top: 1px solid var(--color-border-strong);
+    padding-block: clamp(2.5rem, 6vw, 4.5rem);
   }
-  .cta-band__inner {
+  .ac-cta-band__box {
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border-strong);
+    box-shadow: var(--shadow-lg);
+    padding: clamp(1.75rem, 4vw, 3rem);
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     align-items: center;
-    text-align: center;
-    gap: var(--space-md);
+    gap: var(--space-lg) var(--space-2xl);
   }
-  .cta-band__heading {
+  .ac-cta-band__copy {
+    flex: 1 1 22rem;
+    min-width: 0;
+  }
+  .ac-cta-band__heading {
     font-size: var(--text-2xl);
-    margin: 0;
+    margin: 0 0 var(--space-xs);
   }
-  .cta-band__text {
+  .ac-cta-band__text {
     color: var(--color-text-soft);
     margin: 0;
+  }
+  .ac-cta-band__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+  .ac-cta-band__actions .btn {
+    padding: 0.9em 1.7em;
+  }
+  .on-dark .btn--primary {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-md);
   }
 </style>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Location" description="Regional hub page (Durham / Peterborough): location title band with illustration, credential row, services grid, town coverage, local proof, FAQ and CTA. Switch region in Tweaks." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="background-color:var(--color-bg);background-image:var(--grid-image);background-size:8px 8px;min-height:100vh">
+
+<x-import component-from-global-scope="TheApplianceConnectionDesignSystem_d4d2d2.Header" logo-src="../../assets/logo/truck-logo-detailed.png" current-path="{{ regionPath }}" hint-size="100%,72px"></x-import>
+
+<section>
+<div style="max-width:var(--container-max);margin-inline:auto;padding:clamp(2.5rem,6vw,4.5rem) var(--gutter) clamp(2rem,4vw,3rem);display:flex;flex-wrap:nowrap;align-items:center;gap:clamp(1rem,4vw,3rem)">
+<div style="flex:1 1 auto;min-width:0">
+<p style="font-size:var(--text-xs);letter-spacing:var(--tracking-wide);text-transform:uppercase;font-weight:600;color:var(--color-text-muted);margin:0 0 var(--space-md)">Service area</p>
+<h1 style="font-size:var(--text-3xl);line-height:var(--leading-tight);margin:0 0 var(--space-lg);max-width:18ch">Appliance installation in {{ regionName }}</h1>
+<p style="color:var(--color-text-soft);font-size:var(--text-md);max-width:54ch;margin:0 0 var(--space-xl)">{{ regionIntro }}</p>
+<div style="display:flex;flex-wrap:wrap;gap:var(--space-md);align-items:center">
+<a href="/contact/" style="display:inline-flex;align-items:center;background:var(--cta-bg);color:var(--cta-text);text-decoration:none;font-weight:600;padding:.9em 1.7em;border:1px solid var(--color-border-strong);box-shadow:var(--shadow-sm)" style-hover="background:var(--cta-bg-hover);color:var(--cta-text-hover);box-shadow:var(--shadow-md)">Contact Us</a>
+<a href="{{ regionTelHref }}" style="display:inline-flex;flex-direction:column;gap:.1em;text-decoration:none;color:var(--color-text);border:1px solid var(--color-border-strong);padding:.6em 1.4em;background:var(--color-surface);box-shadow:var(--shadow-sm)" style-hover="background:var(--color-bg-alt)"><span style="font-size:var(--text-xs);letter-spacing:var(--tracking-wide);text-transform:uppercase;font-weight:600;color:var(--color-text-muted)">Call {{ regionShort }}</span><strong style="font-family:var(--font-display);font-weight:400;font-size:var(--text-lg);letter-spacing:var(--tracking-tight)">{{ regionPhone }}</strong></a>
+</div>
+</div>
+<div style="flex:0 1 auto;display:flex;align-items:center;justify-content:flex-end;min-width:0"><img src="../../assets/illustrations/craig-harley-waving.png" alt="Craig and Harley" style="height:clamp(7rem,18vw,14rem);width:auto;max-width:100%;object-fit:contain"></div>
+</div>
+</section>
+
+<section style="padding-bottom:clamp(2rem,5vw,3.5rem)">
+<div style="max-width:var(--container-max);margin-inline:auto;padding-inline:var(--gutter)">
+<x-import component-from-global-scope="TheApplianceConnectionDesignSystem_d4d2d2.StatBlock" hint-size="100%,180px"></x-import>
+</div>
+</section>
+
+<section style="border-top:1px solid var(--color-border-strong);background:var(--color-bg-alt);padding-block:clamp(2.5rem,6vw,4.5rem)">
+<div style="max-width:var(--container-max);margin-inline:auto;padding-inline:var(--gutter)">
+<x-import component-from-global-scope="TheApplianceConnectionDesignSystem_d4d2d2.SectionHeader" eyebrow="What we do here" heading="Every install, one crew" text="The same work across the whole region — no job too big or too small." link-label="All services" link-href="/services/" hint-size="100%,130px"></x-import>
+<div style="display:grid;background:var(--color-surface);border:1px solid var(--color-border-strong);overflow:hidden;box-shadow:var(--shadow-md);grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));margin-top:var(--space-xl)">
+<div style="background:var(--color-surface);box-shadow:1px 0 0 var(--color-border-strong),0 1px 0 var(--color-border-strong);padding:var(--space-xl);display:flex;flex-direction:column;gap:var(--space-xs)" style-hover="background:var(--color-bg-alt)">
+<span style="font-size:var(--text-xs);letter-spacing:var(--tracking-wide);text-transform:uppercase;font-weight:600;color:var(--color-text-muted)">01</span>
+<h3 style="font-size:var(--text-lg);margin:0">Appliance installation</h3>
+<p style="margin:0;color:var(--color-text-soft);font-size:var(--text-sm)">Every make and model, freestanding and built-in, with panels and venting.</p>
+<a href="/services/appliance-installation/" style="margin-top:auto;padding-top:var(--space-md);border-top:1px solid var(--color-border);color:var(--link);text-decoration:none;font-weight:600;font-size:var(--text-sm)">Learn more →</a>
+</div>
+<div style="background:var(--color-surface);box-shadow:1px 0 0 var(--color-border-strong),0 1px 0 var(--color-border-strong);padding:var(--space-xl);display:flex;flex-direction:column;gap:var(--space-xs)" style-hover="background:var(--color-bg-alt)">
+<span style="font-size:var(--text-xs);letter-spacing:var(--tracking-wide);text-transform:uppercase;font-weight:600;color:var(--color-text-muted)">02</span>
+<h3 style="font-size:var(--text-lg);margin:0">Gas piping</h3>
+<p style="margin:0;color:var(--color-text-soft);font-size:var(--text-sm)">Licensed gas fitting for ranges, dryers, BBQs and garage heaters.</p>
+<a href="/services/gas-piping/" style="margin-top:auto;padding-top:var(--space-md);border-top:1px solid var(--color-border);color:var(--link);text-decoration:none;font-weight:600;font-size:var(--text-sm)">Learn more →</a>
+</div>
+<div style="background:var(--color-surface);box-shadow:1px 0 0 var(--color-border-strong),0 1px 0 var(--color-border-strong);padding:var(--space-xl);display:flex;flex-direction:column;gap:var(--space-xs)" style-hover="background:var(--color-bg-alt)">
+<span style="font-size:var(--text-xs);letter-spacing:var(--tracking-wide);text-transform:uppercase;font-weight:600;color:var(--color-text-muted)">03</span>
+<h3 style="font-size:var(--text-lg);margin:0">Kitchens</h3>
+<p style="margin:0;color:var(--color-text-soft);font-size:var(--text-sm)">Full kitchen work, from rough-in through to the finished install.</p>
+<a href="/services/kitchens/" style="margin-top:auto;padding-top:var(--space-md);border-top:1px solid var(--color-border);color:var(--link);text-decoration:none;font-weight:600;font-size:var(--text-sm)">Learn more →</a>
+</div>
+<div style="background:var(--color-surface);box-shadow:1px 0 0 var(--color-border-strong),0 1px 0 var(--color-border-strong);padding:var(--space-xl);display:flex;flex-direction:column;gap:var(--space-xs)" style-hover="background:var(--color-bg-alt)">
+<span style="font-size:var(--text-xs);letter-spacing:var(--tracking-wide);text-transform:uppercase;font-weight:600;color:var(--color-text-muted)">04</span>
+<h3 style="font-size:var(--text-lg);margin:0">Laundry rooms</h3>
+<p style="margin:0;color:var(--color-text-soft);font-size:var(--text-sm)">Washers, dryers, venting and relocations, including upstairs moves.</p>
+<a href="/services/laundry-rooms/" style="margin-top:auto;padding-top:var(--space-md);border-top:1px solid var(--color-border);color:var(--link);text-decoration:none;font-weight:600;font-size:var(--text-sm)">Learn more →</a>
+</div>
+<div style="background:var(--color-surface);box-shadow:1px 0 0 var(--color-border-strong),0 1px 0 var(--color-border-strong);padding:var(--space-xl);display:flex;flex-direction:column;gap:var(--space-xs)" style-hover="background:var(--color-bg-alt)">
+<span style="font-size:var(--text-xs);letter-spacing:var(--tracking-wide);text-transform:uppercase;font-weight:600;color:var(--color-text-muted)">05</span>
+<h3 style="font-size:var(--text-lg);margin:0">Plumbing fixtures</h3>
+<p style="margin:0;color:var(--color-text-soft);font-size:var(--text-sm)">Sinks, taps, water lines and shut-offs, done to code.</p>
+<a href="/services/plumbing-fixtures/" style="margin-top:auto;padding-top:var(--space-md);border-top:1px solid var(--color-border);color:var(--link);text-decoration:none;font-weight:600;font-size:var(--text-sm)">Learn more →</a>
+</div>
+<div style="background:var(--color-surface);box-shadow:1px 0 0 var(--color-border-strong),0 1px 0 var(--color-border-strong);padding:var(--space-xl);display:flex;flex-direction:column;gap:var(--space-xs)" style-hover="background:var(--color-bg-alt)">
+<span style="font-size:var(--text-xs);letter-spacing:var(--tracking-wide);text-transform:uppercase;font-weight:600;color:var(--color-text-muted)">06</span>
+<h3 style="font-size:var(--text-lg);margin:0">Heaters</h3>
+<p style="margin:0;color:var(--color-text-soft);font-size:var(--text-sm)">Shop and garage heaters, pool heaters and water heaters.</p>
+<a href="/services/heaters/" style="margin-top:auto;padding-top:var(--space-md);border-top:1px solid var(--color-border);color:var(--link);text-decoration:none;font-weight:600;font-size:var(--text-sm)">Learn more →</a>
+</div>
+</div>
+</div>
+</section>
+
+<section style="border-top:1px solid var(--color-border-strong);padding-block:clamp(2.5rem,6vw,4.5rem)">
+<div style="max-width:var(--container-max);margin-inline:auto;padding-inline:var(--gutter);display:flex;flex-wrap:wrap;gap:clamp(1.5rem,4vw,3rem);align-items:center">
+<div style="flex:1 1 24rem;min-width:0">
+<h2 style="font-size:var(--text-2xl);margin:0 0 var(--space-lg);padding-bottom:var(--space-md);border-bottom:1px solid var(--color-border-strong)">Local crew, local calls</h2>
+<p style="color:var(--color-text-soft);font-size:var(--text-md)">{{ regionBodyOne }}</p>
+<p style="color:var(--color-text-soft);font-size:var(--text-md);margin-bottom:0">We quote flat rates before the work starts, we clean up after ourselves, and we warranty everything we install. Same crew on the truck every time — you will know who is coming.</p>
+</div>
+<div style="flex:0 1 22rem;display:flex;justify-content:center;min-width:0"><img src="../../assets/illustrations/harley-dolly-fridge.png" alt="Delivering an appliance" style="width:100%;max-width:20rem;height:auto;object-fit:contain"></div>
+</div>
+</section>
+
+<section style="border-top:1px solid var(--color-border-strong);background:var(--color-bg-alt);padding-block:clamp(2.5rem,6vw,4.5rem)">
+<div style="max-width:var(--container-max);margin-inline:auto;padding-inline:var(--gutter)">
+<x-import component-from-global-scope="TheApplianceConnectionDesignSystem_d4d2d2.SectionHeader" eyebrow="Coverage" heading="Towns we cover" text="Towns with their own page are linked. The rest are on the route all the same." hint-size="100%,130px"></x-import>
+<div style="margin-top:var(--space-xl)">
+<x-import component-from-global-scope="TheApplianceConnectionDesignSystem_d4d2d2.TownGrid" regions="{{ townRegions }}" hint-size="100%,260px"></x-import>
+</div>
+</div>
+</section>
+
+<section style="border-top:1px solid var(--color-border-strong);padding-block:clamp(2.5rem,6vw,4.5rem)">
+<div style="max-width:var(--container-max);margin-inline:auto;padding-inline:var(--gutter)">
+<x-import component-from-global-scope="TheApplianceConnectionDesignSystem_d4d2d2.SectionHeader" eyebrow="What customers say" heading="Recent work nearby" text="Placeholder quotes — swap in real ones before launch." hint-size="100%,130px"></x-import>
+<div style="display:grid;gap:var(--space-xl);grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));margin-top:var(--space-xl)">
+<x-import component-from-global-scope="TheApplianceConnectionDesignSystem_d4d2d2.Testimonial" quote="They installed our double wall oven and cooktop in an afternoon — spotless, and it just worked." cite="{{ citeOne }}" hint-size="100%,220px"></x-import>
+<x-import component-from-global-scope="TheApplianceConnectionDesignSystem_d4d2d2.Testimonial" quote="Ran a new gas line for the range and took the old one out. Showed up when they said they would." cite="{{ citeTwo }}" hint-size="100%,220px"></x-import>
+<x-import component-from-global-scope="TheApplianceConnectionDesignSystem_d4d2d2.Testimonial" quote="Whole laundry room moved upstairs. Clean work, fair price, no surprises on the bill." cite="{{ citeThree }}" hint-size="100%,220px"></x-import>
+</div>
+</div>
+</section>
+
+<section style="border-top:1px solid var(--color-border-strong);background:var(--color-bg-alt);padding-block:clamp(2.5rem,6vw,4.5rem)">
+<div style="max-width:var(--container-narrow);margin-inline:auto;padding-inline:var(--gutter)">
+<x-import component-from-global-scope="TheApplianceConnectionDesignSystem_d4d2d2.SectionHeader" eyebrow="Before you book" heading="Frequently asked questions" hint-size="100%,110px"></x-import>
+<div style="margin-top:var(--space-xl)">
+<x-import component-from-global-scope="TheApplianceConnectionDesignSystem_d4d2d2.Accordion" items="{{ faqs }}" default-open="{{ firstOpen }}" hint-size="100%,380px"></x-import>
+</div>
+</div>
+</section>
+
+<section style="--grid-line:rgba(255,255,255,.075);border-top:1px solid var(--color-border-strong);background-color:var(--neutral-900);background-image:var(--grid-image);background-size:8px 8px;padding-block:clamp(2.5rem,6vw,4.5rem)">
+<div style="max-width:var(--container-max);margin-inline:auto;padding-inline:var(--gutter)">
+<div style="position:relative;background:var(--neutral-800);border:1px solid var(--neutral-0);box-shadow:var(--shadow-lg);padding:clamp(1.75rem,4vw,3rem);display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-lg) var(--space-2xl)">
+<span style="position:absolute;top:0;left:0;width:10px;height:10px;background:var(--color-accent)"></span>
+<div style="flex:1 1 22rem;min-width:0">
+<h2 style="font-size:var(--text-2xl);color:var(--neutral-0);margin:0 0 var(--space-xs)">Need a hand in {{ regionShort }}?</h2>
+<p style="margin:0;color:var(--neutral-300)">Questions, advice or a quote — we respond within 24 hours.</p>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:var(--space-md)">
+<a href="/contact/" style="display:inline-flex;align-items:center;background:var(--cta-bg);color:var(--cta-text);text-decoration:none;font-weight:600;padding:.9em 1.7em;border:1px solid var(--neutral-0);box-shadow:var(--shadow-md)" style-hover="background:var(--cta-bg-hover);color:var(--cta-text-hover)">Contact Us</a>
+<a href="{{ regionTelHref }}" style="display:inline-flex;align-items:center;background:transparent;color:var(--neutral-0);text-decoration:none;font-weight:600;padding:.9em 1.7em;border:1px solid var(--neutral-0)" style-hover="background:var(--neutral-0);color:var(--neutral-900)">{{ regionPhone }}</a>
+</div>
+</div>
+</div>
+</section>
+
+<x-import component-from-global-scope="TheApplianceConnectionDesignSystem_d4d2d2.Footer" logo-src="../../assets/logo/truck-logo-detailed.png" hint-size="100%,340px"></x-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;region&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Durham&quot;,&quot;Peterborough&quot;],&quot;default&quot;:&quot;Durham&quot;,&quot;tsType&quot;:&quot;'Durham' | 'Peterborough'&quot;,&quot;section&quot;:&quot;Location&quot;}}">
+const REGIONS = {
+  Durham: {
+    name: 'Durham Region',
+    short: 'Durham',
+    path: '/durham/',
+    phone: '905.259.6545',
+    tel: 'tel:19052596545',
+    intro: 'Licensed, insured and warrantied — over 30 years installing built-in appliances, gas lines and laundry rooms across Durham Region.',
+    body: 'We have been on Durham roads for over 30 years, from Pickering out to Bowmanville. Our selling partner here is Paddy’s Market, so if you still need the appliance we can point you there first.',
+    towns: [
+      { name: 'Oshawa', href: '/durham/oshawa/' },
+      { name: 'Whitby', href: '/durham/whitby/' },
+      { name: 'Pickering', href: '/durham/pickering/' },
+      'Ajax', 'Bowmanville', 'Courtice', 'Port Perry', 'Uxbridge', 'Brooklin', 'Clarington',
+    ],
+    cites: ['Homeowner, Whitby', 'Homeowner, Oshawa', 'Homeowner, Pickering'],
+  },
+  Peterborough: {
+    name: 'Peterborough',
+    short: 'Peterborough',
+    path: '/peterborough/',
+    phone: '705.742.0306',
+    tel: 'tel:17057420306',
+    intro: 'Licensed, insured and warrantied — over 30 years installing built-in appliances, gas lines and laundry rooms across Peterborough and the Kawarthas.',
+    body: 'We cover Peterborough and the townships around it, from Lakefield down to Millbrook. Our selling partner here is Peterborough Appliances, so if you still need the appliance we can point you there first.',
+    towns: [
+      { name: 'Lakefield', href: '/peterborough/lakefield/' },
+      { name: 'Bridgenorth', href: '/peterborough/bridgenorth/' },
+      { name: 'Ennismore', href: '/peterborough/ennismore/' },
+      'Selwyn', 'Douro', 'Keene', 'Millbrook', 'Norwood', 'Buckhorn', 'Apsley',
+    ],
+    cites: ['Homeowner, Lakefield', 'Homeowner, Peterborough', 'Homeowner, Bridgenorth'],
+  },
+};
+
+class Component extends DCLogic {
+  renderVals() {
+    const r = REGIONS[this.props.region] || REGIONS.Durham;
+    return {
+      regionName: r.name,
+      regionShort: r.short,
+      regionPath: r.path,
+      regionPhone: r.phone,
+      regionTelHref: r.tel,
+      regionIntro: r.intro,
+      regionBodyOne: r.body,
+      townRegions: [{ name: r.name, note: 'Same-week booking', towns: r.towns }],
+      citeOne: r.cites[0],
+      citeTwo: r.cites[1],
+      citeThree: r.cites[2],
+      firstOpen: [0],
+      faqs: [
+        { question: 'Do you supply the appliance, or just install it?', answer: 'Either. We install what you have already bought, and we work with a local selling partner if you would rather buy through one.' },
+        { question: 'Are you licensed for gas?', answer: 'Yes. Gas fitting is licensed and insured, and every gas job is warrantied like the rest of our work.' },
+        { question: 'How soon can you come out?', answer: 'We respond to quote requests within 24 hours and can usually book within the week.' },
+        { question: 'Do you charge for travel within the region?', answer: 'Placeholder answer — confirm travel policy for outlying towns before launch.' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

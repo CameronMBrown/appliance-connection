@@ -1,0 +1,178 @@
+---
+// ac/contact — the Contact template's main row: the design system's QuoteForm
+// (React island: live blur validation + success state) beside ruled side
+// panels for phones, hours and service area.
+import { QuoteForm } from '@ds/components/forms/QuoteForm.jsx';
+import type { BlockContext, ContactAttrs, EditorBlock } from '../../lib/blocks/types';
+
+interface Props extends ContactAttrs {
+  innerBlocks?: EditorBlock[];
+  context?: BlockContext;
+}
+
+const { formEyebrow, formHeading, formIntro, hours = [], hoursNote, areaText, context = {} } = Astro.props;
+const phones = context.phones ?? [];
+// Only pass copy the editor actually set, so the design system's defaults hold.
+const formCopy = Object.fromEntries(
+  Object.entries({ eyebrow: formEyebrow, heading: formHeading, intro: formIntro }).filter(([, v]) => v),
+);
+---
+
+<section class="ct">
+  <div class="container ct__row">
+    <div class="ct__form">
+      {/* TODO: wire onSubmit to the lead endpoint (region auto-routed). Until then
+          the form validates and shows its success state but sends nothing. */}
+      <QuoteForm client:visible {...formCopy} />
+    </div>
+
+    <aside class="ct__side">
+      <div class="ct__panel">
+        <p class="ct__label">Call us</p>
+        {
+          phones.map((p) => (
+            <a class="ct__phone" href={`tel:${p.tel}`}>
+              <span>{p.name}</span>
+              <strong>{p.phone}</strong>
+            </a>
+          ))
+        }
+      </div>
+
+      {
+        hours.length > 0 && (
+          <div class="ct__panel">
+            <p class="ct__label">Hours</p>
+            <div class="ct__hours">
+              {hours.map((h) => (
+                <>
+                  <span class="ct__day">{h.day}</span>
+                  <span class="ct__time">{h.time}</span>
+                </>
+              ))}
+            </div>
+            {hoursNote && <p class="ct__foot">{hoursNote}</p>}
+          </div>
+        )
+      }
+
+      {
+        areaText && (
+          <div class="ct__panel ct__panel--pad">
+            <p class="ct__label ct__label--bare">Where we work</p>
+            <p class="ct__area">{areaText}</p>
+          </div>
+        )
+      }
+    </aside>
+  </div>
+</section>
+
+<style>
+  .ct {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  }
+  .ct__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: flex-start;
+  }
+  .ct__form {
+    flex: 1 1 28rem;
+    min-width: 0;
+  }
+  .ct__side {
+    flex: 1 1 18rem;
+    max-width: 26rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    min-width: 0;
+  }
+  .ct__panel {
+    border: 1px solid var(--color-border-strong);
+    box-shadow: var(--shadow-sm);
+    background: var(--color-surface);
+  }
+  .ct__panel--pad {
+    padding: var(--space-lg);
+  }
+  .ct__label {
+    margin: 0;
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-border-strong);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+  .ct__label--bare {
+    padding: 0;
+    border: 0;
+    margin-bottom: var(--space-sm);
+  }
+  .ct__phone {
+    display: block;
+    padding: var(--space-lg);
+    text-decoration: none;
+    color: var(--color-text);
+  }
+  .ct__phone + .ct__phone {
+    border-top: 1px solid var(--color-border);
+  }
+  .ct__phone:hover {
+    background: var(--color-bg-alt);
+    color: var(--color-text);
+  }
+  .ct__phone span {
+    display: block;
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2xs);
+  }
+  .ct__phone strong {
+    font-family: var(--font-display);
+    font-weight: var(--weight-display);
+    font-size: var(--text-xl);
+    letter-spacing: var(--tracking-tight);
+  }
+  .ct__hours {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    font-size: var(--text-sm);
+  }
+  .ct__day,
+  .ct__time {
+    padding: var(--space-sm) var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .ct__day:nth-last-child(2),
+  .ct__time:last-child {
+    border-bottom: 0;
+  }
+  .ct__day {
+    color: var(--color-text-muted);
+  }
+  .ct__time {
+    text-align: right;
+  }
+  .ct__foot {
+    margin: 0;
+    max-width: none;
+    padding: var(--space-sm) var(--space-lg);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    background: var(--color-bg-alt);
+  }
+  .ct__area {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-soft);
+  }
+</style>

@@ -1,27 +1,68 @@
 ---
-import type { EditorBlock, ServiceGridAttrs } from '../../lib/blocks/types';
+// ac/service-grid — port of design-system ServiceGrid, opened by the standard
+// SectionHeader (Location template). Cells share ONE ruling: each card drops
+// its outline and draws a right/bottom hairline instead, and the grid clips
+// the overhang so a short last row never shows an ink gap.
 import BlockRenderer from './BlockRenderer.astro';
+import SectionHeader from '../SectionHeader.astro';
+import type { BlockContext, EditorBlock, ServiceGridAttrs } from '../../lib/blocks/types';
 
 interface Props extends ServiceGridAttrs {
   innerBlocks?: EditorBlock[];
+  context?: BlockContext;
 }
 
-const { heading, innerBlocks = [] } = Astro.props;
+const {
+  eyebrow,
+  heading,
+  text,
+  linkLabel,
+  linkUrl,
+  numbered = false,
+  background = 'alt',
+  innerBlocks = [],
+  context,
+} = Astro.props;
+
+// Numbering is a presentation concern, so it's applied here rather than stored
+// on every card.
+const cards = numbered
+  ? innerBlocks.map((b, i) => ({
+      ...b,
+      attributes: { ...b.attributes, index: String(i + 1).padStart(2, '0') },
+    }))
+  : innerBlocks;
 ---
 
-<section class="services section">
-  <div class="container">
-    {heading && <h2 class="services__heading">{heading}</h2>}
-    <div class="services__grid">
-      <BlockRenderer blocks={innerBlocks} />
-    </div>
-  </div>
-</section>
+{
+  cards.length > 0 && (
+    <section class:list={['band', { 'band--alt': background === 'alt' }]}>
+      <div class="container">
+        <SectionHeader eyebrow={eyebrow} heading={heading} text={text} linkLabel={linkLabel} linkUrl={linkUrl} />
+        <div class="ac-services__grid">
+          <BlockRenderer blocks={cards} context={context} />
+        </div>
+      </div>
+    </section>
+  )
+}
 
 <style>
-  .services__grid {
+  .ac-services__grid {
+    --cell-border: 0;
+    --cell-shadow: inset -1px -1px 0 var(--color-border-strong);
+    --cell-shadow-hover: var(--cell-shadow);
+    --cell-pad: var(--space-xl);
     display: grid;
-    gap: var(--space-lg);
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border-strong);
+    border-left: 1px solid var(--color-border-strong);
+    /* Cells rule their own right/bottom edges with inset shadows (an outward
+       shadow gets painted over by the next grid cell). The frame's inset rule
+       closes the right/bottom edge where a short last row leaves space. */
+    box-shadow:
+      inset -1px -1px 0 var(--color-border-strong),
+      var(--shadow-md);
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
     margin-top: var(--space-xl);
   }

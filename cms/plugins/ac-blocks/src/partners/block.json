@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/partners",
+  "title": "Selling partners",
+  "category": "ac",
+  "icon": "store",
+  "description": "Retail partner cells: logo, phone / email / address, and a small map.",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "Our Selling Partners"
+    },
+    "partners": {
+      "type": "array",
+      "default": []
+    },
+    "background": {
+      "type": "string",
+      "enum": [
+        "paper",
+        "alt"
+      ],
+      "default": "alt"
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

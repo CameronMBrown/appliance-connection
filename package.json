@@ -16,6 +16,7 @@
     "preview": "npm run preview --workspace web",
     "blocks:build": "npm --prefix cms/plugins/ac-blocks run build",
     "blocks:start": "npm --prefix cms/plugins/ac-blocks run start",
+    "seed:export": "node cms/scripts/seed/export-fixtures.mjs",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,astro,json,css,md}\""
   },
   "devDependencies": {

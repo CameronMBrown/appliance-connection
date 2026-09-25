@@ -34,6 +34,32 @@ add_filter(
 );
 
 /**
+ * Minimal semantic fallback shared by the attribute-only section blocks.
+ *
+ * Astro is the canonical renderer; this only keeps the WordPress front end (and
+ * previews) from erroring. It prints the section's heading-ish attribute and
+ * nothing else — deliberately unstyled.
+ *
+ * @param array  $attributes Block attributes.
+ * @param string $slug       Block slug without the `ac/` namespace.
+ * @return string Escaped HTML.
+ */
+function ac_blocks_fallback( array $attributes, string $slug ): string {
+	$title = '';
+	foreach ( array( 'heading', 'formHeading', 'subheading', 'eyebrow' ) as $key ) {
+		if ( ! empty( $attributes[ $key ] ) && is_string( $attributes[ $key ] ) ) {
+			$title = $attributes[ $key ];
+			break;
+		}
+	}
+	return sprintf(
+		'<section %s>%s</section>',
+		get_block_wrapper_attributes( array( 'data-ac-block' => $slug ) ),
+		'' !== $title ? '<h2>' . esc_html( $title ) . '</h2>' : ''
+	);
+}
+
+/**
  * Register every built block.
  *
  * `@wordpress/scripts` compiles src/<block>/ -> build/<block>/, each with its own
