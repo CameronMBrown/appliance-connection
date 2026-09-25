@@ -1,0 +1,43 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/intro",
+  "title": "Intro split",
+  "category": "ac",
+  "icon": "align-pull-right",
+  "description": "Eyebrow, ruled heading and paragraphs beside one large + two small photos.",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "eyebrow": {
+      "type": "string",
+      "default": ""
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "paragraphs": {
+      "type": "array",
+      "default": []
+    },
+    "photos": {
+      "type": "array",
+      "default": [
+        {
+          "label": "Photo — finished kitchen install"
+        },
+        {
+          "label": "Photo — gas line"
+        },
+        {
+          "label": "Photo — laundry"
+        }
+      ]
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

@@ -1,0 +1,76 @@
+---
+// ac/media-text — ruled heading + rich-text body beside an illustration
+// ("Local crew, local calls" on the Location template).
+import type { BlockContext, EditorBlock, MediaTextAttrs } from '../../lib/blocks/types';
+
+interface Props extends MediaTextAttrs {
+  innerBlocks?: EditorBlock[];
+  context?: BlockContext;
+}
+
+const { heading, paragraphs = [], imageUrl, imageAlt = '', background = 'paper' } = Astro.props;
+// Sections left empty in the locked Location template don't render.
+const hasContent = Boolean(heading) || paragraphs.length > 0;
+---
+
+{
+  hasContent && (
+    <section class:list={['band', { 'band--alt': background === 'alt' }]}>
+      <div class="container mt">
+        <div class="mt__copy">
+          {heading && <h2 class="mt__h">{heading}</h2>}
+          {paragraphs.length > 0 && (
+            <div class="mt__body">
+              {paragraphs.map((p) => (
+                <p set:html={p} />
+              ))}
+            </div>
+          )}
+        </div>
+        {imageUrl && (
+          <div class="mt__art">
+            <img src={imageUrl} alt={imageAlt} width="720" height="720" loading="lazy" />
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .mt {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+  }
+  .mt__copy {
+    flex: 1 1 24rem;
+    min-width: 0;
+  }
+  .mt__h {
+    font-size: var(--text-2xl);
+    margin: 0 0 var(--space-lg);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-border-strong);
+  }
+  .mt__body :global(p) {
+    color: var(--color-text-soft);
+    font-size: var(--text-md);
+  }
+  .mt__body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .mt__art {
+    flex: 0 1 22rem;
+    display: flex;
+    justify-content: center;
+    min-width: 0;
+  }
+  .mt__art img {
+    width: 100%;
+    max-width: 20rem;
+    height: auto;
+    object-fit: contain;
+  }
+</style>

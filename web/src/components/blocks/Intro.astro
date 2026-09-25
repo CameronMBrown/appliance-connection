@@ -1,0 +1,130 @@
+---
+// ac/intro — homepage "About us" split: eyebrow, ruled heading and rich-text
+// body on the left; one large + two small photo cells on the right. Cells
+// without a photo show the labelled placeholder (photo not yet supplied).
+import type { BlockContext, EditorBlock, IntroAttrs, PhotoSlot } from '../../lib/blocks/types';
+
+interface Props extends IntroAttrs {
+  innerBlocks?: EditorBlock[];
+  context?: BlockContext;
+}
+
+const { eyebrow, heading, paragraphs = [], photos = [] } = Astro.props;
+const [main, ...small]: (PhotoSlot | undefined)[] = photos;
+---
+
+<section class="intro">
+  <div class="intro__in">
+    <div class="intro__copy">
+      {eyebrow && <p class="intro__eyebrow">{eyebrow}</p>}
+      {heading && <h2 class="intro__h">{heading}</h2>}
+      {
+        paragraphs.length > 0 && (
+          <div class="intro__body">
+            {paragraphs.map((p) => (
+              <p set:html={p} />
+            ))}
+          </div>
+        )
+      }
+    </div>
+    {
+      photos.length > 0 && (
+        <div class="intro__photos">
+          {main && (
+            <div class="intro__main corner-tick">
+              {main.url ? (
+                <img src={main.url} alt={main.alt ?? ''} loading="lazy" />
+              ) : (
+                <div class="photo-ph">
+                  <span class="photo-ph__tag">{main.label ?? 'Photo'}</span>
+                </div>
+              )}
+            </div>
+          )}
+          {small.length > 0 && (
+            <div class="intro__small">
+              {small.map((p) =>
+                p?.url ? (
+                  <img src={p.url} alt={p.alt ?? ''} loading="lazy" />
+                ) : (
+                  <div class="photo-ph">
+                    <span class="photo-ph__tag">{p?.label ?? 'Photo'}</span>
+                  </div>
+                ),
+              )}
+            </div>
+          )}
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .intro {
+    padding-block: clamp(3.5rem, 9vw, 6rem);
+  }
+  .intro__in {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr));
+    align-items: start;
+  }
+  .intro__eyebrow {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-md);
+  }
+  .intro__h {
+    font-size: var(--text-2xl);
+    line-height: var(--leading-snug);
+    margin: 0 0 var(--space-lg);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-border-strong);
+  }
+  .intro__body :global(p) {
+    color: var(--color-text-soft);
+    font-size: var(--text-md);
+  }
+  .intro__body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .intro__body :global(a) {
+    font-weight: 600;
+  }
+  .intro__photos {
+    border: 1px solid var(--color-border-strong);
+    box-shadow: var(--shadow-md);
+    background: var(--color-surface);
+  }
+  .intro__main {
+    border-bottom: 1px solid var(--color-border-strong);
+  }
+  .intro__main > *,
+  .intro__main img {
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    object-fit: cover;
+  }
+  .intro__small {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--color-border-strong);
+  }
+  .intro__small > * {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    object-fit: cover;
+  }
+  .intro__small .photo-ph {
+    padding: var(--space-sm);
+  }
+</style>

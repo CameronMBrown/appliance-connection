@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/contact",
+  "title": "Contact form + details",
+  "category": "ac",
+  "icon": "email",
+  "description": "Quote form beside the phone, hours and service-area panels.",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "formEyebrow": {
+      "type": "string",
+      "default": ""
+    },
+    "formHeading": {
+      "type": "string",
+      "default": ""
+    },
+    "formIntro": {
+      "type": "string",
+      "default": ""
+    },
+    "hours": {
+      "type": "array",
+      "default": []
+    },
+    "hoursNote": {
+      "type": "string",
+      "default": ""
+    },
+    "areaText": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "html": false,
+    "multiple": false
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

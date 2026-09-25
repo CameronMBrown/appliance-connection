@@ -2,7 +2,7 @@
 
 Headless **WordPress** (custom native Gutenberg blocks) → **WPGraphQL + WPGraphQL Content Blocks** → **Astro** (static) + **React islands**.
 
-> **Status:** architecture foundation. Layouts are **skeletal/token-driven on purpose** — visual polish is deferred until high-fidelity design files come back from the design phase. See `docs/` for the full brief, design system, and architecture.
+> **Status:** high-fidelity design is in. The [Claude Design system](https://claude.ai/design/p/d4d2d2dc-a551-424b-aa98-c72db590688b) (mirrored in `design-system/`) drives the tokens, components and page templates. Pages render from typed fixtures until WordPress is wired. See `docs/` for the full brief, design system, and architecture.
 
 ## Why this stack (short version)
 
@@ -14,7 +14,7 @@ Headless **WordPress** (custom native Gutenberg blocks) → **WPGraphQL + WPGrap
 
 ```
 docs/             Brief · design system · architecture · IA · dev workflow
-design-system/    tokens.json (source of truth) + tokens.css  · style-guide.html
+design-system/    Claude Design mirror: tokens, base CSS, components, templates (see SOURCE.md)
 cms/              Tracked WP code — symlinked into Local's wp-content
   plugins/        ac-blocks (native blocks)
   mu-plugins/     ac-core (CPTs, region taxonomy, post meta, WPGraphQL fields)

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/testimonials",
+  "title": "Testimonials",
+  "category": "ac",
+  "icon": "format-quote",
+  "description": "Section header + a row of homeowner quotes (\"Homeowner, {town}\" — never a full name).",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "eyebrow": {
+      "type": "string",
+      "default": ""
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "text": {
+      "type": "string",
+      "default": ""
+    },
+    "linkLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "linkUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "items": {
+      "type": "array",
+      "default": []
+    },
+    "background": {
+      "type": "string",
+      "enum": [
+        "paper",
+        "alt"
+      ],
+      "default": "paper"
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

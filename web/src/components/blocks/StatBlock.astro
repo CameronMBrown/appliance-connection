@@ -1,0 +1,104 @@
+---
+// ac/stat-block — static port of design-system/components/blocks/StatBlock.jsx.
+// Credential row: ruled cells sharing one ink outline, a Benguiat value over a
+// line of plain copy; `mark` prefixes a wood ✓ cell for credentials.
+import type { BlockContext, EditorBlock, StatBlockAttrs } from '../../lib/blocks/types';
+
+interface Props extends StatBlockAttrs {
+  innerBlocks?: EditorBlock[];
+  context?: BlockContext;
+}
+
+const { stats = [] } = Astro.props;
+---
+
+{
+  stats.length > 0 && (
+    <section class="sb">
+      <div class="container">
+        <div class="ac-stats">
+          {stats.map((s) => (
+            <div class:list={['ac-stat', { 'ac-stat--mark': s.mark }]}>
+              <span class="ac-stat__v">
+                {s.mark && (
+                  <span class="ac-stat__tick" aria-hidden="true">
+                    ✓
+                  </span>
+                )}
+                {s.value}
+              </span>
+              <span class="ac-stat__l">{s.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .sb {
+    padding-bottom: clamp(2rem, 5vw, 3.5rem);
+  }
+  .ac-stats {
+    display: grid;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border-strong);
+    border-left: 1px solid var(--color-border-strong);
+    /* Cells rule their own right/bottom edges with inset shadows (an outward
+       shadow gets painted over by the next grid cell). The frame's inset rule
+       closes the right/bottom edge where a short last row leaves space. */
+    box-shadow:
+      inset -1px -1px 0 var(--color-border-strong),
+      var(--shadow-md);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  }
+  .ac-stat {
+    background: var(--color-surface);
+    box-shadow:
+      inset -1px -1px 0 var(--color-border-strong);
+    padding: var(--space-xl) var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+  .ac-stat__v {
+    font-family: var(--font-display);
+    font-weight: var(--weight-display);
+    font-size: var(--text-xl);
+    line-height: 1.05;
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text);
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+  .ac-stat__l {
+    font-size: var(--text-sm);
+    color: var(--color-text-soft);
+    max-width: 22ch;
+  }
+  .ac-stat--mark .ac-stat__v {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-xs) var(--space-sm);
+    font-size: var(--text-lg);
+  }
+  .ac-stat__tick {
+    width: 1.35rem;
+    height: 1.35rem;
+    flex: none;
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-accent);
+    color: var(--neutral-900);
+    display: grid;
+    place-items: center;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    .ac-stat {
+      padding: var(--space-lg);
+    }
+  }
+</style>

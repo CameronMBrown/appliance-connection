@@ -1,0 +1,16 @@
+---
+// One route for every content page. WordPress (or the fixtures) decides which
+// pages exist: each published page, service and location becomes a path here
+// at build time — add a Location in WP, rebuild, and its URL appears.
+import PageView from '../components/PageView.astro';
+import { getPaths } from '../lib/content';
+
+export async function getStaticPaths() {
+  const paths = await getPaths();
+  return paths.map((p) => ({ params: { path: p.slice(1) } }));
+}
+
+const { path } = Astro.params;
+---
+
+<PageView path={`/${path}`} />

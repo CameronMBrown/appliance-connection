@@ -1,0 +1,42 @@
+---
+// ac/faq — SectionHeader + the design system's Accordion as a React island.
+// client:visible: the FAQ sits low on the page, so its JS loads only when it
+// scrolls into view. The server-rendered HTML is already complete (first row
+// open), so it reads fine before hydration.
+// Later: emit FAQPage schema from the same items.
+import { Accordion } from '@ds/components/blocks/Accordion.jsx';
+import SectionHeader from '../SectionHeader.astro';
+import type { BlockContext, EditorBlock, FaqAttrs } from '../../lib/blocks/types';
+
+interface Props extends FaqAttrs {
+  innerBlocks?: EditorBlock[];
+  context?: BlockContext;
+}
+
+const { eyebrow, heading, text, linkLabel, linkUrl, items = [], footnote, background = 'alt' } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <section class:list={['band', { 'band--alt': background === 'alt' }]}>
+      <div class="container container--narrow">
+        <SectionHeader eyebrow={eyebrow} heading={heading} text={text} linkLabel={linkLabel} linkUrl={linkUrl} />
+        <div class="faq__list">
+          <Accordion client:visible items={items} defaultOpen={[0]} />
+        </div>
+        {footnote && <p class="faq__note">{footnote}</p>}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .faq__list {
+    margin-top: var(--space-xl);
+  }
+  .faq__note {
+    margin: var(--space-lg) 0 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+</style>

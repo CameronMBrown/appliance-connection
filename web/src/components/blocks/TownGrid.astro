@@ -1,0 +1,136 @@
+---
+// ac/town-grid — static port of design-system TownGrid under a SectionHeader.
+// One ruled cell per town; towns with a page link, the rest are plain cells, so
+// the grid lists full coverage without faking pages that don't exist.
+import SectionHeader from '../SectionHeader.astro';
+import type { BlockContext, EditorBlock, Town, TownGridAttrs } from '../../lib/blocks/types';
+
+interface Props extends TownGridAttrs {
+  innerBlocks?: EditorBlock[];
+  context?: BlockContext;
+}
+
+const { eyebrow, heading, text, linkLabel, linkUrl, regions = [], background = 'alt' } = Astro.props;
+const asTown = (t: string | Town): Town => (typeof t === 'string' ? { name: t } : t);
+---
+
+{
+  regions.length > 0 && (
+    <section class:list={['band', { 'band--alt': background === 'alt' }]}>
+      <div class="container">
+        <SectionHeader eyebrow={eyebrow} heading={heading} text={text} linkLabel={linkLabel} linkUrl={linkUrl} />
+        <div class="tg__list">
+          {
+            regions.map((r) => (
+              <section class="ac-tg">
+                <div class="ac-tg__head">
+                  <h3 class="ac-tg__region">{r.name}</h3>
+                  {r.href && (
+                    <a class="ac-tg__hub" href={r.href}>
+                      Region page
+                    </a>
+                  )}
+                  {r.note && <span class="ac-tg__note">{r.note}</span>}
+                </div>
+                <div class="ac-tg__grid">
+                  {r.towns.map(asTown).map((town) =>
+                    town.href ? (
+                      <a class="ac-tg__town" href={town.href}>
+                        {town.name}
+                        <span aria-hidden="true">→</span>
+                      </a>
+                    ) : (
+                      <div class="ac-tg__plain">{town.name}</div>
+                    ),
+                  )}
+                </div>
+              </section>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .tg__list {
+    margin-top: var(--space-xl);
+  }
+  .ac-tg + .ac-tg {
+    margin-top: var(--space-2xl);
+  }
+  .ac-tg__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-sm) var(--space-md);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-border-strong);
+  }
+  .ac-tg__region {
+    font-size: var(--text-lg);
+    margin: 0;
+  }
+  .ac-tg__hub {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--link);
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+  }
+  .ac-tg__hub:hover {
+    color: var(--link-hover);
+  }
+  .ac-tg__note {
+    margin-left: auto;
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+  .ac-tg__grid {
+    display: grid;
+    background: var(--color-surface);
+    border-left: 1px solid var(--color-border-strong);
+    box-shadow:
+      inset -1px -1px 0 var(--color-border-strong),
+      var(--shadow-sm);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  }
+  .ac-tg__town,
+  .ac-tg__plain {
+    background: var(--color-surface);
+    box-shadow:
+      inset -1px -1px 0 var(--color-border-strong);
+    padding: var(--space-lg);
+    display: flex;
+    align-items: center;
+    font-size: var(--text-sm);
+  }
+  .ac-tg__town {
+    color: var(--color-text);
+    text-decoration: none;
+    min-height: 44px;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    font-weight: 600;
+    transition: background var(--dur-fast) var(--ease-standard);
+  }
+  .ac-tg__town span {
+    color: var(--color-text-muted);
+    font-weight: 400;
+    font-size: var(--text-xs);
+  }
+  .ac-tg__town:hover {
+    background: var(--color-bg-alt);
+    color: var(--color-text);
+  }
+  .ac-tg__town:hover span {
+    color: var(--color-accent-deep);
+  }
+  .ac-tg__plain {
+    color: var(--color-text-muted);
+  }
+</style>

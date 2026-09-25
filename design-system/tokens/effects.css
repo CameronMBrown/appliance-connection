@@ -1,0 +1,38 @@
+/* Radii, graph-paper ruling, shadow, motion, layering. Corners are square —
+   depth comes from a 1px ink outline plus a short, soft shadow (semi-flat),
+   never from a gradient. */
+:root {
+  --radius-none: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-input: 2px;
+  --radius-pill: 999px;
+
+  /* Graph paper — 8px module. Colour (--grid-line) lives in colors.css and
+     flips inside .on-dark, so this image is reused on light and dark alike. */
+  --grid-size: 8px;
+  --grid-image: linear-gradient(to right, var(--grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px); /* @kind other */
+
+  --shadow-sm: 0 1px 3px rgba(17, 17, 17, 0.1);
+  --shadow-md: 0 3px 8px rgba(17, 17, 17, 0.14);
+  --shadow-lg: 0 8px 20px rgba(17, 17, 17, 0.18);
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1); /* @kind other */
+  --ease-out: cubic-bezier(0, 0, 0.2, 1); /* @kind other */
+  --dur-fast: 120ms; /* @kind other */
+  --dur: 200ms; /* @kind other */
+  --dur-slow: 360ms; /* @kind other */
+
+  --z-header: 100; /* @kind other */
+  --z-overlay: 200; /* @kind other */
+  --z-modal: 300; /* @kind other */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms; /* @kind other */
+    --dur: 0ms; /* @kind other */
+    --dur-slow: 0ms; /* @kind other */
+  }
+}

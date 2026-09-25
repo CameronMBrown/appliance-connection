@@ -1,0 +1,24 @@
+---
+// Renders one content page (from WordPress, or the fixtures offline): layout +
+// its blocks. Shared by the home route and the catch-all so both behave the same.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BlockRenderer from './blocks/BlockRenderer.astro';
+import { getPage, getSite } from '../lib/content';
+import { phonesFor } from '../lib/site';
+
+interface Props {
+  /** Content path without trailing slash, e.g. "/durham/oshawa" ("/" for home). */
+  path: string;
+}
+
+const { path } = Astro.props;
+const [page, site] = await Promise.all([getPage(path), getSite()]);
+if (!page) throw new Error(`No content for ${path}`);
+
+// The page's region number leads everywhere it appears (decision 3).
+const phones = phonesFor(page.region, site.phones);
+---
+
+<BaseLayout title={page.title} description={page.description} site={site} phones={phones}>
+  <BlockRenderer blocks={page.blocks} context={{ region: page.region, phones }} />
+</BaseLayout>

@@ -1,0 +1,9 @@
+/* Two roles: a characterful display serif (headings + wordmark, self-hosted —
+   see fonts.css) and a fast native system stack (zero-cost, no @font-face
+   needed — every name below is an OS-installed fallback) for everything read
+   at length. */
+:root {
+  --font-display: "ITC Benguiat", "Benguiat", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}

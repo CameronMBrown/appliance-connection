@@ -1,0 +1,29 @@
+/* Self-hosted display face. Single static file covering the display role —
+   font-weight is declared as a wide range so any requested weight (the
+   --weight-display token is 400) maps onto this one face without a 404. */
+@font-face {
+  font-family: "ITC Benguiat";
+  src: url("../assets/fonts/benguiat-display.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Oxygen sits in the --font-body stack as the Linux-desktop step. It is not
+   installed on macOS/Windows, so declare it (OFL, served from Google Fonts)
+   rather than leave the name unresolved. It renders only where the earlier,
+   zero-cost native faces are unavailable. */
+@font-face {
+  font-family: "Oxygen";
+  src: url("https://fonts.gstatic.com/s/oxygen/v15/2sDfZG1Wl4LcnbuKjk0m.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Oxygen";
+  src: url("https://fonts.gstatic.com/s/oxygen/v15/2sDcZG1Wl4LcnbuCJW8Db2-4C7wFZQ.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}

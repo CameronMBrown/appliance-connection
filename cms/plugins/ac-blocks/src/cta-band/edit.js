@@ -3,7 +3,7 @@ import { useBlockProps, RichText, InspectorControls } from '@wordpress/block-edi
 import { PanelBody, TextControl, ToggleControl } from '@wordpress/components';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { heading, text, ctaLabel, ctaUrl, isDark } = attributes;
+	const { heading, text, ctaLabel, ctaUrl, isDark, showPhone } = attributes;
 	const blockProps = useBlockProps( {
 		className: `ac-edit ac-edit--cta-band${ isDark ? ' is-dark' : '' }`,
 	} );
@@ -29,6 +29,12 @@ export default function Edit( { attributes, setAttributes } ) {
 						label={ __( 'URL', 'ac-blocks' ) }
 						value={ ctaUrl }
 						onChange={ ( v ) => setAttributes( { ctaUrl: v } ) }
+					/>
+					<ToggleControl
+						label={ __( 'Add the region phone button', 'ac-blocks' ) }
+						help={ __( 'Uses the number for this page’s region.', 'ac-blocks' ) }
+						checked={ !! showPhone }
+						onChange={ ( v ) => setAttributes( { showPhone: v } ) }
 					/>
 				</PanelBody>
 			</InspectorControls>

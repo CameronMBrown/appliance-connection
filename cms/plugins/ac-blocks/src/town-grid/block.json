@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/town-grid",
+  "title": "Town grid",
+  "category": "ac",
+  "icon": "location-alt",
+  "description": "Service-area coverage: one ruled cell per town; towns with a page link to it.",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "eyebrow": {
+      "type": "string",
+      "default": ""
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "text": {
+      "type": "string",
+      "default": ""
+    },
+    "linkLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "linkUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "regions": {
+      "type": "array",
+      "default": []
+    },
+    "background": {
+      "type": "string",
+      "enum": [
+        "paper",
+        "alt"
+      ],
+      "default": "alt"
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

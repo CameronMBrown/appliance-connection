@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/stat-block",
+  "title": "Stat block",
+  "category": "ac",
+  "icon": "chart-bar",
+  "description": "Credential row — a Benguiat value over a line of copy; ✓ marks credentials.",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "stats": {
+      "type": "array",
+      "default": []
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

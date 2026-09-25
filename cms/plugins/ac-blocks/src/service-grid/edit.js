@@ -2,8 +2,10 @@ import { __ } from '@wordpress/i18n';
 import {
 	useBlockProps,
 	useInnerBlocksProps,
-	RichText,
+	InspectorControls,
 } from '@wordpress/block-editor';
+import { PanelBody, ToggleControl } from '@wordpress/components';
+import { SectionHeaderInline, SectionHeaderPanel } from '../shared/SectionHeaderFields';
 
 const ALLOWED = [ 'ac/service-card' ];
 const TEMPLATE = [
@@ -13,7 +15,6 @@ const TEMPLATE = [
 ];
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { heading } = attributes;
 	const blockProps = useBlockProps( { className: 'ac-edit ac-edit--service-grid' } );
 	const innerProps = useInnerBlocksProps(
 		{ className: 'ac-edit__grid' },
@@ -22,13 +23,17 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	return (
 		<div { ...blockProps }>
-			<RichText
-				tagName="h2"
-				value={ heading }
-				allowedFormats={ [] }
-				onChange={ ( v ) => setAttributes( { heading: v } ) }
-				placeholder={ __( 'Section heading…', 'ac-blocks' ) }
-			/>
+			<InspectorControls>
+				<SectionHeaderPanel attributes={ attributes } setAttributes={ setAttributes } />
+				<PanelBody title={ __( 'Cards', 'ac-blocks' ) }>
+					<ToggleControl
+						label={ __( 'Number the cards (01, 02…)', 'ac-blocks' ) }
+						checked={ !! attributes.numbered }
+						onChange={ ( numbered ) => setAttributes( { numbered } ) }
+					/>
+				</PanelBody>
+			</InspectorControls>
+			<SectionHeaderInline attributes={ attributes } setAttributes={ setAttributes } />
 			<div { ...innerProps } />
 		</div>
 	);
