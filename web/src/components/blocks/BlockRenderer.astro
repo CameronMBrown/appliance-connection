@@ -1,0 +1,37 @@
+---
+// Walks a list of editorBlocks and renders each via the registry. Recurses for
+// InnerBlocks (a ServiceGrid renders its ServiceCard children through this same
+// component). Unknown blocks are flagged in dev, skipped in prod.
+import { registry } from '../../lib/blocks/registry';
+import type { EditorBlock } from '../../lib/blocks/types';
+
+interface Props {
+  blocks?: EditorBlock[];
+}
+
+const { blocks = [] } = Astro.props;
+const components = registry as Record<string, any>;
+---
+
+{
+  blocks.map((block) => {
+    const Component = components[block.name];
+    if (!Component) {
+      return import.meta.env.DEV ? (
+        <div class="ac-missing-block">⚠ No renderer registered for “{block.name}”</div>
+      ) : null;
+    }
+    return <Component {...block.attributes} innerBlocks={block.innerBlocks ?? []} />;
+  })
+}
+
+<style>
+  .ac-missing-block {
+    border: 1px dashed var(--color-error);
+    color: var(--color-error);
+    padding: var(--space-md);
+    margin: var(--space-md) 0;
+    font-size: var(--text-sm);
+    border-radius: var(--radius-sm);
+  }
+</style>

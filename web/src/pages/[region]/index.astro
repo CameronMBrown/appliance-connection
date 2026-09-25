@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlockRenderer from '../../components/blocks/BlockRenderer.astro';
+import { getPage, getRegionSlugs } from '../../lib/content';
+
+export function getStaticPaths() {
+  return getRegionSlugs().map((region) => ({ params: { region } }));
+}
+
+const { region } = Astro.params;
+const page = getPage(`/${region}`);
+if (!page) throw new Error(`No content for /${region}`);
+---
+
+<BaseLayout title={page.title} description={page.description}>
+  <BlockRenderer blocks={page.blocks} />
+</BaseLayout>

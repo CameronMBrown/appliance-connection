@@ -1,0 +1,473 @@
+<title>The Appliance Connection — Design System</title>
+
+<style>
+  /* -------------------------------------------------------------------------
+     Design tokens (inlined copy of design-system/tokens/tokens.css so this
+     artifact is self-contained. Canonical source of truth = tokens.css/json.)
+     ------------------------------------------------------------------------- */
+  :root {
+    --neutral-0:#ffffff; --neutral-50:#f8f5f0; --neutral-100:#efe9e0;
+    --neutral-200:#e7e0d5; --neutral-300:#dad3c7; --neutral-400:#c4bbac;
+    --neutral-500:#9a9082; --neutral-600:#6b6357; --neutral-700:#4a443c;
+    --neutral-800:#2c2822; --neutral-900:#1d1a16;
+    --blue-100:#e9f0f5; --blue-300:#9cc0d8; --blue-500:#2a79a8;
+    --blue-600:#1d5b84; --blue-800:#123f5c;
+    --brass-100:#f4ecdd; --brass-300:#d8bc8c; --brass-500:#b58a4b;
+    --brass-600:#a67e3f; --brass-700:#94702f;
+
+    --font-display:"ITC Benguiat","Benguiat","Iowan Old Style",Georgia,"Times New Roman",serif;
+    --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+    --font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+    --text-xs:0.79rem; --text-sm:0.889rem; --text-base:1rem; --text-md:1.125rem;
+    --text-lg:clamp(1.2rem,1.10rem + 0.5vw,1.44rem);
+    --text-xl:clamp(1.5rem,1.30rem + 1.0vw,1.95rem);
+    --text-2xl:clamp(1.95rem,1.60rem + 1.8vw,2.75rem);
+    --text-3xl:clamp(2.6rem,2.00rem + 3.0vw,3.9rem);
+    --text-display:clamp(3.2rem,2.20rem + 5.0vw,5.5rem);
+
+    --leading-tight:1.08; --leading-snug:1.2; --leading-normal:1.6; --leading-relaxed:1.75;
+    --tracking-tight:-0.02em; --tracking-wide:0.08em;
+
+    --space-2xs:0.25rem; --space-xs:0.5rem; --space-sm:0.75rem; --space-md:1rem;
+    --space-lg:1.5rem; --space-xl:2rem; --space-2xl:3rem; --space-3xl:4rem;
+    --space-4xl:6rem; --space-5xl:8rem;
+
+    --radius-sm:2px; --radius-md:4px; --radius-lg:8px; --radius-xl:16px; --radius-pill:999px;
+    --shadow-sm:0 1px 2px rgba(29,26,22,.06),0 1px 1px rgba(29,26,22,.04);
+    --shadow-md:0 6px 20px -6px rgba(29,26,22,.14);
+    --shadow-lg:0 20px 50px -12px rgba(29,26,22,.22);
+
+    --container:72rem; --gutter:clamp(1.25rem,0.5rem + 3vw,2.5rem); --measure:66ch;
+
+    /* semantic */
+    --color-bg:var(--neutral-50); --color-bg-alt:var(--neutral-100);
+    --color-surface:var(--neutral-0);
+    --color-text:var(--neutral-900); --color-text-soft:var(--neutral-700); --color-text-muted:var(--neutral-600);
+    --color-border:var(--neutral-300); --color-border-strong:var(--neutral-400);
+    --color-brand:var(--blue-600); --color-brand-deep:var(--blue-800); --color-brand-tint:var(--blue-100);
+    --color-accent:var(--brass-500); --color-accent-deep:var(--brass-700); --color-accent-tint:var(--brass-100);
+    --cta-bg:var(--brass-500); --cta-bg-hover:var(--brass-600); --cta-text:var(--neutral-900);
+    --link:var(--blue-600); --link-hover:var(--blue-800);
+    --focus-color:var(--blue-600);
+  }
+
+  /* This style guide deliberately commits to the brand's warm-editorial LIGHT
+     world (that IS the identity). Dark is shown as a system BAND (.demo-dark),
+     not as a viewer theme — so we lock a light ground regardless of OS theme. */
+
+  *,*::before,*::after{box-sizing:border-box;}
+  body{margin:0;}
+  .doc{
+    background:var(--color-bg);
+    color:var(--color-text);
+    font-family:var(--font-body);
+    font-size:var(--text-base);
+    line-height:var(--leading-normal);
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--container);margin-inline:auto;padding-inline:var(--gutter);}
+
+  a{color:var(--link);text-underline-offset:2px;}
+  a:hover{color:var(--link-hover);}
+  :focus-visible{outline:3px solid var(--focus-color);outline-offset:2px;border-radius:var(--radius-sm);}
+
+  .display{font-family:var(--font-display);font-weight:400;line-height:var(--leading-tight);letter-spacing:var(--tracking-tight);text-wrap:balance;}
+  .eyebrow{font-size:var(--text-sm);letter-spacing:var(--tracking-wide);text-transform:uppercase;color:var(--color-accent-deep);font-weight:600;}
+  .mono{font-family:var(--font-mono);font-size:0.85em;}
+  .muted{color:var(--color-text-muted);}
+  .soft{color:var(--color-text-soft);}
+
+  /* Masthead */
+  .masthead{padding-block:var(--space-4xl) var(--space-2xl);border-bottom:1px solid var(--color-border);}
+  .masthead .kicker{margin:0 0 var(--space-md);}
+  .masthead h1{font-family:var(--font-display);font-weight:400;font-size:var(--text-display);line-height:1.02;letter-spacing:var(--tracking-tight);margin:0;text-wrap:balance;}
+  .masthead .lede{max-width:52ch;margin:var(--space-lg) 0 0;font-size:var(--text-md);color:var(--color-text-soft);}
+  .thesis{display:flex;flex-wrap:wrap;gap:var(--space-sm);margin-top:var(--space-xl);}
+  .chip{font-size:var(--text-sm);padding:.4em .8em;border:1px solid var(--color-border-strong);border-radius:var(--radius-pill);background:var(--color-surface);}
+  .chip strong{color:var(--color-accent-deep);}
+
+  /* Nav */
+  .toc{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--color-bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border);}
+  .toc ul{display:flex;flex-wrap:wrap;gap:var(--space-lg);list-style:none;margin:0;padding:var(--space-sm) 0;font-size:var(--text-sm);}
+  .toc a{text-decoration:none;color:var(--color-text-soft);}
+  .toc a:hover{color:var(--color-accent-deep);}
+
+  /* Section rhythm */
+  section{padding-block:var(--space-4xl);border-bottom:1px solid var(--color-border);}
+  .sec-head{margin:0 0 var(--space-2xl);}
+  .sec-head h2{font-family:var(--font-display);font-weight:400;font-size:var(--text-2xl);margin:var(--space-xs) 0 var(--space-sm);letter-spacing:var(--tracking-tight);}
+  .sec-head p{margin:0;max-width:60ch;color:var(--color-text-soft);}
+
+  .grid{display:grid;gap:var(--space-lg);}
+  .cols-2{grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));}
+  .cols-3{grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr));}
+
+  /* Colour ramp */
+  .ramp{display:grid;grid-template-columns:repeat(auto-fit,minmax(4.5rem,1fr));gap:var(--space-xs);}
+  .swatch{border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--color-border);background:var(--color-surface);}
+  .swatch .chipc{height:4.25rem;}
+  .swatch .meta{padding:var(--space-xs) var(--space-sm);font-size:var(--text-xs);line-height:1.35;}
+  .swatch .meta b{display:block;font-weight:600;}
+  .swatch .meta code{color:var(--color-text-muted);}
+
+  /* Semantic role table */
+  .roles{width:100%;border-collapse:collapse;font-size:var(--text-sm);}
+  .roles th,.roles td{text-align:left;padding:var(--space-sm) var(--space-md);border-bottom:1px solid var(--color-border);vertical-align:middle;}
+  .roles th{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:var(--tracking-wide);color:var(--color-text-muted);font-weight:600;}
+  .dot{display:inline-block;width:1.4rem;height:1.4rem;border-radius:var(--radius-sm);border:1px solid var(--color-border-strong);vertical-align:-.35rem;margin-right:.5rem;}
+  .roles code{font-family:var(--font-mono);font-size:.85em;}
+  .tablewrap{overflow-x:auto;}
+
+  /* Type specimens */
+  .specimen{display:grid;grid-template-columns:7rem 1fr;gap:var(--space-lg);align-items:baseline;padding-block:var(--space-md);border-top:1px solid var(--color-border);}
+  .specimen:first-of-type{border-top:0;}
+  .specimen .tag{font-family:var(--font-mono);font-size:var(--text-xs);color:var(--color-text-muted);padding-top:.4em;}
+  .specimen .samp{margin:0;}
+
+  /* Spacing bars */
+  .spacer-row{display:grid;grid-template-columns:6rem 1fr;gap:var(--space-md);align-items:center;padding-block:var(--space-2xs);}
+  .spacer-row .tag{font-family:var(--font-mono);font-size:var(--text-xs);color:var(--color-text-muted);}
+  .bar{height:1rem;background:var(--color-accent);border-radius:var(--radius-sm);}
+
+  /* Component demos */
+  .demo{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-xl);}
+  .demo + .demo{margin-top:var(--space-lg);}
+  .demo h3{font-family:var(--font-body);font-size:var(--text-sm);text-transform:uppercase;letter-spacing:var(--tracking-wide);color:var(--color-text-muted);margin:0 0 var(--space-lg);font-weight:600;}
+  .row{display:flex;flex-wrap:wrap;gap:var(--space-md);align-items:center;}
+
+  .btn{font:inherit;font-weight:600;border-radius:var(--radius-md);padding:.85em 1.5em;border:1px solid transparent;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:.5em;transition:background var(--dur,180ms) ease,color 180ms ease,transform 180ms ease;line-height:1;}
+  .btn-primary{background:var(--cta-bg);color:var(--cta-text);}
+  .btn-primary:hover{background:var(--cta-bg-hover);color:var(--cta-text);}
+  .btn-secondary{background:transparent;color:var(--color-text);border-color:var(--color-text);}
+  .btn-secondary:hover{background:var(--color-text);color:var(--color-bg);}
+  .btn-ghost{background:transparent;color:var(--link);padding-inline:.25em;}
+
+  .card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);max-width:22rem;}
+  .card .ph{aspect-ratio:16/10;background:
+      linear-gradient(135deg,var(--neutral-200),var(--neutral-100));
+      display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);font-size:var(--text-xs);letter-spacing:var(--tracking-wide);text-transform:uppercase;}
+  .card .body{padding:var(--space-lg);}
+  .card .body h4{font-family:var(--font-display);font-weight:400;font-size:var(--text-lg);margin:0 0 var(--space-xs);}
+  .card .body p{margin:0 0 var(--space-md);color:var(--color-text-soft);font-size:var(--text-sm);}
+
+  .trustbar{display:flex;flex-wrap:wrap;gap:var(--space-lg);align-items:center;}
+  .badge{display:inline-flex;align-items:center;gap:.55em;font-size:var(--text-sm);font-weight:600;color:var(--color-text-soft);}
+  .badge .b-ic{width:1.6rem;height:1.6rem;border-radius:var(--radius-pill);background:var(--color-brand-tint);color:var(--color-brand-deep);display:grid;place-items:center;font-size:.9rem;}
+
+  .field{display:flex;flex-direction:column;gap:var(--space-2xs);max-width:22rem;}
+  .field label{font-size:var(--text-sm);font-weight:600;}
+  .field input{font:inherit;padding:.7em .9em;border:1px solid var(--color-border-strong);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);}
+  .field input:focus-visible{outline:3px solid var(--focus-color);outline-offset:1px;border-color:var(--color-brand);}
+  .field .help{font-size:var(--text-xs);color:var(--color-text-muted);}
+  .field .err{font-size:var(--text-xs);color:#b3402f;}
+
+  .quote{border-left:3px solid var(--color-accent);padding:var(--space-md) 0 var(--space-md) var(--space-lg);max-width:40ch;}
+  .quote p{font-family:var(--font-display);font-weight:400;font-size:var(--text-lg);line-height:var(--leading-snug);margin:0 0 var(--space-sm);}
+  .quote cite{font-style:normal;font-size:var(--text-sm);color:var(--color-text-muted);}
+
+  /* On-dark demo band — the inverse role mapping */
+  .demo-dark{
+    --color-bg:var(--neutral-900); --color-bg-alt:var(--neutral-800);
+    --color-surface:var(--neutral-800);
+    --color-text:var(--neutral-50); --color-text-soft:var(--neutral-400); --color-text-muted:var(--neutral-500);
+    --color-border:rgba(255,255,255,.14); --color-border-strong:rgba(255,255,255,.28);
+    --link:var(--blue-300); --link-hover:var(--neutral-0);
+    background:var(--neutral-900);color:var(--neutral-50);
+    border-radius:var(--radius-lg);padding:var(--space-2xl);
+  }
+  .callbar{display:flex;flex-wrap:wrap;gap:var(--space-md);align-items:center;justify-content:space-between;background:var(--neutral-900);color:var(--neutral-50);border-radius:var(--radius-md);padding:var(--space-md) var(--space-lg);}
+  .callbar .nums{display:flex;gap:var(--space-lg);flex-wrap:wrap;font-weight:600;}
+  .callbar .nums span{color:var(--neutral-400);font-weight:400;font-size:var(--text-sm);}
+
+  .note{background:var(--color-brand-tint);border:1px solid var(--blue-300);border-radius:var(--radius-md);padding:var(--space-md) var(--space-lg);font-size:var(--text-sm);color:var(--neutral-800);}
+  .note b{color:var(--color-brand-deep);}
+
+  .handoff li{margin-bottom:var(--space-sm);max-width:70ch;}
+  footer.doc-foot{padding-block:var(--space-2xl) var(--space-4xl);color:var(--color-text-muted);font-size:var(--text-sm);}
+</style>
+
+<div class="doc">
+  <div class="wrap">
+    <header class="masthead">
+      <p class="eyebrow kicker">The Appliance Connection · Design System v0</p>
+      <h1>Monochrome foundation.<br>Colour used with intent.</h1>
+      <p class="lede">The brand base is monochrome — inherited from the black-and-white cube trucks that pull into the driveway. Blue and warm brass are punctuation, not wallpaper: they appear only where a homeowner should look. This page is the living token set for the design phase — every value here is a considered default, made to be tuned against high-fidelity comps.</p>
+      <div class="thesis">
+        <span class="chip">Personality: <strong>premium&nbsp;craftsman</strong></span>
+        <span class="chip">Display: <strong>ITC&nbsp;Benguiat</strong></span>
+        <span class="chip">Body: <strong>system&nbsp;stack</strong></span>
+        <span class="chip">Direction: <strong>warm&nbsp;editorial</strong></span>
+      </div>
+    </header>
+  </div>
+
+  <nav class="toc" aria-label="Contents">
+    <div class="wrap">
+      <ul>
+        <li><a href="#foundations">Foundations</a></li>
+        <li><a href="#colour">Colour</a></li>
+        <li><a href="#type">Typography</a></li>
+        <li><a href="#spacing">Spacing</a></li>
+        <li><a href="#surfaces">Radii &amp; Shadow</a></li>
+        <li><a href="#components">Components</a></li>
+        <li><a href="#handoff">Handoff</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="wrap">
+
+    <!-- FOUNDATIONS -->
+    <section id="foundations">
+      <div class="sec-head">
+        <p class="eyebrow">01 — Foundations</p>
+        <h2>The three rules everything obeys</h2>
+        <p>These constrain every screen. When a choice is unclear, it's resolved by returning to these.</p>
+      </div>
+      <div class="grid cols-3">
+        <div class="demo">
+          <h3>Monochrome base</h3>
+          <p class="soft" style="margin:0">Black, white, and warm greys carry the brand — the same palette as the trucks. If you removed all colour, it should still read unmistakably as The Appliance Connection.</p>
+        </div>
+        <div class="demo">
+          <h3>Colour as punctuation</h3>
+          <p class="soft" style="margin:0">Deep blue and brass appear sparingly and deliberately — a CTA, a stat, a section accent. Never a blue header bar, never colour for its own sake.</p>
+        </div>
+        <div class="demo">
+          <h3>Chrome vs. photography</h3>
+          <p class="soft" style="margin:0">The interface stays monochrome + accents. <em>Photography is where full colour lives</em> — the gleaming finished kitchen, the install done right. The frame is quiet so the work is loud.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- COLOUR -->
+    <section id="colour">
+      <div class="sec-head">
+        <p class="eyebrow">02 — Colour</p>
+        <h2>Primitives feed roles</h2>
+        <p>Raw palette below; components never touch it directly. They consume the <em>semantic roles</em> in the table, so the whole site re-skins by editing primitives alone.</p>
+      </div>
+
+      <p class="eyebrow" style="margin-bottom:var(--space-md)">Warm neutrals — the foundation</p>
+      <div class="ramp" style="margin-bottom:var(--space-2xl)">
+        <div class="swatch"><div class="chipc" style="background:var(--neutral-0)"></div><div class="meta"><b>0</b><code>#ffffff</code></div></div>
+        <div class="swatch"><div class="chipc" style="background:var(--neutral-50)"></div><div class="meta"><b>50 · paper</b><code>#f8f5f0</code></div></div>
+        <div class="swatch"><div class="chipc" style="background:var(--neutral-100)"></div><div class="meta"><b>100</b><code>#efe9e0</code></div></div>
+        <div class="swatch"><div class="chipc" style="background:var(--neutral-200)"></div><div class="meta"><b>200</b><code>#e7e0d5</code></div></div>
+        <div class="swatch"><div class="chipc" style="background:var(--neutral-300)"></div><div class="meta"><b>300 · line</b><code>#dad3c7</code></div></div>
+        <div class="swatch"><div class="chipc" style="background:var(--neutral-400)"></div><div class="meta"><b>400</b><code>#c4bbac</code></div></div>
+        <div class="swatch"><div class="chipc" style="background:var(--neutral-500)"></div><div class="meta"><b>500</b><code>#9a9082</code></div></div>
+        <div class="swatch"><div class="chipc" style="background:var(--neutral-600)"></div><div class="meta"><b>600</b><code>#6b6357</code></div></div>
+        <div class="swatch"><div class="chipc" style="background:var(--neutral-700)"></div><div class="meta"><b>700</b><code>#4a443c</code></div></div>
+        <div class="swatch"><div class="chipc" style="background:var(--neutral-800)"></div><div class="meta"><b>800</b><code>#2c2822</code></div></div>
+        <div class="swatch"><div class="chipc" style="background:var(--neutral-900)"></div><div class="meta"><b>900 · ink</b><code>#1d1a16</code></div></div>
+      </div>
+
+      <div class="grid cols-2" style="margin-bottom:var(--space-2xl)">
+        <div>
+          <p class="eyebrow" style="margin-bottom:var(--space-md)">Refined blue — cool anchor</p>
+          <div class="ramp">
+            <div class="swatch"><div class="chipc" style="background:var(--blue-100)"></div><div class="meta"><b>100</b><code>#e9f0f5</code></div></div>
+            <div class="swatch"><div class="chipc" style="background:var(--blue-300)"></div><div class="meta"><b>300</b><code>#9cc0d8</code></div></div>
+            <div class="swatch"><div class="chipc" style="background:var(--blue-500)"></div><div class="meta"><b>500</b><code>#2a79a8</code></div></div>
+            <div class="swatch"><div class="chipc" style="background:var(--blue-600)"></div><div class="meta"><b>600 · brand</b><code>#1d5b84</code></div></div>
+            <div class="swatch"><div class="chipc" style="background:var(--blue-800)"></div><div class="meta"><b>800 · deep</b><code>#123f5c</code></div></div>
+          </div>
+        </div>
+        <div>
+          <p class="eyebrow" style="margin-bottom:var(--space-md)">Warm brass — the accent</p>
+          <div class="ramp">
+            <div class="swatch"><div class="chipc" style="background:var(--brass-100)"></div><div class="meta"><b>100</b><code>#f4ecdd</code></div></div>
+            <div class="swatch"><div class="chipc" style="background:var(--brass-300)"></div><div class="meta"><b>300</b><code>#d8bc8c</code></div></div>
+            <div class="swatch"><div class="chipc" style="background:var(--brass-500)"></div><div class="meta"><b>500 · accent</b><code>#b58a4b</code></div></div>
+            <div class="swatch"><div class="chipc" style="background:var(--brass-600)"></div><div class="meta"><b>600 · hover</b><code>#a67e3f</code></div></div>
+            <div class="swatch"><div class="chipc" style="background:var(--brass-700)"></div><div class="meta"><b>700 · deep</b><code>#94702f</code></div></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="eyebrow" style="margin-bottom:var(--space-md)">Semantic roles — what components consume</p>
+      <div class="tablewrap">
+        <table class="roles">
+          <thead><tr><th>Role</th><th>CSS variable</th><th>Value</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr><td><span class="dot" style="background:var(--neutral-50)"></span>bg</td><td><code>--color-bg</code></td><td>neutral.50</td><td>Page ground</td></tr>
+            <tr><td><span class="dot" style="background:var(--neutral-0)"></span>surface</td><td><code>--color-surface</code></td><td>neutral.0</td><td>Cards</td></tr>
+            <tr><td><span class="dot" style="background:var(--neutral-900)"></span>text</td><td><code>--color-text</code></td><td>neutral.900</td><td>Primary copy</td></tr>
+            <tr><td><span class="dot" style="background:var(--neutral-700)"></span>text-soft</td><td><code>--color-text-soft</code></td><td>neutral.700</td><td>Body / secondary</td></tr>
+            <tr><td><span class="dot" style="background:var(--blue-600)"></span>brand</td><td><code>--color-brand</code></td><td>blue.600</td><td>Links, cool accent</td></tr>
+            <tr><td><span class="dot" style="background:var(--brass-500)"></span>accent / cta</td><td><code>--cta-bg</code></td><td>brass.500</td><td>Primary CTA (ink text · AA ≈5.6:1)</td></tr>
+            <tr><td><span class="dot" style="background:var(--neutral-900)"></span>inverse-bg</td><td><code>--color-inverse-bg</code></td><td>neutral.900</td><td>Dark bands / footer</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TYPOGRAPHY -->
+    <section id="type">
+      <div class="sec-head">
+        <p class="eyebrow">03 — Typography</p>
+        <h2>Benguiat leads, the system follows</h2>
+        <p>Two roles. A characterful display serif for headlines and the wordmark; a fast, native system stack for everything read at length.</p>
+      </div>
+
+      <div class="note" style="margin-bottom:var(--space-2xl)">
+        <b>Display shown in fallback.</b> The real display face is <b>ITC&nbsp;Benguiat</b> (the trucks' typeface) — commercial, and not yet licensed/self-hosted, so headings below render in the serif fallback stack. Treat the <em>rhythm and scale</em> as final; the <em>letterforms</em> arrive with the licensed webfont. Body specimens are the real system stack.
+      </div>
+
+      <div class="specimen"><span class="tag">display</span><p class="samp display" style="font-size:var(--text-display)">Complete home appliance installation</p></div>
+      <div class="specimen"><span class="tag">3xl</span><p class="samp display" style="font-size:var(--text-3xl)">Done right, the first time</p></div>
+      <div class="specimen"><span class="tag">2xl</span><p class="samp display" style="font-size:var(--text-2xl)">Gas, kitchens &amp; laundry</p></div>
+      <div class="specimen"><span class="tag">xl</span><p class="samp display" style="font-size:var(--text-xl)">Serving Durham &amp; Peterborough</p></div>
+      <div class="specimen"><span class="tag">md · lede</span><p class="samp soft" style="font-size:var(--text-md);max-width:var(--measure)">Thirty years of licensed, insured, warrantied work — the built-ins and gas fittings a general handyman won't touch.</p></div>
+      <div class="specimen"><span class="tag">base · body</span><p class="samp" style="max-width:var(--measure)">We install every make and model of kitchen and laundry appliance, run gas lines for ranges, dryers and BBQs, and complete full kitchen and laundry renovations from rough-in to finish. Every job is warrantied, and we respond within 24 hours.</p></div>
+      <div class="specimen"><span class="tag">sm</span><p class="samp muted" style="font-size:var(--text-sm)">Captions, metadata, and form help text sit here.</p></div>
+      <div class="specimen"><span class="tag">eyebrow</span><p class="samp eyebrow">Licensed &amp; insured · TSSA</p></div>
+    </section>
+
+    <!-- SPACING -->
+    <section id="spacing">
+      <div class="sec-head">
+        <p class="eyebrow">04 — Spacing</p>
+        <h2>A generous, rhythmic scale</h2>
+        <p>16px root. Editorial layouts breathe — sections lean on the larger steps.</p>
+      </div>
+      <div class="spacer-row"><span class="tag">xs · 8</span><div class="bar" style="width:var(--space-xs)"></div></div>
+      <div class="spacer-row"><span class="tag">sm · 12</span><div class="bar" style="width:var(--space-sm)"></div></div>
+      <div class="spacer-row"><span class="tag">md · 16</span><div class="bar" style="width:var(--space-md)"></div></div>
+      <div class="spacer-row"><span class="tag">lg · 24</span><div class="bar" style="width:var(--space-lg)"></div></div>
+      <div class="spacer-row"><span class="tag">xl · 32</span><div class="bar" style="width:var(--space-xl)"></div></div>
+      <div class="spacer-row"><span class="tag">2xl · 48</span><div class="bar" style="width:var(--space-2xl)"></div></div>
+      <div class="spacer-row"><span class="tag">3xl · 64</span><div class="bar" style="width:var(--space-3xl)"></div></div>
+      <div class="spacer-row"><span class="tag">4xl · 96</span><div class="bar" style="width:var(--space-4xl)"></div></div>
+    </section>
+
+    <!-- RADII & SHADOW -->
+    <section id="surfaces">
+      <div class="sec-head">
+        <p class="eyebrow">05 — Radii &amp; Shadow</p>
+        <h2>Restrained by design</h2>
+        <p>Sharp corners and quiet, warm-tinted shadows read premium. Nothing floats more than it must.</p>
+      </div>
+      <div class="row" style="gap:var(--space-xl);align-items:flex-end">
+        <div style="text-align:center"><div style="width:5rem;height:5rem;background:var(--neutral-200);border:1px solid var(--color-border);border-radius:var(--radius-sm)"></div><small class="mono muted">sm 2px</small></div>
+        <div style="text-align:center"><div style="width:5rem;height:5rem;background:var(--neutral-200);border:1px solid var(--color-border);border-radius:var(--radius-md)"></div><small class="mono muted">md 4px</small></div>
+        <div style="text-align:center"><div style="width:5rem;height:5rem;background:var(--neutral-200);border:1px solid var(--color-border);border-radius:var(--radius-lg)"></div><small class="mono muted">lg 8px</small></div>
+        <div style="text-align:center"><div style="width:5rem;height:5rem;background:var(--color-surface);border-radius:var(--radius-md);box-shadow:var(--shadow-sm)"></div><small class="mono muted">shadow-sm</small></div>
+        <div style="text-align:center"><div style="width:5rem;height:5rem;background:var(--color-surface);border-radius:var(--radius-md);box-shadow:var(--shadow-md)"></div><small class="mono muted">shadow-md</small></div>
+        <div style="text-align:center"><div style="width:5rem;height:5rem;background:var(--color-surface);border-radius:var(--radius-md);box-shadow:var(--shadow-lg)"></div><small class="mono muted">shadow-lg</small></div>
+      </div>
+    </section>
+
+    <!-- COMPONENTS -->
+    <section id="components">
+      <div class="sec-head">
+        <p class="eyebrow">06 — Components</p>
+        <h2>Base parts, on-brand</h2>
+        <p>Skeletal on purpose — structure and states are settled here; final visual detail arrives with the high-fidelity comps.</p>
+      </div>
+
+      <div class="demo">
+        <h3>Buttons &amp; actions</h3>
+        <div class="row">
+          <a class="btn btn-primary" href="#components">Request a quote</a>
+          <a class="btn btn-secondary" href="#components">Our services</a>
+          <a class="btn btn-ghost" href="#components">See recent work →</a>
+        </div>
+        <p class="muted" style="font-size:var(--text-sm);margin:var(--space-lg) 0 0">Primary = warm brass with ink text (the one place colour becomes a button). Secondary = ink outline. Ghost = inline link action.</p>
+      </div>
+
+      <div class="demo">
+        <h3>Service card</h3>
+        <div class="card">
+          <div class="ph">Finished install photo</div>
+          <div class="body">
+            <h4>Gas piping</h4>
+            <p>Licensed gas fitting for ranges, dryers, BBQs and garage heaters — above and below grade.</p>
+            <a class="btn btn-ghost" href="#components" style="padding-left:0">Learn more →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <h3>Trust bar</h3>
+        <div class="trustbar">
+          <span class="badge"><span class="b-ic">✓</span> 30+ years</span>
+          <span class="badge"><span class="b-ic">✓</span> Licensed &amp; insured</span>
+          <span class="badge"><span class="b-ic">✓</span> Certified plumber</span>
+          <span class="badge"><span class="b-ic">✓</span> Every job warrantied</span>
+        </div>
+        <p class="muted" style="font-size:var(--text-sm);margin:var(--space-lg) 0 0">Data-driven: each badge renders only when there's a real credential behind it — we never fake trust.</p>
+      </div>
+
+      <div class="demo">
+        <h3>Testimonial</h3>
+        <blockquote class="quote">
+          <p>“They installed our double wall oven and cooktop in an afternoon — spotless, and it just worked.”</p>
+          <cite>— Homeowner, Whitby</cite>
+        </blockquote>
+      </div>
+
+      <div class="demo">
+        <h3>Form field — states</h3>
+        <div class="row" style="align-items:flex-start;gap:var(--space-2xl)">
+          <div class="field">
+            <label for="nm">Your name</label>
+            <input id="nm" type="text" placeholder="Jane Doe">
+            <span class="help">So we know who we're quoting.</span>
+          </div>
+          <div class="field">
+            <label for="em">Email</label>
+            <input id="em" type="email" value="not-an-email" aria-invalid="true">
+            <span class="err">Enter a valid email so we can send your quote.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo" style="padding:0;overflow:hidden">
+        <div class="demo-dark">
+          <p class="eyebrow" style="color:var(--brass-300)">Inverse mapping</p>
+          <h3 style="color:var(--neutral-50);font-family:var(--font-display);font-weight:400;font-size:var(--text-xl);text-transform:none;letter-spacing:0;margin:var(--space-xs) 0 var(--space-md)">Dark bands reuse the same components</h3>
+          <p class="soft" style="max-width:52ch;color:var(--neutral-400)">Add <code class="mono">.on-dark</code> to a section and the semantic roles flip to the inverse set — text, borders, and links stay legible without touching a single component. Links go <a href="#components">light blue</a>; the brass CTA still carries the eye.</p>
+          <div class="row" style="margin-top:var(--space-lg)">
+            <a class="btn btn-primary" href="#components">Get a free quote</a>
+            <a class="btn btn-secondary" href="#components" style="color:var(--neutral-0);border-color:var(--neutral-0)">Call us today</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo" style="background:transparent;border:0;padding:0;margin-top:var(--space-lg)">
+        <h3>Sticky mobile call bar</h3>
+        <div class="callbar">
+          <strong>Book your install</strong>
+          <div class="nums">
+            <a href="tel:19052596545" style="color:var(--neutral-0)">Durham <span>905·259·6545</span></a>
+            <a href="tel:17057420306" style="color:var(--neutral-0)">Peterborough <span>705·742·0306</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HANDOFF -->
+    <section id="handoff" style="border-bottom:0">
+      <div class="sec-head">
+        <p class="eyebrow">07 — Handoff notes</p>
+        <h2>For the design phase</h2>
+        <p>What's settled, what's open, and where to push.</p>
+      </div>
+      <ul class="handoff soft">
+        <li><b>Settled:</b> the token architecture (primitives → semantic roles), the monochrome-base + punctuation rule, the Benguiat/system pairing, and component structure + states.</li>
+        <li><b>Tweakable defaults:</b> exact hues (the blue's depth, the brass's warmth), the type scale's ceiling, spacing generosity, radii/shadow. Edit primitives; components follow.</li>
+        <li><b>Needs the real face:</b> license + self-host ITC Benguiat (subset, 1–2 weights) to replace the serif fallback. Headlines will gain their character then.</li>
+        <li><b>Needs real photography:</b> object/space-led, no stock people. Every card/hero placeholder here is a slot for a finished-install photo.</li>
+        <li><b>One risk worth taking:</b> lean harder into oversized Benguiat headlines against generous whitespace — the editorial confidence is what separates this from a trades template.</li>
+      </ul>
+    </section>
+
+    <footer class="doc-foot">
+      The Appliance Connection · Design System v0 · canonical tokens in <code class="mono">design-system/tokens/</code>. Values are considered defaults for the high-fidelity design phase.
+    </footer>
+
+  </div>
+</div>

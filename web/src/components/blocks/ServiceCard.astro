@@ -1,0 +1,50 @@
+---
+import type { EditorBlock, ServiceCardAttrs } from '../../lib/blocks/types';
+
+interface Props extends ServiceCardAttrs {
+  innerBlocks?: EditorBlock[];
+}
+
+const { title, description, url } = Astro.props;
+---
+
+<article class="service-card">
+  {title && <h3 class="service-card__title">{title}</h3>}
+  {description && <p class="service-card__desc">{description}</p>}
+  {
+    url && (
+      <a class="service-card__link" href={url}>
+        Learn more →
+      </a>
+    )
+  }
+</article>
+
+<style>
+  .service-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+  .service-card__title {
+    font-size: var(--text-lg);
+    margin: 0;
+  }
+  .service-card__desc {
+    color: var(--color-text-soft);
+    font-size: var(--text-sm);
+    margin: 0;
+  }
+  .service-card__link {
+    color: var(--link);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: var(--text-sm);
+    margin-top: auto;
+  }
+</style>

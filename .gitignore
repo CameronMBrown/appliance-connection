@@ -1,0 +1,48 @@
+# --- Node ---
+node_modules/
+.npm/
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# --- Astro (web) ---
+web/dist/
+web/.astro/
+.output/
+.vercel/
+.netlify/
+
+# --- Env / secrets ---
+.env
+.env.*
+!.env.example
+
+# --- WordPress custom code build artifacts ---
+# (WP core lives in Local, OUTSIDE this repo — nothing to ignore for core.
+#  We only track our own cms/ source; ignore its build output + deps.)
+cms/**/build/
+cms/**/vendor/
+cms/**/node_modules/
+
+# --- GraphQL codegen (generated types are committed by default; flip if noisy) ---
+# web/src/lib/graphql/generated/
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# --- Licensed fonts (commercial license — never commit to this public repo) ---
+# ITC Benguiat is dropped in locally at web/public/fonts/headings.woff2.
+# Without it the site falls back to the serif stack in --font-display.
+web/public/fonts/
+*.woff
+*.woff2
+*.otf
+*.ttf
+
+# --- Private companion repo (client-confidential notes, licensed fonts, env) ---
+# Cloned separately into ./private — see README → Private files.
+private/

@@ -1,0 +1,28 @@
+---
+import type { EditorBlock, ServiceGridAttrs } from '../../lib/blocks/types';
+import BlockRenderer from './BlockRenderer.astro';
+
+interface Props extends ServiceGridAttrs {
+  innerBlocks?: EditorBlock[];
+}
+
+const { heading, innerBlocks = [] } = Astro.props;
+---
+
+<section class="services section">
+  <div class="container">
+    {heading && <h2 class="services__heading">{heading}</h2>}
+    <div class="services__grid">
+      <BlockRenderer blocks={innerBlocks} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .services__grid {
+    display: grid;
+    gap: var(--space-lg);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    margin-top: var(--space-xl);
+  }
+</style>

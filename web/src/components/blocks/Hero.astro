@@ -1,0 +1,96 @@
+---
+import type { EditorBlock, HeroAttrs } from '../../lib/blocks/types';
+
+interface Props extends HeroAttrs {
+  innerBlocks?: EditorBlock[];
+}
+
+const {
+  eyebrow,
+  heading,
+  subheading,
+  imageUrl,
+  primaryLabel,
+  primaryUrl,
+  secondaryLabel,
+  secondaryUrl,
+} = Astro.props;
+---
+
+<section class="hero section">
+  <div class="container hero__inner">
+    <div class="hero__text">
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      {heading && <h1 class="hero__heading">{heading}</h1>}
+      {subheading && <p class="hero__sub">{subheading}</p>}
+      {
+        (primaryLabel || secondaryLabel) && (
+          <div class="hero__actions">
+            {primaryLabel && (
+              <a class="btn btn--primary" href={primaryUrl || '#'}>
+                {primaryLabel}
+              </a>
+            )}
+            {secondaryLabel && (
+              <a class="btn btn--secondary" href={secondaryUrl || '#'}>
+                {secondaryLabel}
+              </a>
+            )}
+          </div>
+        )
+      }
+    </div>
+    {
+      imageUrl ? (
+        <img class="hero__img" src={imageUrl} alt="" />
+      ) : (
+        <div class="hero__ph" aria-hidden="true">Finished install photo</div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .hero__inner {
+    display: grid;
+    gap: var(--space-2xl);
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+  }
+  .hero__heading {
+    font-size: var(--text-display);
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-md);
+  }
+  .hero__sub {
+    font-size: var(--text-md);
+    color: var(--color-text-soft);
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+  }
+  .hero__img,
+  .hero__ph {
+    border-radius: var(--radius-lg);
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    object-fit: cover;
+  }
+  .hero__ph {
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--color-bg-sunken), var(--color-bg-alt));
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+  @media (max-width: 820px) {
+    .hero__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,24 @@
+{
+  "name": "appliance-connection",
+  "private": true,
+  "version": "0.0.0",
+  "description": "The Appliance Connection — headless WordPress (native Gutenberg blocks) + WPGraphQL + Astro. Monorepo.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "web"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace web",
+    "build": "npm run build --workspace web",
+    "preview": "npm run preview --workspace web",
+    "blocks:build": "npm --prefix cms/plugins/ac-blocks run build",
+    "blocks:start": "npm --prefix cms/plugins/ac-blocks run start",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,astro,json,css,md}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  }
+}

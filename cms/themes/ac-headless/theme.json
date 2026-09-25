@@ -1,0 +1,10 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 2,
+  "settings": {
+    "appearanceTools": true,
+    "layout": { "contentSize": "820px", "wideSize": "1200px" },
+    "color": { "custom": true, "defaultPalette": true },
+    "typography": { "customFontSize": true, "lineHeight": true }
+  }
+}

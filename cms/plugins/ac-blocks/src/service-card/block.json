@@ -1,0 +1,20 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/service-card",
+  "title": "Service card",
+  "category": "ac",
+  "icon": "screenoptions",
+  "description": "A single service — title, short blurb, optional icon + link. Lives inside a Service grid.",
+  "parent": [ "ac/service-grid" ],
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "title": { "type": "string", "default": "" },
+    "description": { "type": "string", "default": "" },
+    "icon": { "type": "string", "default": "" },
+    "url": { "type": "string", "default": "" }
+  },
+  "supports": { "html": false },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

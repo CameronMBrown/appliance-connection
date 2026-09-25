@@ -1,0 +1,9 @@
+/*
+Theme Name: AC Headless
+Description: Minimal block theme for The Appliance Connection headless setup. The public site is rendered by Astro; this theme only backs the WordPress admin and block editor.
+Version: 0.1.0
+Requires at least: 6.5
+Requires PHP: 8.0
+Author: The Appliance Connection
+Text Domain: ac-headless
+*/

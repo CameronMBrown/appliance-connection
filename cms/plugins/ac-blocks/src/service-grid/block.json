@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/service-grid",
+  "title": "Service grid",
+  "category": "ac",
+  "icon": "grid-view",
+  "description": "A heading plus a responsive grid of service cards (InnerBlocks).",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "heading": { "type": "string", "default": "Our services" }
+  },
+  "supports": { "html": false },
+  "allowedBlocks": [ "ac/service-card" ],
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

@@ -1,0 +1,71 @@
+---
+// Footer shell. `.on-dark` flips the semantic tokens to the inverse set — the
+// components below don't know or care they're on a dark ground.
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer on-dark">
+  <div class="container site-footer__grid">
+    <div>
+      <p class="site-footer__brand">The Appliance Connection</p>
+      <p class="site-footer__muted">
+        Complete home appliance installation. Licensed &amp; insured. 30+ years.
+      </p>
+    </div>
+    <div>
+      <h2 class="site-footer__h">Call us</h2>
+      <p><a href="tel:19052596545">Durham — 905·259·6545</a></p>
+      <p><a href="tel:17057420306">Peterborough — 705·742·0306</a></p>
+    </div>
+    <div>
+      <h2 class="site-footer__h">Service areas</h2>
+      <p class="site-footer__muted">Durham Region &amp; Peterborough, Ontario.</p>
+    </div>
+  </div>
+  <div class="container site-footer__legal">
+    <p class="site-footer__muted">© {year} The Appliance Connection</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-bg); /* = inverse-bg under .on-dark */
+    color: var(--color-text);
+    padding-block: var(--space-3xl) var(--space-xl);
+    margin-top: var(--space-5xl);
+  }
+  .site-footer__grid {
+    display: grid;
+    gap: var(--space-2xl);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  }
+  .site-footer__brand {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-xs);
+  }
+  .site-footer__h {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-sm);
+  }
+  .site-footer a {
+    color: var(--link);
+    text-decoration: none;
+  }
+  .site-footer a:hover {
+    color: var(--link-hover);
+  }
+  .site-footer__muted {
+    color: var(--color-text-muted);
+  }
+  .site-footer__legal {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+  }
+</style>

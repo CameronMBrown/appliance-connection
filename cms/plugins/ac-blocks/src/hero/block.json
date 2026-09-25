@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/hero",
+  "title": "Hero",
+  "category": "ac",
+  "icon": "cover-image",
+  "description": "Page hero — eyebrow, headline, supporting line, image, and a dual call-to-action.",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "eyebrow": { "type": "string", "default": "" },
+    "heading": { "type": "string", "default": "" },
+    "subheading": { "type": "string", "default": "" },
+    "imageId": { "type": "number" },
+    "imageUrl": { "type": "string", "default": "" },
+    "primaryLabel": { "type": "string", "default": "Request a quote" },
+    "primaryUrl": { "type": "string", "default": "" },
+    "secondaryLabel": { "type": "string", "default": "" },
+    "secondaryUrl": { "type": "string", "default": "" }
+  },
+  "supports": { "html": false, "reusable": false, "multiple": false },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}
