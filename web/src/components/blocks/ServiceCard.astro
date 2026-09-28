@@ -2,6 +2,9 @@
 // ac/service-card — static port of design-system ServiceCard. Square, thin
 // ink outline, text-first (no image slot by design). Inside a ServiceGrid the
 // --cell-* custom properties swap the outline for the grid's shared ruling.
+// The whole card is the click target (an <a> when it has a url, a <div>
+// otherwise) rather than a separate "Learn more" link inside it — one focus
+// stop, one accessible name, matches the "clickable card" pattern.
 import type { BlockContext, EditorBlock, ServiceCardAttrs } from '../../lib/blocks/types';
 
 interface Props extends ServiceCardAttrs {
@@ -9,21 +12,41 @@ interface Props extends ServiceCardAttrs {
   context?: BlockContext;
 }
 
-const { title, description, url, index } = Astro.props;
+const { title, description, url, icon, index, context } = Astro.props;
+
+// The service's own icon (WP `ac_icon`) is the card's eyebrow wherever the card
+// appears; an icon set on the block itself wins. Paths are matched with a
+// trailing slash, however the editor typed the link.
+const key = url ? `${url.replace(/\/?$/, '/')}` : '';
+const override = icon && /^(https?:)?\//.test(icon) ? icon : undefined;
+const iconSrc = override || context?.serviceIcons?.[key];
+
+const Tag = url ? 'a' : 'div';
 ---
 
-<article class="ac-service-card">
-  {index && <span class="ac-service-card__index">{index}</span>}
-  {title && <h3 class="ac-service-card__title">{title}</h3>}
-  {description && <p class="ac-service-card__desc">{description}</p>}
+<Tag class="ac-service-card" href={url} aria-label={url && title ? title : undefined}>
   {
-    url && (
-      <a class="ac-service-card__link" href={url}>
-        Learn more →
-      </a>
+    iconSrc ? (
+      <img class="ac-service-card__icon" src={iconSrc} alt="" width="48" height="48" loading="lazy" decoding="async" />
+    ) : (
+      index && <span class="ac-service-card__index">{index}</span>
     )
   }
-</article>
+  <span class="ac-service-card__title-row">
+    {title && <h3 class="ac-service-card__title">{title}</h3>}
+    {
+      url && (
+        <span class="ac-service-card__arrow" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="10" x2="17" y2="10" />
+            <polyline points="11 4 17 10 11 16" />
+          </svg>
+        </span>
+      )
+    }
+  </span>
+  {description && <p class="ac-service-card__desc">{description}</p>}
+</Tag>
 
 <style>
   .ac-service-card {
@@ -33,7 +56,10 @@ const { title, description, url, index } = Astro.props;
     padding: var(--cell-pad, var(--space-lg));
     display: flex;
     flex-direction: column;
+    flex: 1 1 33.333%;
     gap: var(--space-xs);
+    color: inherit;
+    text-decoration: none;
     transition:
       box-shadow var(--dur) var(--ease-standard),
       background var(--dur) var(--ease-standard);
@@ -42,6 +68,10 @@ const { title, description, url, index } = Astro.props;
     background: var(--color-bg-alt);
     box-shadow: var(--cell-shadow-hover, var(--shadow-md));
   }
+  .ac-service-card:focus-visible {
+    outline: 2px solid var(--link);
+    outline-offset: -2px;
+  }
   .ac-service-card__index {
     font-size: var(--text-xs);
     letter-spacing: var(--tracking-wide);
@@ -49,26 +79,110 @@ const { title, description, url, index } = Astro.props;
     font-weight: var(--weight-semibold);
     color: var(--color-text-muted);
   }
+  /* Black line-art PNGs; flipped to white on inverse (.on-dark) bands. */
+  .ac-service-card__icon {
+    display: block;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: var(--space-sm);
+  }
+  :global(.on-dark) .ac-service-card__icon {
+    filter: invert(1);
+  }
+  .ac-service-card__title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
   .ac-service-card__title {
     font-size: var(--text-lg);
     margin: 0;
+    text-decoration: none;
   }
   .ac-service-card__desc {
     color: var(--color-text-soft);
     font-size: var(--text-sm);
     margin: 0;
+    text-decoration: none;
     max-width: none;
   }
-  .ac-service-card__link {
+  /* Desktop: hidden until hover/focus, then pulses left-right next to the
+     title. Hidden entirely on mobile (large static arrow there instead). */
+  .ac-service-card__arrow {
+    display: inline-flex;
+    /* Same height as the title's line-height, not an arbitrary icon size. */
+    width: calc(var(--text-lg) * var(--leading-snug));
+    height: calc(var(--text-lg) * var(--leading-snug));
     color: var(--link);
-    text-decoration: none;
-    font-weight: var(--weight-semibold);
-    font-size: var(--text-sm);
-    margin-top: auto;
-    padding-top: var(--space-md);
-    border-top: 1px solid var(--color-border);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity var(--dur) var(--ease-standard);
   }
-  .ac-service-card__link:hover {
-    color: var(--link-hover);
+  .ac-service-card__arrow svg {
+    width: 100%;
+    height: 100%;
+  }
+  .ac-service-card:hover .ac-service-card__arrow,
+  .ac-service-card:focus-visible .ac-service-card__arrow {
+    opacity: 1;
+    animation: ac-arrow-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes ac-arrow-pulse {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(4px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ac-service-card:hover .ac-service-card__arrow,
+    .ac-service-card:focus-visible .ac-service-card__arrow {
+      animation: none;
+      transform: none;
+    }
+  }
+
+  /* Mobile: horizontal card — icon + title share a row, subtitle below, and
+     a large static right-pointing arrow replaces the desktop hover arrow. */
+  @media (max-width: 640px) {
+    .ac-service-card {
+      position: relative;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      flex-basis: 100%;
+      padding-right: calc(var(--cell-pad, var(--space-lg)) + var(--space-xl));
+    }
+    .ac-service-card__icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      margin-bottom: 0;
+      margin-right: var(--space-sm);
+    }
+    .ac-service-card__index {
+      margin-right: var(--space-sm);
+    }
+    .ac-service-card__title-row {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .ac-service-card__desc {
+      flex-basis: 100%;
+      margin-top: var(--space-xs);
+    }
+    .ac-service-card__arrow {
+      opacity: 1;
+      animation: none;
+      transform: none;
+      position: absolute;
+      right: var(--space-lg);
+      top: 50%;
+      translate: 0 -50%;
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--color-text-muted);
+    }
   }
 </style>

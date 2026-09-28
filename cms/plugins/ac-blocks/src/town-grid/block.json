@@ -32,6 +32,18 @@
       "type": "array",
       "default": []
     },
+    "primaryLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "primaryUrl": {
+      "type": "string",
+      "default": "/contact/"
+    },
+    "showPhone": {
+      "type": "boolean",
+      "default": false
+    },
     "background": {
       "type": "string",
       "enum": [

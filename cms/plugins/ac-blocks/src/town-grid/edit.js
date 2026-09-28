@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { PanelBody, TextControl, ToggleControl } from '@wordpress/components';
 import ListControl from '../shared/ListControl';
 import { SectionHeaderInline, SectionHeaderPanel } from '../shared/SectionHeaderFields';
 
@@ -13,6 +14,25 @@ export default function Edit( { attributes, setAttributes } ) {
 		<div { ...blockProps }>
 			<InspectorControls>
 				<SectionHeaderPanel attributes={ attributes } setAttributes={ setAttributes } />
+				<PanelBody title={ __( 'Call to action', 'ac-blocks' ) } initialOpen={ false }>
+					<TextControl
+						label={ __( 'Button label', 'ac-blocks' ) }
+						help={ __( 'Leave empty to hide the Contact button.', 'ac-blocks' ) }
+						value={ attributes.primaryLabel }
+						onChange={ ( primaryLabel ) => setAttributes( { primaryLabel } ) }
+					/>
+					<TextControl
+						label={ __( 'Button URL', 'ac-blocks' ) }
+						value={ attributes.primaryUrl }
+						onChange={ ( primaryUrl ) => setAttributes( { primaryUrl } ) }
+					/>
+					<ToggleControl
+						label={ __( 'Show the region phone button', 'ac-blocks' ) }
+						help={ __( 'Uses the number for this page’s region.', 'ac-blocks' ) }
+						checked={ attributes.showPhone }
+						onChange={ ( showPhone ) => setAttributes( { showPhone } ) }
+					/>
+				</PanelBody>
 			</InspectorControls>
 			<SectionHeaderInline attributes={ attributes } setAttributes={ setAttributes } />
 			<ListControl

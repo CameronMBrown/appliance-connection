@@ -56,7 +56,7 @@ export function SectionHeaderPanel( { attributes, setAttributes } ) {
 	);
 }
 
-export function BackgroundControl( { value, onChange } ) {
+export function BackgroundControl( { value, onChange, allowDark = false } ) {
 	return (
 		<SelectControl
 			label={ __( 'Background', 'ac-blocks' ) }
@@ -64,6 +64,7 @@ export function BackgroundControl( { value, onChange } ) {
 			options={ [
 				{ label: __( 'Paper', 'ac-blocks' ), value: 'paper' },
 				{ label: __( 'Off-white', 'ac-blocks' ), value: 'alt' },
+				...( allowDark ? [ { label: __( 'Dark', 'ac-blocks' ), value: 'dark' } ] : [] ),
 			] }
 			onChange={ onChange }
 		/>

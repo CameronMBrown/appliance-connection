@@ -3,8 +3,12 @@ import * as React from 'react';
 export interface HeaderNavItem {
   label: string;
   href: string;
-  /** Present on Services / Durham / Peterborough — first child is the hub page itself. */
+  /** Dropdown links. The parent href is the section landing page (clicking the trigger goes there), so don't repeat it here unless it is a real peer (e.g. Durham under Service Areas). */
   children?: HeaderNavItem[];
+  /** Desktop nav only: the label is a button that opens the dropdown instead of linking to `href` (for groupings with no landing page, e.g. Service Areas). Requires `children`. */
+  toggleOnly?: boolean;
+  /** Small icon shown beside the link in the dropdown / drawer (service links). */
+  icon?: string;
 }
 
 export interface HeaderPhone {

@@ -20,5 +20,5 @@ const phones = phonesFor(page.region, site.phones);
 ---
 
 <BaseLayout title={page.title} description={page.description} site={site} phones={phones}>
-  <BlockRenderer blocks={page.blocks} context={{ region: page.region, phones }} />
+  <BlockRenderer blocks={page.blocks} context={{ region: page.region, phones, serviceIcons: site.serviceIcons }} />
 </BaseLayout>
