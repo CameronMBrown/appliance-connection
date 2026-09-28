@@ -3,16 +3,21 @@ import {
 	useBlockProps,
 	RichText,
 	InspectorControls,
-	MediaUpload,
-	MediaUploadCheck,
+	BlockControls,
+	MediaPlaceholder,
+	MediaReplaceFlow,
 } from '@wordpress/block-editor';
 import { PanelBody, TextControl, ToggleControl, Button } from '@wordpress/components';
 
 /** Editor approximation — real design: web/src/components/blocks/PageHeader.astro. */
 export default function Edit( { attributes, setAttributes } ) {
-	const { eyebrow, heading, intro, illustrationUrl, primaryLabel, primaryUrl, showPhone } = attributes;
+	const { eyebrow, heading, intro, illustrationId, illustrationUrl, illustrationAlt, primaryLabel, primaryUrl, showPhone } = attributes;
 	const blockProps = useBlockProps( { className: 'ac-edit ac-edit--page-header' } );
 	const text = ( key ) => ( v ) => setAttributes( { [ key ]: v } );
+	const selectArt = ( m ) =>
+		setAttributes( { illustrationId: m.id, illustrationUrl: m.url, illustrationAlt: m.alt || '' } );
+	const clearArt = () =>
+		setAttributes( { illustrationId: undefined, illustrationUrl: '', illustrationAlt: '' } );
 
 	return (
 		<div { ...blockProps }>
@@ -27,28 +32,51 @@ export default function Edit( { attributes, setAttributes } ) {
 						onChange={ text( 'showPhone' ) }
 					/>
 				</PanelBody>
-				<PanelBody title={ __( 'Illustration', 'ac-blocks' ) }>
-					<MediaUploadCheck>
-						<MediaUpload
-							onSelect={ ( m ) =>
-								setAttributes( { illustrationId: m.id, illustrationUrl: m.url, illustrationAlt: m.alt } )
-							}
-							allowedTypes={ [ 'image' ] }
-							value={ attributes.illustrationId }
-							render={ ( { open } ) => (
-								<Button variant="secondary" onClick={ open }>
-									{ illustrationUrl ? __( 'Replace illustration', 'ac-blocks' ) : __( 'Add illustration', 'ac-blocks' ) }
-								</Button>
-							) }
+				{ illustrationUrl && (
+					<PanelBody title={ __( 'Illustration', 'ac-blocks' ) }>
+						<TextControl
+							label={ __( 'Alt text', 'ac-blocks' ) }
+							help={ __( 'Leave empty if the illustration is purely decorative.', 'ac-blocks' ) }
+							value={ illustrationAlt }
+							onChange={ text( 'illustrationAlt' ) }
 						/>
-					</MediaUploadCheck>
-					{ illustrationUrl && <img src={ illustrationUrl } alt="" style={ { maxWidth: '160px', marginTop: '8px' } } /> }
-				</PanelBody>
+						<Button variant="link" isDestructive onClick={ clearArt }>
+							{ __( 'Remove illustration', 'ac-blocks' ) }
+						</Button>
+					</PanelBody>
+				) }
 			</InspectorControls>
+
+			{ illustrationUrl && (
+				<BlockControls group="other">
+					<MediaReplaceFlow
+						mediaId={ illustrationId }
+						mediaURL={ illustrationUrl }
+						allowedTypes={ [ 'image' ] }
+						accept="image/*"
+						onSelect={ selectArt }
+						name={ __( 'Replace illustration', 'ac-blocks' ) }
+					/>
+				</BlockControls>
+			) }
 
 			<RichText tagName="p" className="ac-edit__eyebrow" value={ eyebrow } allowedFormats={ [] } onChange={ text( 'eyebrow' ) } placeholder={ __( 'Eyebrow…', 'ac-blocks' ) } />
 			<RichText tagName="h1" value={ heading } allowedFormats={ [] } onChange={ text( 'heading' ) } placeholder={ __( 'Headline…', 'ac-blocks' ) } />
 			<RichText tagName="p" value={ intro } allowedFormats={ [] } onChange={ text( 'intro' ) } placeholder={ __( 'One line of intro…', 'ac-blocks' ) } />
+
+			<div className="ac-edit__art" style={ { marginTop: '16px' } }>
+				{ illustrationUrl ? (
+					<img src={ illustrationUrl } alt={ illustrationAlt } style={ { display: 'block', maxHeight: '22rem', width: 'auto', maxWidth: '100%' } } />
+				) : (
+					<MediaPlaceholder
+						icon="format-image"
+						labels={ { title: __( 'Illustration', 'ac-blocks' ), instructions: __( 'Upload or pick the image shown beside the headline.', 'ac-blocks' ) } }
+						allowedTypes={ [ 'image' ] }
+						accept="image/*"
+						onSelect={ selectArt }
+					/>
+				) }
+			</div>
 		</div>
 	);
 }

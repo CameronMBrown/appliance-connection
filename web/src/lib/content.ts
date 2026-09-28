@@ -2,7 +2,17 @@ import type { PageData } from './blocks/types';
 import { pages as fixturePages } from '../fixtures/pages';
 import { gqlQuery } from './graphql/client';
 import { EDITOR_BLOCKS, normaliseBlocks } from './graphql/blocks';
-import { FOOTER_LINKS, LEGAL_LINKS, NAV, PHONES, type NavItem, type Phone, type RegionSlug } from './site';
+import {
+  FOOTER_LINKS,
+  LEGAL_LINKS,
+  NAV,
+  PHONES,
+  SERVICE_ICONS,
+  withIcons,
+  type NavItem,
+  type Phone,
+  type RegionSlug,
+} from './site';
 
 /**
  * The content seam. With WPGRAPHQL_URL set (web/.env), every page, the menus
@@ -23,6 +33,8 @@ export interface SiteData {
   footerLinks: NavItem[];
   legalLinks: NavItem[];
   phones: Record<RegionSlug, Phone>;
+  /** Service path → icon URL (the Service's `ac_icon` meta in WP). */
+  serviceIcons: Record<string, string>;
 }
 
 const useWordPress = Boolean(import.meta.env.WPGRAPHQL_URL);
@@ -39,7 +51,7 @@ const ALL_CONTENT = /* GraphQL */ `
       nodes { ${SEO} slug uri isFrontPage ${EDITOR_BLOCKS} }
     }
     services(first: 100, where: { orderby: { field: MENU_ORDER, order: ASC } }) {
-      nodes { ${SEO} slug ${EDITOR_BLOCKS} }
+      nodes { ${SEO} slug icon ${EDITOR_BLOCKS} }
     }
     locations(first: 100) {
       nodes {
@@ -72,7 +84,7 @@ interface WpMenuItem {
 }
 interface AllContent {
   pages: { nodes: (WpNode & { uri: string; isFrontPage: boolean })[] };
-  services: { nodes: WpNode[] };
+  services: { nodes: (WpNode & { icon?: string | null })[] };
   locations: {
     nodes: (WpNode & {
       phone?: string | null;
@@ -107,6 +119,10 @@ function toNav(items: WpMenuItem[]): NavItem[] {
     if (parent) (parent.children ??= []).push(node);
     else roots.push(node);
   }
+  // A parent whose url repeats one of its own children (Service Areas → /durham/,
+  // with Durham Region under it) is only a grouping: the header label toggles the
+  // dropdown instead of navigating to that first child.
+  for (const r of roots) if (r.children?.some((c) => c.href === r.href)) r.toggleOnly = true;
   return roots;
 }
 
@@ -124,27 +140,34 @@ async function loadFromWordPress(): Promise<{ pages: Record<string, PageData>; s
     const path = p.isFrontPage ? '/' : p.uri.replace(/\/$/, '');
     pages[path] = toPage(p);
   }
+  // A service with no icon set in WP keeps the bundled fallback.
+  const serviceIcons: Record<string, string> = { ...SERVICE_ICONS };
   for (const s of data.services.nodes) {
     pages[`/services/${s.slug}`] = toPage(s);
+    if (s.icon) serviceIcons[`/services/${s.slug}/`] = s.icon;
   }
 
   const phones: Record<RegionSlug, Phone> = { ...PHONES };
   for (const l of data.locations.nodes) {
     const hub = l.parent?.node.slug;
+    // v1 scope: only the region hubs route (Durham, Peterborough). Sub-region
+    // locations (towns) may still exist in WP for later use, but don't get a page yet.
+    if (hub) continue;
     // The ac_region term is the source of truth; the hub slug is the fallback.
-    const region = l.regions.nodes.map((r) => r.slug).find(isRegion) ?? [hub, l.slug].find(isRegion);
-    pages[hub ? `/${hub}/${l.slug}` : `/${l.slug}`] = toPage(l, region);
+    const region = l.regions.nodes.map((r) => r.slug).find(isRegion) ?? l.slug;
+    pages[`/${l.slug}`] = toPage(l, isRegion(region) ? region : undefined);
     // Region hubs carry the region's phone number (ac_phone meta).
-    if (!hub && isRegion(l.slug) && l.phone) {
+    if (isRegion(l.slug) && l.phone) {
       phones[l.slug] = { ...PHONES[l.slug], phone: l.phone, tel: telFor(l.phone) };
     }
   }
 
   const site: SiteData = {
-    nav: data.primary.nodes.length ? toNav(data.primary.nodes) : NAV,
+    nav: withIcons(data.primary.nodes.length ? toNav(data.primary.nodes) : NAV, serviceIcons),
     footerLinks: data.footer.nodes.length ? toNav(data.footer.nodes) : FOOTER_LINKS,
     legalLinks: data.legal.nodes.length ? toNav(data.legal.nodes) : LEGAL_LINKS,
     phones,
+    serviceIcons,
   };
   return { pages, site };
 }
@@ -163,7 +186,13 @@ function load() {
     ? loadFromWordPress()
     : Promise.resolve({
         pages: fixturePages,
-        site: { nav: NAV, footerLinks: FOOTER_LINKS, legalLinks: LEGAL_LINKS, phones: PHONES },
+        site: {
+          nav: withIcons(NAV, SERVICE_ICONS),
+          footerLinks: FOOTER_LINKS,
+          legalLinks: LEGAL_LINKS,
+          phones: PHONES,
+          serviceIcons: SERVICE_ICONS,
+        },
       });
   return cache;
 }

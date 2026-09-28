@@ -3,6 +3,10 @@
 // SectionHeader (Location template). Cells share ONE ruling: each card drops
 // its outline and draws a right/bottom hairline instead, and the grid clips
 // the overhang so a short last row never shows an ink gap.
+//
+// Flexbox, not CSS grid: each ServiceCard carries flex: 1 1 33.333%, so full
+// rows sit 3-up and a short final row (1 or 2 cards) grows to fill the row
+// instead of leaving empty cells — the standard "last row fills" flex trick.
 import BlockRenderer from './BlockRenderer.astro';
 import SectionHeader from '../SectionHeader.astro';
 import type { BlockContext, EditorBlock, ServiceGridAttrs } from '../../lib/blocks/types';
@@ -53,7 +57,8 @@ const cards = numbered
     --cell-shadow: inset -1px -1px 0 var(--color-border-strong);
     --cell-shadow-hover: var(--cell-shadow);
     --cell-pad: var(--space-xl);
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
     background: var(--color-surface);
     border-top: 1px solid var(--color-border-strong);
     border-left: 1px solid var(--color-border-strong);
@@ -63,7 +68,6 @@ const cards = numbered
     box-shadow:
       inset -1px -1px 0 var(--color-border-strong),
       var(--shadow-md);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
     margin-top: var(--space-xl);
   }
 </style>

@@ -40,7 +40,33 @@ export interface NavItem {
   label: string;
   href: string;
   children?: NavItem[];
+  /** Desktop header: clicking the label opens the dropdown instead of navigating. */
+  toggleOnly?: boolean;
+  /** Service icon URL — filled in for service links from SERVICE_ICONS / WP `ac_icon`. */
+  icon?: string;
 }
+
+/**
+ * Fallback service icons, keyed by service path (with trailing slash). The live
+ * ones are each Service's `ac_icon` meta (a WP media-library URL); these copies
+ * in web/public stand in when WordPress isn't connected.
+ */
+export const SERVICE_ICONS: Record<string, string> = {
+  '/services/appliance-installation/': '/icons/services/appliance-installation.png',
+  '/services/gas-piping/': '/icons/services/gas-piping.png',
+  '/services/heaters/': '/icons/services/heaters.png',
+  '/services/kitchens/': '/icons/services/kitchens.png',
+  '/services/laundry-rooms/': '/icons/services/laundry-rooms.png',
+  '/services/plumbing-fixtures/': '/icons/services/plumbing-fixtures.png',
+};
+
+/** Attach service icons to any nav link that points at a service. */
+export const withIcons = (items: NavItem[], icons: Record<string, string>): NavItem[] =>
+  items.map((i) => ({
+    ...i,
+    ...(icons[i.href] && { icon: icons[i.href] }),
+    ...(i.children && { children: withIcons(i.children, icons) }),
+  }));
 
 /**
  * Fallback navigation (used when WordPress isn't connected). The live menus are
@@ -52,7 +78,6 @@ export const NAV: NavItem[] = [
     label: 'Services',
     href: '/services/',
     children: [
-      { label: 'All services', href: '/services/' },
       { label: 'Appliance installation', href: '/services/appliance-installation/' },
       { label: 'Gas piping', href: '/services/gas-piping/' },
       { label: 'Kitchens', href: '/services/kitchens/' },
@@ -62,27 +87,17 @@ export const NAV: NavItem[] = [
     ],
   },
   {
-    label: 'Durham',
+    // v1 scope: only the two region hubs. Sub-region pages/links come back later.
+    label: 'Service Areas',
     href: '/durham/',
+    toggleOnly: true,
     children: [
       { label: 'Durham Region', href: '/durham/' },
-      { label: 'Oshawa', href: '/durham/oshawa/' },
-      { label: 'Whitby', href: '/durham/whitby/' },
-      { label: 'Pickering', href: '/durham/pickering/' },
-    ],
-  },
-  {
-    label: 'Peterborough',
-    href: '/peterborough/',
-    children: [
       { label: 'Peterborough', href: '/peterborough/' },
-      { label: 'Lakefield', href: '/peterborough/lakefield/' },
-      { label: 'Bridgenorth', href: '/peterborough/bridgenorth/' },
-      { label: 'Ennismore', href: '/peterborough/ennismore/' },
     ],
   },
   { label: 'About', href: '/about/' },
-  { label: 'Contact', href: '/contact/' },
+  // No "Contact" item here — the header CTA ("Contact Us") already covers it.
 ];
 
 export const FOOTER_LINKS: NavItem[] = [
@@ -102,12 +117,16 @@ export function navPath(pathname: string): string {
 }
 
 /**
- * The top-level nav href a path belongs to, so /durham/oshawa/ still marks
- * "Durham" as current.
+ * The top-level nav href a path belongs to, so /peterborough/ still marks
+ * "Service Areas" as current even though the item's own href is /durham/.
  */
 export function navSection(pathname: string, nav: NavItem[] = NAV): string {
   const p = navPath(pathname);
   if (p === '/') return '/';
-  const top = nav.find((item) => item.href !== '/' && p.startsWith(item.href));
+  const top = nav.find(
+    (item) =>
+      (item.href !== '/' && p.startsWith(item.href)) ||
+      item.children?.some((c) => c.href !== '/' && p.startsWith(c.href)),
+  );
   return top ? top.href : p;
 }

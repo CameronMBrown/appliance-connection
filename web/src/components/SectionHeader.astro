@@ -2,6 +2,7 @@
 // Static port of design-system/components/blocks/SectionHeader.jsx — the
 // standard opener: eyebrow, heading, optional sub-line and right-aligned link,
 // all sitting on one ink rule. Not a block itself; section blocks use it.
+// Anything passed as children lands at the end of the row (e.g. a CTA).
 import type { SectionHeaderAttrs } from '../lib/blocks/types';
 
 interface Props extends SectionHeaderAttrs {
@@ -25,6 +26,7 @@ const H = `h${level}` as 'h2';
           {linkLabel} →
         </a>
       )}
+      <slot />
     </div>
   )
 }

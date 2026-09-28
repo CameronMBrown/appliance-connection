@@ -31,7 +31,7 @@ export default function Edit( { attributes, setAttributes } ) {
 							) }
 						/>
 					</MediaUploadCheck>
-					<BackgroundControl value={ background } onChange={ ( v ) => setAttributes( { background: v } ) } />
+					<BackgroundControl allowDark value={ background } onChange={ ( v ) => setAttributes( { background: v } ) } />
 				</PanelBody>
 			</InspectorControls>
 			<RichText tagName="h2" value={ heading } allowedFormats={ [] } onChange={ ( v ) => setAttributes( { heading: v } ) } placeholder={ __( 'Heading…', 'ac-blocks' ) } />

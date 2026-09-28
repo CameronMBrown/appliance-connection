@@ -1,6 +1,9 @@
 ---
 // ac/media-text — ruled heading + rich-text body beside an illustration
 // ("Local crew, local calls" on the Location template).
+// `background: 'dark'` (Section settings) gives an ink band with white text and
+// frames the illustration in a white box so line art stays legible. Styled here
+// with the inverse tokens, not the `.on-dark` scope.
 import type { BlockContext, EditorBlock, MediaTextAttrs } from '../../lib/blocks/types';
 
 interface Props extends MediaTextAttrs {
@@ -15,7 +18,12 @@ const hasContent = Boolean(heading) || paragraphs.length > 0;
 
 {
   hasContent && (
-    <section class:list={['band', { 'band--alt': background === 'alt' }]}>
+    <section
+      class:list={[
+        'band',
+        { 'band--alt': background === 'alt', 'mt--dark': background === 'dark' },
+      ]}
+    >
       <div class="container mt">
         <div class="mt__copy">
           {heading && <h2 class="mt__h">{heading}</h2>}
@@ -66,6 +74,29 @@ const hasContent = Boolean(heading) || paragraphs.length > 0;
     display: flex;
     justify-content: center;
     min-width: 0;
+  }
+  /* Dark band: ink ground, white text, white box behind the art. */
+  .mt--dark {
+    background-color: var(--color-inverse-bg);
+    color: var(--color-inverse-text);
+    border-top-color: var(--color-inverse-text);
+  }
+  .mt--dark .mt__h {
+    color: var(--color-inverse-text);
+    border-bottom-color: var(--color-inverse-text);
+  }
+  .mt--dark .mt__body :global(p) {
+    color: var(--color-inverse-text-soft);
+  }
+  .mt--dark .mt__body :global(a) {
+    color: var(--color-brand-on-dark);
+  }
+  .mt--dark .mt__art {
+    align-self: center;
+    background: var(--color-inverse-bg-alt);
+    border: 1px solid var(--color-inverse-text);
+    box-shadow: var(--shadow-md);
+    padding: clamp(1rem, 3vw, 2rem);
   }
   .mt__art img {
     width: 100%;

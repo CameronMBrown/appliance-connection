@@ -31,7 +31,8 @@
       "type": "string",
       "enum": [
         "paper",
-        "alt"
+        "alt",
+        "dark"
       ],
       "default": "paper"
     }

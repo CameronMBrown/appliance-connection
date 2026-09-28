@@ -21,6 +21,8 @@ export interface BlockContext {
   region?: RegionSlug;
   /** Both region phones, the page's own region first (from WordPress when connected). */
   phones?: Phone[];
+  /** Service path (e.g. "/services/gas-piping/") → icon URL, for service cards. */
+  serviceIcons?: Record<string, string>;
 }
 
 /** Shared by the ruled section bands — paper or the alt (off-white) ground. */
@@ -129,6 +131,8 @@ export interface ServiceCardAttrs {
   title?: string;
   description?: string;
   url?: string;
+  /** Icon URL. Usually left empty: the card falls back to its service's icon. */
+  icon?: string;
   /** Micro-label above the title; ServiceGrid fills it when `numbered`. */
   index?: string;
 }
@@ -139,7 +143,8 @@ export interface MediaTextAttrs {
   paragraphs?: string[];
   imageUrl?: string;
   imageAlt?: string;
-  background?: Background;
+  /** `dark` = ink band, white text, illustration framed in a white box. */
+  background?: Background | 'dark';
 }
 
 export interface Town {
@@ -157,6 +162,11 @@ export interface TownRegion {
 export interface TownGridAttrs extends SectionHeaderAttrs {
   regions?: TownRegion[];
   background?: Background;
+  /** CTA: Contact button label/URL. Empty label + no phone = no CTA. */
+  primaryLabel?: string;
+  primaryUrl?: string;
+  /** Adds a "Call <region>" phone button using the page's region number. */
+  showPhone?: boolean;
 }
 
 export interface TestimonialItem {

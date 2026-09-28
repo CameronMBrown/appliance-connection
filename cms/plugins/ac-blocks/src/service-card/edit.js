@@ -11,8 +11,8 @@ export default function Edit( { attributes, setAttributes } ) {
 			<InspectorControls>
 				<PanelBody title={ __( 'Service link', 'ac-blocks' ) }>
 					<TextControl
-						label={ __( 'Icon (name / slug)', 'ac-blocks' ) }
-						help={ __( 'Mapped to an icon in the Astro renderer.', 'ac-blocks' ) }
+						label={ __( 'Icon override (image URL)', 'ac-blocks' ) }
+						help={ __( "Leave empty to use the linked service's icon (set on the Service itself).", 'ac-blocks' ) }
 						value={ icon }
 						onChange={ ( v ) => setAttributes( { icon: v } ) }
 					/>
