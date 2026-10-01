@@ -15,6 +15,7 @@ import TrustStrip from '../../components/blocks/TrustStrip.astro';
 import Intro from '../../components/blocks/Intro.astro';
 import Partners from '../../components/blocks/Partners.astro';
 import StatBlock from '../../components/blocks/StatBlock.astro';
+import ServiceMap from '../../components/blocks/ServiceMap.astro';
 import ServiceGrid from '../../components/blocks/ServiceGrid.astro';
 import ServiceCard from '../../components/blocks/ServiceCard.astro';
 import MediaText from '../../components/blocks/MediaText.astro';
@@ -31,6 +32,7 @@ export const registry = {
   'ac/intro': Intro,
   'ac/partners': Partners,
   'ac/stat-block': StatBlock,
+  'ac/service-map': ServiceMap,
   'ac/service-grid': ServiceGrid,
   'ac/service-card': ServiceCard,
   'ac/media-text': MediaText,

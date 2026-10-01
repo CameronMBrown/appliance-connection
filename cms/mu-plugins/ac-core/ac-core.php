@@ -99,6 +99,7 @@ add_action(
 						array( 'ac/town-grid' ),
 						array( 'ac/testimonials' ),
 						array( 'ac/faq' ),
+						array( 'ac/partners' ),
 						array( 'ac/cta-band', array( 'showPhone' => true ) ),
 					),
 					'template_lock'       => 'all',

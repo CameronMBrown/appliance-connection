@@ -11,7 +11,15 @@ interface Props extends MediaTextAttrs {
   context?: BlockContext;
 }
 
-const { heading, paragraphs = [], imageUrl, imageAlt = '', background = 'paper' } = Astro.props;
+const {
+  heading,
+  paragraphs = [],
+  imageUrl,
+  imageAlt = '',
+  imagePosition = 'right',
+  mobileImagePosition = 'below',
+  background = 'paper',
+} = Astro.props;
 // Sections left empty in the locked Location template don't render.
 const hasContent = Boolean(heading) || paragraphs.length > 0;
 ---
@@ -24,7 +32,12 @@ const hasContent = Boolean(heading) || paragraphs.length > 0;
         { 'band--alt': background === 'alt', 'mt--dark': background === 'dark' },
       ]}
     >
-      <div class="container mt">
+      <div
+        class:list={[
+          'container mt',
+          { 'mt--flip': imagePosition === 'left', 'mt--above': mobileImagePosition === 'above' },
+        ]}
+      >
         <div class="mt__copy">
           {heading && <h2 class="mt__h">{heading}</h2>}
           {paragraphs.length > 0 && (
@@ -51,6 +64,10 @@ const hasContent = Boolean(heading) || paragraphs.length > 0;
     flex-wrap: wrap;
     gap: clamp(1.5rem, 4vw, 3rem);
     align-items: center;
+  }
+  /* Illustration on the left (desktop only; the stacked rules below override it). */
+  .mt--flip {
+    flex-direction: row-reverse;
   }
   .mt__copy {
     flex: 1 1 24rem;
@@ -103,5 +120,27 @@ const hasContent = Boolean(heading) || paragraphs.length > 0;
     max-width: 20rem;
     height: auto;
     object-fit: contain;
+  }
+  /* Stacked (tablet and below): single column, copy first unless `--above`.
+     Art is centred either way; the desktop `--flip` no longer applies. */
+  @media (max-width: 900px) {
+    .mt,
+    .mt--flip {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    /* Desktop `flex-basis: 24rem` is a width in a row but a height in a column. */
+    .mt__copy {
+      flex: 0 0 auto;
+    }
+    .mt__art {
+      flex: 0 0 auto;
+      width: 100%;
+      max-width: 22rem;
+      align-self: center;
+    }
+    .mt--above .mt__art {
+      order: -1;
+    }
   }
 </style>

@@ -10,6 +10,12 @@ interface Props extends PartnersAttrs {
 }
 
 const { heading = 'Our Selling Partners', partners = [], background = 'alt' } = Astro.props;
+
+// One partner has room for a map; two or more get a compact card whose address
+// opens Google Maps in a new tab instead.
+const single = partners.length === 1;
+const mapsUrl = (address: string[]) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address.join(', '))}`;
 ---
 
 {
@@ -17,7 +23,7 @@ const { heading = 'Our Selling Partners', partners = [], background = 'alt' } = 
     <section class:list={['band', { 'band--alt': background === 'alt' }]}>
       <div class="container">
         <h2 class="pt__h">{heading}</h2>
-        <div class="pt__grid">
+        <div class:list={['pt__grid', { 'pt__grid--single': single }]}>
           {partners.map((p) => (
             <div class="pt__cell">
               <a class="pt__logo" href={p.url} target="_blank" rel="noopener">
@@ -45,19 +51,32 @@ const { heading = 'Our Selling Partners', partners = [], background = 'alt' } = 
                   {p.address && (
                     <>
                       <span class="pt__k">Address</span>
-                      <span class="pt__v pt__v--addr">
-                        {p.address.map((line, i) => (
+                      {(() => {
+                        const lines = p.address.map((line, i) => (
                           <>
                             {i > 0 && <br />}
                             {line}
                           </>
-                        ))}
-                      </span>
+                        ));
+                        return single ? (
+                          <span class="pt__v pt__v--addr">{lines}</span>
+                        ) : (
+                          <a
+                            class="pt__v pt__v--addr pt__v--link"
+                            href={mapsUrl(p.address)}
+                            target="_blank"
+                            rel="noopener"
+                            title="Open in Google Maps"
+                          >
+                            {lines}
+                          </a>
+                        );
+                      })()}
                     </>
                   )}
                 </div>
               </div>
-              {p.mapEmbedUrl && (
+              {single && p.mapEmbedUrl && (
                 <div class="pt__map">
                   <iframe src={p.mapEmbedUrl} title={`Map — ${p.address?.join(', ') ?? p.name}`} loading="lazy" />
                   {p.directionsUrl && (
@@ -91,9 +110,10 @@ const { heading = 'Our Selling Partners', partners = [], background = 'alt' } = 
     background: var(--color-surface);
     border-top: 1px solid var(--color-border-strong);
     border-left: 1px solid var(--color-border-strong);
-    /* Cells rule their own right/bottom edges with inset shadows (an outward
-       shadow gets painted over by the next grid cell). The frame's inset rule
-       closes the right/bottom edge where a short last row leaves space. */
+    /* Cells rule their own right/bottom edges with real borders. (An inset shadow
+       is painted under the cell's children, so the logo tile's background hid it.)
+       The frame's inset rule closes the right/bottom edge where a short last row
+       leaves space. */
     box-shadow:
       inset -1px -1px 0 var(--color-border-strong),
       var(--shadow-md);
@@ -101,10 +121,24 @@ const { heading = 'Our Selling Partners', partners = [], background = 'alt' } = 
   }
   .pt__cell {
     background: var(--color-surface);
-    box-shadow:
-      inset -1px -1px 0 var(--color-border-strong);
+    border-right: 1px solid var(--color-border-strong);
+    border-bottom: 1px solid var(--color-border-strong);
     display: flex;
     flex-direction: column;
+  }
+  /* Neighbours in a row share their logo / body / map tracks (subgrid), so the
+     logo tiles, contact tables and maps line up whatever each partner's content
+     runs to. The flex column above (map pinned to the bottom) is the fallback. */
+  @supports (grid-template-rows: subgrid) {
+    .pt__cell {
+      display: grid;
+      grid-row: span 3;
+      grid-template-rows: subgrid;
+      row-gap: 0;
+    }
+  }
+  .pt__body {
+    align-content: start;
   }
   .pt__logo {
     display: flex;
@@ -137,6 +171,10 @@ const { heading = 'Our Selling Partners', partners = [], background = 'alt' } = 
     font-weight: 600;
     color: var(--color-text-muted);
     margin: 0 0 var(--space-md);
+  }
+  /* Stacked cards (two or more partners) centre the "Serving …" label. */
+  .pt__grid:not(.pt__grid--single) .pt__area {
+    text-align: center;
   }
   .pt__table {
     display: grid;
@@ -177,6 +215,14 @@ const { heading = 'Our Selling Partners', partners = [], background = 'alt' } = 
   .pt__v--addr {
     color: var(--color-text-soft);
   }
+  /* Address link in the multi-partner cards: same colours as the email link. */
+  .pt__v--link {
+    color: var(--link);
+    text-decoration: none;
+  }
+  .pt__v--link:hover {
+    color: var(--link-hover);
+  }
   .pt__map {
     margin-top: auto;
     border-top: 1px solid var(--color-border-strong);
@@ -207,5 +253,39 @@ const { heading = 'Our Selling Partners', partners = [], background = 'alt' } = 
   .pt__dir:hover {
     background: var(--cta-bg);
     color: var(--cta-text);
+  }
+
+  /* One partner: a full-width cell would stretch a 20rem card across the page,
+     so lay logo | details | map side by side instead. Stacks below 56rem. */
+  .pt__grid--single {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 56rem) {
+    .pt__grid--single .pt__cell {
+      display: grid;
+      grid-row: auto;
+      grid-template-rows: none;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 1fr);
+    }
+    .pt__grid--single .pt__logo {
+      border-bottom: 0;
+      border-right: 1px solid var(--color-border-strong);
+    }
+    .pt__grid--single .pt__body {
+      padding: var(--space-xl);
+      align-self: center;
+    }
+    .pt__grid--single .pt__map {
+      margin-top: 0;
+      border-top: 0;
+      border-left: 1px solid var(--color-border-strong);
+      min-height: 16rem;
+    }
+    .pt__grid--single .pt__map iframe {
+      position: absolute;
+      inset: 0;
+      height: 100%;
+    }
   }
 </style>

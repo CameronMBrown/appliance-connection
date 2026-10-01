@@ -5,7 +5,7 @@
  * Creates/updates, idempotently (matched by slug):
  *  - pages      /, /services, /about, /contact, /privacy, /legal (front page = home)
  *  - ac_service one per /services/{slug}
- *  - ac_location region hubs (/durham, /peterborough) + towns as their children,
+ *  - ac_location region hubs (/durham, /peterborough, /kawartha-lakes, /northumberland) + towns as their children,
  *                tagged with the ac_region term; hubs carry the region phone
  *  - menus      primary (with dropdowns), footer, legal
  *
@@ -98,6 +98,9 @@ function ac_seed_title( array $page, string $fallback ): string {
 $ac_region_names = array(
 	'durham'       => 'Durham Region',
 	'peterborough' => 'Peterborough',
+	// Service areas with no dedicated phone yet: same hub shape, no ac_phone meta.
+	'kawartha-lakes' => 'Kawartha Lakes',
+	'northumberland' => 'Northumberland',
 );
 
 // --- Region terms -------------------------------------------------------------
