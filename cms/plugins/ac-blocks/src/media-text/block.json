@@ -27,6 +27,22 @@
       "type": "string",
       "default": ""
     },
+    "imagePosition": {
+      "type": "string",
+      "enum": [
+        "right",
+        "left"
+      ],
+      "default": "right"
+    },
+    "mobileImagePosition": {
+      "type": "string",
+      "enum": [
+        "below",
+        "above"
+      ],
+      "default": "below"
+    },
     "background": {
       "type": "string",
       "enum": [

@@ -1,0 +1,157 @@
+---
+// Clickable map of the service areas. Land is a static image (public/illustrations/
+// OntarioMap-land.svg); the four region shapes are inline so each is a real <a>.
+// Region fills are the artwork's own wood ramp, so they stay literal here. No
+// outline: each path strokes in its own fill at 0.6 only to close the hairline
+// seams antialiasing leaves between neighbouring regions.
+//
+// Two layers per region, on purpose. The VISUAL layer (shape, shadow, label) is
+// what grows and floats on hover; the HIT layer is an invisible copy of the
+// shape that never moves. If the clickable element itself scaled or was moved in
+// the DOM, it slid out from under the pointer mid-click and the link never fired.
+// `hrefs` maps a region slug to its page; a region with no href still draws but
+// isn't a link (so the map never points at a page that doesn't exist).
+interface Props {
+  hrefs?: Partial<Record<'durham' | 'peterborough' | 'kawartha-lakes' | 'northumberland', string>>;
+}
+const { hrefs = {} } = Astro.props;
+const regions = [
+  { slug: 'kawartha-lakes', name: 'Kawartha Lakes', fill: '#B5854A', label: [330, 162], d: 'M281 119.5L314 215L332.5 209L341 233.5L361.5 227L353.5 204L372 197.5L345.5 119.5L327.5 124.5L314 89.5L296.5 95.5V94.5L294 95.5L300.5 112L281 119.5Z' },
+  { slug: 'peterborough', name: 'Peterborough', fill: '#D9B27C', label: [400, 152], d: 'M361.5 227L353.5 204L372 197.5L346 119.5L403 101L405.5 107L423 101L431.5 123L437 143.5L449 175L428.5 182.5L430 187L424.5 194L423 193L422 194L422.5 196.5L411 203L400.5 214L399.5 217.5L385 226V223L361.5 230.5L360 227.5L361.5 227Z' },
+  { slug: 'durham', name: 'Durham', fill: '#7A4E2A', label: [314, 238], d: 'M290.5 271.5L295 274.5L298.5 272L303.5 271.5L313 267L317.5 267.5L323.5 266L328.5 263.5H339.5L348.5 259L361 260.5L371.5 257L360 227.5L341 233.5L332.5 209L314 215L296 164.5L293 166.5L289.5 166L288 170.5L289 174L287.5 178.5L288 180.5L284.5 189L289 203L270 209L290.5 271.5Z' },
+  { slug: 'northumberland', name: 'Northumberland', fill: '#ECDCC2', label: [421, 234], d: 'M371.5 257L361.5 230.5L385 223V226L399.5 217.5L400.5 214L411 203L422.5 196.5L422 194L423 193L424.5 194L430 187L428.5 182.5L449 175L459 204L455.5 202.5H450.5L446 206.5L454 228L453.5 229L457 241H445.5L442.5 243.5H439L434.5 244.5L425.5 248H416.5L411.5 250L408 249L403 251.5H391.5L380 254L371.5 257Z' },
+];
+---
+
+<figure class="omap">
+  <svg viewBox="180 50 320 250" role="group" aria-label="Map of our service areas in south-central Ontario">
+    <defs>
+      <filter id="omap-blur" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="2.4" />
+      </filter>
+      {regions.map((r) => <path id={`omap-shape-${r.slug}`} d={r.d} />)}
+    </defs>
+    <image href="/illustrations/OntarioMap-land.svg" x="0" y="0" width="710" height="441" />
+    <g class="omap__visuals" pointer-events="none">
+      {
+        regions.map((r) => (
+          <g class="omap__visual" data-region={r.slug}>
+            <use class="omap__shadow" href={`#omap-shape-${r.slug}`} fill="#111111" filter="url(#omap-blur)" />
+            <use class="omap__fill" href={`#omap-shape-${r.slug}`} fill={r.fill} stroke={r.fill} stroke-width="0.6" />
+            <text x={r.label[0]} y={r.label[1]} text-anchor="middle" class:list={['omap__label', r.slug === 'durham' && 'omap__label--light', r.slug === 'northumberland' && 'omap__label--sm']}>
+              {r.name === 'Kawartha Lakes' ? (
+                <>
+                  <tspan x={r.label[0]} dy="-0.5em">Kawartha</tspan>
+                  <tspan x={r.label[0]} dy="1.1em">Lakes</tspan>
+                </>
+              ) : (
+                r.name
+              )}
+            </text>
+          </g>
+        ))
+      }
+    </g>
+    <g class="omap__hits">
+      {
+        regions.map((r) => {
+          const href = hrefs[r.slug as keyof typeof hrefs];
+          const Tag = href ? 'a' : 'g';
+          return (
+            <Tag class="omap__hit" href={href} data-region={r.slug} aria-label={href ? `${r.name} service area` : undefined}>
+              <title>{r.name}</title>
+              <use href={`#omap-shape-${r.slug}`} fill="transparent" />
+            </Tag>
+          );
+        })
+      }
+    </g>
+  </svg>
+</figure>
+
+<style>
+  .omap {
+    margin: 0;
+    width: 100%;
+  }
+  .omap svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  a.omap__hit {
+    cursor: pointer;
+    outline: none;
+  }
+  .omap__visual {
+    /* Scale from the shape's own centre, not the SVG origin. */
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform var(--dur) var(--ease-standard);
+  }
+  .omap__shadow {
+    opacity: 0;
+    transform: translateY(5px);
+    transition: opacity var(--dur) var(--ease-standard);
+  }
+  /* Hover / keyboard focus (class set by the script below): the shape grows and
+     floats up, and a blurred copy underneath fades in as its shadow. Units are
+     viewBox units, so -3 is about 6px on screen. */
+  .omap__visual.is-active {
+    transform: translateY(-3px) scale(1.06);
+  }
+  .omap__visual.is-active .omap__shadow {
+    opacity: 0.5;
+  }
+  /* The shadow disappears against the dark land, so a thin paper edge is what
+     separates the raised region from its neighbours. */
+  .omap__fill {
+    transition:
+      stroke var(--dur) var(--ease-standard),
+      stroke-width var(--dur) var(--ease-standard);
+  }
+  .omap__visual.is-active .omap__fill {
+    stroke: var(--color-surface);
+    stroke-width: 1.2;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .omap__visual,
+    .omap__shadow,
+    .omap__fill {
+      transition: none;
+    }
+  }
+  .omap__label {
+    font: 600 8px/1 var(--font-body, system-ui, sans-serif);
+    letter-spacing: 0.02em;
+    fill: var(--color-text);
+  }
+  .omap__label--sm {
+    font-size: 6.5px;
+  }
+  .omap__label--light {
+    fill: var(--color-text-onbrand);
+  }
+</style>
+
+<script>
+  // SVG has no z-index: paint order is DOM order. On hover/focus, move the
+  // region's VISUAL group (never the link) to the end of its layer so the lifted
+  // shape and shadow land on top of its neighbours.
+  document.querySelectorAll<SVGGElement>('.omap').forEach((map) => {
+    const visuals = map.querySelector('.omap__visuals');
+    map.querySelectorAll<SVGElement>('a.omap__hit').forEach((hit) => {
+      const visual = map.querySelector<SVGGElement>(`.omap__visual[data-region="${hit.dataset.region}"]`);
+      if (!visual || !visuals) return;
+      const on = () => {
+        visuals.appendChild(visual);
+        visual.classList.add('is-active');
+      };
+      const off = () => visual.classList.remove('is-active');
+      hit.addEventListener('pointerenter', on);
+      hit.addEventListener('pointerleave', off);
+      hit.addEventListener('focus', on);
+      hit.addEventListener('blur', off);
+    });
+  });
+</script>

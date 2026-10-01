@@ -1,0 +1,85 @@
+---
+// ac/service-map — section wrapper for the clickable OntarioMap: a
+// SectionHeader over the map. The four region shapes are fixed artwork; the
+// block only supplies each region's page URL (empty = drawn, not linked).
+import SectionHeader from '../SectionHeader.astro';
+import CtaButtons from '../CtaButtons.astro';
+import OntarioMap from '../OntarioMap.astro';
+import type { BlockContext, EditorBlock, ServiceMapAttrs } from '../../lib/blocks/types';
+
+interface Props extends ServiceMapAttrs {
+  innerBlocks?: EditorBlock[];
+  context?: BlockContext;
+}
+
+const {
+  eyebrow,
+  heading,
+  text,
+  linkLabel,
+  linkUrl,
+  durhamUrl,
+  peterboroughUrl,
+  kawarthaLakesUrl,
+  northumberlandUrl,
+  primaryLabel,
+  primaryUrl,
+  background = 'paper',
+} = Astro.props;
+
+// Empty strings (a cleared editor field) mean "no page yet".
+const hrefs = {
+  durham: durhamUrl || undefined,
+  peterborough: peterboroughUrl || undefined,
+  'kawartha-lakes': kawarthaLakesUrl || undefined,
+  northumberland: northumberlandUrl || undefined,
+};
+---
+
+<section class:list={['band', { 'band--alt': background === 'alt' }]}>
+  <div class="container sm">
+    <div class="sm__copy">
+      <SectionHeader eyebrow={eyebrow} heading={heading} text={text} linkLabel={linkLabel} linkUrl={linkUrl} />
+      {
+        primaryLabel && (
+          <div class="sm__cta">
+            <CtaButtons primaryLabel={primaryLabel} primaryUrl={primaryUrl} />
+          </div>
+        )
+      }
+    </div>
+    <div class="sm__frame">
+      <OntarioMap hrefs={hrefs} />
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Desktop: copy left, framed map right. Tablet and down: stacked. */
+  .sm {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .sm__cta {
+    margin-top: var(--space-xl);
+    display: flex;
+  }
+  /* Ink outline + short soft shadow — the design system's semi-flat depth. */
+  .sm__frame {
+    border: 1px solid var(--color-border-strong);
+    box-shadow: var(--shadow-md);
+    background: var(--color-surface);
+    line-height: 0;
+  }
+  @media (max-width: 900px) {
+    .sm {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-xl);
+    }
+    .sm__cta {
+      justify-content: center;
+    }
+  }
+</style>

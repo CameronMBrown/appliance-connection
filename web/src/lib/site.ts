@@ -87,13 +87,15 @@ export const NAV: NavItem[] = [
     ],
   },
   {
-    // v1 scope: only the two region hubs. Sub-region pages/links come back later.
+    // v1 scope: the four service-area hubs. Town pages/links come back later.
     label: 'Service Areas',
     href: '/durham/',
     toggleOnly: true,
     children: [
       { label: 'Durham Region', href: '/durham/' },
       { label: 'Peterborough', href: '/peterborough/' },
+      { label: 'Kawartha Lakes', href: '/kawartha-lakes/' },
+      { label: 'Northumberland', href: '/northumberland/' },
     ],
   },
   { label: 'About', href: '/about/' },

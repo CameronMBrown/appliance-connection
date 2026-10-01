@@ -121,6 +121,18 @@ export interface StatBlockAttrs {
   stats?: Stat[];
 }
 
+export interface ServiceMapAttrs extends SectionHeaderAttrs {
+  /** Page URL per region; empty/undefined = the region is drawn but not linked. */
+  durhamUrl?: string;
+  peterboroughUrl?: string;
+  kawarthaLakesUrl?: string;
+  northumberlandUrl?: string;
+  /** CTA under the map: Contact button label/URL. Empty label = no button. */
+  primaryLabel?: string;
+  primaryUrl?: string;
+  background?: Background;
+}
+
 export interface ServiceGridAttrs extends SectionHeaderAttrs {
   /** Number the cards 01, 02… (index tag above each title). */
   numbered?: boolean;
@@ -143,6 +155,10 @@ export interface MediaTextAttrs {
   paragraphs?: string[];
   imageUrl?: string;
   imageAlt?: string;
+  /** Which side the illustration sits on at desktop width (above 900px). */
+  imagePosition?: 'right' | 'left';
+  /** Where the illustration sits once the layout stacks (900px and below). Always centred. */
+  mobileImagePosition?: 'below' | 'above';
   /** `dark` = ink band, white text, illustration framed in a white box. */
   background?: Background | 'dark';
 }

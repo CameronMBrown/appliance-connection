@@ -1,0 +1,69 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/service-map",
+  "title": "Service map",
+  "category": "ac",
+  "icon": "location",
+  "description": "Clickable map of the service areas — each region links to its page.",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "eyebrow": {
+      "type": "string",
+      "default": ""
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "text": {
+      "type": "string",
+      "default": ""
+    },
+    "linkLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "linkUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "durhamUrl": {
+      "type": "string",
+      "default": "/durham/"
+    },
+    "peterboroughUrl": {
+      "type": "string",
+      "default": "/peterborough/"
+    },
+    "kawarthaLakesUrl": {
+      "type": "string",
+      "default": "/kawartha-lakes/"
+    },
+    "northumberlandUrl": {
+      "type": "string",
+      "default": "/northumberland/"
+    },
+    "primaryLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "primaryUrl": {
+      "type": "string",
+      "default": "/contact/"
+    },
+    "background": {
+      "type": "string",
+      "enum": [
+        "paper",
+        "alt"
+      ],
+      "default": "paper"
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

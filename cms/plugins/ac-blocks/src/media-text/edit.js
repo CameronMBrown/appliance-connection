@@ -6,13 +6,13 @@ import {
 	MediaUpload,
 	MediaUploadCheck,
 } from '@wordpress/block-editor';
-import { PanelBody, Button } from '@wordpress/components';
+import { PanelBody, Button, SelectControl } from '@wordpress/components';
 import ListControl from '../shared/ListControl';
 import { BackgroundControl } from '../shared/SectionHeaderFields';
 
 /** Editor approximation — real design: web/src/components/blocks/MediaText.astro. */
 export default function Edit( { attributes, setAttributes } ) {
-	const { heading, paragraphs, imageUrl, background } = attributes;
+	const { heading, paragraphs, imageUrl, imagePosition, mobileImagePosition, background } = attributes;
 	const blockProps = useBlockProps( { className: 'ac-edit ac-edit--media-text' } );
 
 	return (
@@ -31,6 +31,24 @@ export default function Edit( { attributes, setAttributes } ) {
 							) }
 						/>
 					</MediaUploadCheck>
+					<SelectControl
+						label={ __( 'Illustration position', 'ac-blocks' ) }
+						value={ imagePosition }
+						options={ [
+							{ label: __( 'Right', 'ac-blocks' ), value: 'right' },
+							{ label: __( 'Left', 'ac-blocks' ), value: 'left' },
+						] }
+						onChange={ ( v ) => setAttributes( { imagePosition: v } ) }
+					/>
+					<SelectControl
+						label={ __( 'Illustration position when stacked (tablet and mobile)', 'ac-blocks' ) }
+						value={ mobileImagePosition }
+						options={ [
+							{ label: __( 'Below text', 'ac-blocks' ), value: 'below' },
+							{ label: __( 'Above text', 'ac-blocks' ), value: 'above' },
+						] }
+						onChange={ ( v ) => setAttributes( { mobileImagePosition: v } ) }
+					/>
 					<BackgroundControl allowDark value={ background } onChange={ ( v ) => setAttributes( { background: v } ) } />
 				</PanelBody>
 			</InspectorControls>
