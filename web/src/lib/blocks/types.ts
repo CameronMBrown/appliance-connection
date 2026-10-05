@@ -37,13 +37,25 @@ export interface SectionHeaderAttrs {
   linkUrl?: string;
 }
 
+export interface HeroVideoSource {
+  url: string;
+  /** `video/webm` or `video/mp4`. */
+  mime: string;
+  /** Rendition width in px. Several files (one per codec) share each width. */
+  width: number;
+}
+
 export interface HeroAttrs {
   /** Plain display headline. Empty = the arched wordmark leads instead. */
   heading?: string;
   subheading?: string;
-  videoUrl?: string;
+  /** Video renditions from the WP Media Library (see web/scripts/encode-hero-video.mjs). */
+  videoSources?: HeroVideoSource[];
+  /** Poster = the LCP image. srcset lists WP-generated sizes of the same 16:9 image. */
   posterUrl?: string;
-  imageUrl?: string;
+  posterSrcset?: string;
+  posterWidth?: number;
+  posterHeight?: number;
   primaryLabel?: string;
   /** Shorter label below 640px, e.g. "Services". */
   primaryShortLabel?: string;

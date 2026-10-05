@@ -24,7 +24,8 @@ Last synced: **2026-09-25**.
 
 **Not mirrored** (too heavy for git, or not needed): the illustrations and the hero
 video. Optimised copies live in `web/public/illustrations/*.webp` (resized to
-720px, ~50 KB each, from ~2 MB PNGs) and `web/public/video/hero-install.mp4`.
+720px, ~50 KB each, from ~2 MB PNGs). The hero video is in the WordPress Media Library
+(encoded by `web/scripts/encode-hero-video.mjs`).
 Also skipped: `uploads/` (raw originals), `scraps/`, `ui_kits/` (superseded by
 `templates/`), the per-template `support.js` runtime, and the inspiration PDFs.
 
@@ -42,6 +43,14 @@ Also skipped: `uploads/` (raw originals), `scraps/`, `ui_kits/` (superseded by
   markup.
 
 ## Deviations from the design (intentional, app-side)
+
+- **Hero is forked** to `web/src/components/islands/Hero.tsx`. The design Hero takes one
+  `videoUrl`; the fork takes a list of renditions (`videoSources`) and picks one for the
+  screen (browsers ignore `media` on `<video><source>`), renders the poster as a
+  srcset `<img>` (the LCP element), skips autoplay for reduced motion / Data Saver, plays
+  once and replays when it re-enters the viewport, and adds a pause/play button (WCAG 2.2.2). CSS and markup are otherwise
+  verbatim; additions are marked `APP:`. **After re-syncing Hero.jsx, diff it against the
+  fork** and port design changes across. Worth proposing upstream in Claude Design.
 
 - **Ruled grids use inset rules.** In the design, cells draw their right/bottom
   hairlines with an *outward* `box-shadow`. The next grid cell paints over that

@@ -8,11 +8,12 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "video:encode": "node scripts/encode-hero-video.mjs"
   },
   "dependencies": {
-    "astro": "^5.6.0",
     "@astrojs/react": "^4.2.0",
+    "astro": "^5.6.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
@@ -20,6 +21,7 @@
     "@astrojs/check": "^0.9.4",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "ffmpeg-static": "^5.3.0",
     "typescript": "^5.7.0"
   }
 }

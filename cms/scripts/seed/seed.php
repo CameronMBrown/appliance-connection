@@ -49,10 +49,35 @@ function ac_seed_block( array $b ): array {
 }
 
 /**
+ * Hero media (video renditions + poster) is chosen in the editor from the Media
+ * Library; the fixtures can't know attachment IDs. On re-seed, carry the hero's
+ * existing media attributes over so re-running doesn't wipe them.
+ */
+function ac_seed_keep_hero_media( array $blocks, string $existing_content ): array {
+	$keys = array( 'videoSources', 'posterId', 'posterUrl', 'posterSrcset', 'posterWidth', 'posterHeight' );
+	$kept = array();
+	foreach ( parse_blocks( $existing_content ) as $b ) {
+		if ( 'ac/hero' === $b['blockName'] ) {
+			$kept = array_intersect_key( $b['attrs'], array_flip( $keys ) );
+			break;
+		}
+	}
+	if ( ! $kept ) {
+		return $blocks;
+	}
+	foreach ( $blocks as &$b ) {
+		if ( 'ac/hero' === $b['name'] ) {
+			$b['attributes'] = array_merge( $b['attributes'] ?? array(), $kept );
+		}
+	}
+	unset( $b );
+	return $blocks;
+}
+
+/**
  * Create or update one post; returns its ID.
  */
 function ac_seed_post( string $type, string $slug, string $title, array $page, int $parent = 0, int $order = 0 ): int {
-	$content = serialize_blocks( array_map( 'ac_seed_block', $page['blocks'] ) );
 	$found   = get_posts(
 		array(
 			'post_type'   => $type,
@@ -62,7 +87,11 @@ function ac_seed_post( string $type, string $slug, string $title, array $page, i
 			'numberposts' => 1,
 		)
 	);
-	$data = array(
+	if ( $found ) {
+		$page['blocks'] = ac_seed_keep_hero_media( $page['blocks'], $found[0]->post_content );
+	}
+	$content = serialize_blocks( array_map( 'ac_seed_block', $page['blocks'] ) );
+	$data    = array(
 		'post_type'    => $type,
 		'post_name'    => $slug,
 		'post_title'   => $title,

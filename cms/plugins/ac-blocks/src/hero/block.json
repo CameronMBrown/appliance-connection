@@ -5,7 +5,7 @@
   "title": "Hero",
   "category": "ac",
   "icon": "cover-image",
-  "description": "Page-top video hero: arched wordmark (or a plain headline), Benguiat sub-line, up to two buttons, optional phone strip.",
+  "description": "Page-top video hero: responsive video renditions + poster, arched wordmark (or a plain headline), Benguiat sub-line, up to two buttons, optional phone strip.",
   "textdomain": "ac-blocks",
   "attributes": {
     "heading": {
@@ -16,23 +16,26 @@
       "type": "string",
       "default": ""
     },
-    "videoId": {
-      "type": "number"
+    "videoSources": {
+      "type": "array",
+      "default": []
     },
-    "videoUrl": {
-      "type": "string",
-      "default": ""
+    "posterId": {
+      "type": "number"
     },
     "posterUrl": {
       "type": "string",
       "default": ""
     },
-    "imageId": {
-      "type": "number"
-    },
-    "imageUrl": {
+    "posterSrcset": {
       "type": "string",
       "default": ""
+    },
+    "posterWidth": {
+      "type": "number"
+    },
+    "posterHeight": {
+      "type": "number"
     },
     "primaryLabel": {
       "type": "string",
