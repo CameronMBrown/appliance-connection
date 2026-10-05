@@ -160,7 +160,8 @@ const home: PageData = {
       name: 'ac/hero',
       attributes: {
         // No heading → the arched wordmark leads.
-        videoUrl: '/video/hero-install.mp4',
+        // Video renditions + poster live in the WP Media Library (set in the block),
+        // so the fixture shows the labelled placeholder. See docs/04-dev-workflow.md → Hero video.
         subheading: 'Complete home appliance installations',
         primaryLabel: 'Our services',
         primaryShortLabel: 'Services',

@@ -68,8 +68,9 @@ transitions only (`--dur` 200ms, `--ease-standard`), collapsed under
 - **Illustrations:** Craig & Harley (`/illustrations/*.webp`): waving (region pages),
   pair (contact/about), carrying a box (services), dolly + fridge (local crew).
   They show the real owner and crew, so they're consistent with "only real AC people".
-- **Hero video:** `/video/hero-install.mp4` (16:9, muted loop, paused under reduced
-  motion).
+- **Hero video:** lives in the WordPress Media Library, not the repo (see
+  `docs/04-dev-workflow.md` → Hero video). 16:9, muted, plays once, WebM + MP4 at 640/960/1280px,
+  plus a WebP poster. Never autoplays under reduced motion or Data Saver; always has a pause button.
 - **Partner logos:** Paddy's Market (Durham), Peterborough Appliances (Peterborough).
 
 ## Imagery rules

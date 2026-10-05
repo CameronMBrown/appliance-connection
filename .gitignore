@@ -46,3 +46,6 @@ web/public/fonts/
 # --- Private companion repo (client-confidential notes, licensed fonts, env) ---
 # Cloned separately into ./private — see README → Private files.
 private/
+
+# Hero video encode output (upload to WP Media Library, never commit)
+web/.video-out/

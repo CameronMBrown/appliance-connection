@@ -92,6 +92,40 @@ npm run codegen          # (in web/) GraphQL Codegen → typed block attributes
 
 > Deploy/CI + build hooks are **documented, not built** in the foundation pass — we're fixtures-first.
 
+## Hero video
+
+The home hero video is **not in git**. It lives in the WordPress Media Library; the Hero block
+stores which files to use. WordPress doesn't make video renditions, so the dev encodes them:
+
+```bash
+# from the repo root; ffmpeg comes from the ffmpeg-static devDependency
+npm run video:encode --workspace web -- path/to/master.mp4   # → web/.video-out/ (gitignored)
+```
+
+1. Encode: `hero-install-{640,960,1280}.{webm,mp4}` + `hero-install-poster.webp`. Widths never upscale,
+   so a better master (1080p or more) is what unlocks sharper widescreen/2× output: add widths to
+   `TIERS` in the script.
+2. Upload all files to **Media → Add New** (or `wp media import`).
+3. In the Hero block: **Video → Add video renditions** (select all 6), **Poster image** (the WebP).
+   The editor stores `{id, url, mime, width}` per file and a poster `srcset` from WP's sizes.
+4. Keep the master file somewhere safe (it is no longer in the repo; `private/` is a good home).
+
+How the front end uses it (`web/src/components/islands/Hero.tsx`):
+- The poster `<img>` (srcset, `fetchpriority=high`) is server-rendered and is the LCP element.
+- JS picks the smallest rendition tier that is sharp enough for the frame size × DPR (capped 1.5),
+  and upgrades (never downgrades) on resize. `<source type>` lets the browser choose WebM vs MP4.
+- Reduced motion, Data Saver and 2G: no video is downloaded; the poster shows and the button plays it.
+  3G gets the smallest tier. The video plays once on load and holds its last frame. Scrolled fully out of view and back, it replays
+  from the start (unless the visitor paused it).
+- Decorative: `aria-hidden`, no captions or `VideoObject` schema. A visible pause/play button is the
+  WCAG 2.2.2 control.
+
+**Production hosting checklist** (the WP host, not Astro): serve `wp-content/uploads` with
+`Accept-Ranges` (default on nginx/Apache) and `Cache-Control: public, max-age=31536000, immutable`;
+`.webm`/`.mp4` MIME types; ideally behind a CDN. The poster is requested from the WP origin on first
+paint, so that origin's latency counts toward LCP. Re-seeding keeps the hero's media attributes
+(`ac_seed_keep_hero_media` in `seed.php`).
+
 ## How to add a new section (the core pattern)
 
 A section spans WP + Astro; keep both halves in **one commit** (that's why we're a monorepo).

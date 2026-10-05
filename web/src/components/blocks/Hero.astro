@@ -1,9 +1,12 @@
 ---
-// ac/hero → the design system's video Hero, rendered as a React island.
+// ac/hero → the video Hero, rendered as a React island.
 // Why an island: the arched wordmark measures its own text after the webfont
-// loads, and the video pauses under prefers-reduced-motion — both need JS.
-// client:load because it's the above-the-fold LCP element.
-import { Hero } from '@ds/components/blocks/Hero.jsx';
+// loads, and the video logic (pick a rendition for this screen, honour
+// prefers-reduced-motion / Data Saver, pause control) needs JS.
+// client:load because it's above the fold. The poster <img> is server-rendered,
+// so the LCP element paints from the HTML without waiting for hydration.
+// Forked from the design system's Hero: see islands/Hero.tsx.
+import { Hero } from '../islands/Hero';
 import type { BlockContext, EditorBlock, HeroAttrs } from '../../lib/blocks/types';
 
 interface Props extends HeroAttrs {
