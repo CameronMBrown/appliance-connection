@@ -1,0 +1,598 @@
+---
+// ac/trust — the homepage trust section: a four-cell ruled bento (primary,
+// two secondary, one tertiary). Cells are positional: item 0 is the primary,
+// 1 and 2 the secondaries, 3 the tertiary. Text leads; each cell may carry one
+// small decorative graphic, chosen by name (`art`) and drawn in code, so the
+// client owns the words and the dev owns the pictures. Data-driven: renders
+// nothing without real items, because we never fake trust.
+import type { BlockContext, EditorBlock, TrustAttrs } from '../../lib/blocks/types';
+import Licensed from '../trust-art/Licensed.astro';
+import Ontario from '../trust-art/Ontario.astro';
+import Warranty from '../trust-art/Warranty.astro';
+import Years from '../trust-art/Years.astro';
+import { truckPath } from '../trust-art/truck-path';
+
+interface Props extends TrustAttrs {
+  innerBlocks?: EditorBlock[];
+  context?: BlockContext;
+}
+
+const { items = [], heading = 'Why homeowners choose The Appliance Connection' } = Astro.props;
+const roles = ['primary', 'secondary', 'secondary', 'tertiary'] as const;
+// Modes: `stage` is centred in the cell's free space (overflowing a little);
+// `inline` sits in flow above the copy; `bleed` and `backdrop` are oversized,
+// tilted and tucked behind the copy, with the copy always bottom-aligned.
+// Decorative art is hidden from screen readers; the years badge carries its own
+// label instead. Sizes use viewport units and media queries, not container
+// queries: cqw inside transform/width can resolve after first paint and make the
+// art jump.
+const art = {
+  years: { Component: Years, mode: 'stage', decorative: false },
+  licensed: { Component: Licensed, mode: 'inline', decorative: true },
+  warranty: { Component: Warranty, mode: 'bleed', decorative: true },
+  ontario: { Component: Ontario, mode: 'backdrop', decorative: true },
+} as const;
+const cells = items.filter((c) => c.title).slice(0, roles.length);
+// The bento only holds its shape with all four cells; fewer fall back to an
+// even ruled row so a half-filled block never leaves a hole in the grid.
+const bento = cells.length === roles.length;
+---
+
+{
+  cells.length > 0 && (
+    <section class="trust" aria-labelledby={heading ? 'trust-heading' : undefined}>
+      {heading && (
+        <h2 id="trust-heading" class="trust__heading">
+          {heading}
+        </h2>
+      )}
+      <svg class="trust__defs" width="0" height="0" aria-hidden="true" focusable="false">
+        <symbol id="ac-truck" viewBox="0 0 478 451">
+          <path fill-rule="evenodd" d={truckPath} />
+        </symbol>
+      </svg>
+      <div class="trust__in">
+        <div class:list={['trust__grid', { 'trust__grid--flat': !bento }]}>
+          {cells.map((cell, i) => {
+            const piece = cell.art ? art[cell.art as keyof typeof art] : undefined;
+            return (
+              <article class:list={['trust__cell', `trust__cell--${roles[i]}`, { 'trust__cell--contracts': piece?.mode === 'inline', 'trust__cell--tall': piece?.mode === 'bleed' || piece?.mode === 'backdrop', 'trust__cell--bleed': piece?.mode === 'bleed' }]}>
+                {piece && (
+                  <div class={`trust__art trust__art--${piece.mode}`} aria-hidden={piece.decorative ? 'true' : undefined}>
+                    <piece.Component />
+                  </div>
+                )}
+                <div class="trust__copy">
+                  <h3 class="trust__title">{cell.title}</h3>
+                  {cell.body && <p class="trust__body">{cell.body}</p>}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+{
+  cells.length > 0 && (
+    <script is:inline>
+      // Load-in: each cell's copy slides up and fades in as the cell scrolls into
+      // view. The hidden starting state is only applied from here (data-anim), so
+      // without JS, or with reduced motion, the copy is simply there.
+      (function () {
+        var root = document.currentScript.previousElementSibling;
+        if (!root || !root.classList.contains('trust')) return;
+        if (!('IntersectionObserver' in window)) return;
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        root.setAttribute('data-anim', '');
+        var io = new IntersectionObserver(
+          function (entries) {
+            var n = 0;
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              // Cells revealed by the same scroll step stagger left to right.
+              entry.target.style.setProperty('--delay', n++ * 120 + 'ms');
+              entry.target.classList.add('is-in');
+              io.unobserve(entry.target);
+            });
+          },
+          { threshold: 0.2, rootMargin: '0px 0px -8% 0px' }
+        );
+        root.querySelectorAll('.trust__cell').forEach(function (cell) {
+          io.observe(cell);
+        });
+      })();
+    </script>
+  )
+}
+
+<style>
+  /* Visually hidden section heading: in the outline for screen readers and search
+     engines, not drawn. */
+  .trust__heading {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+  .trust__defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+  .trust {
+    padding-block: clamp(3.5rem, 9vw, 6rem);
+  }
+  .trust__in {
+    max-width: var(--container-wide);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* One shared ruling: the grid draws top + left, every cell draws its own
+     right + bottom with an inset shadow (an outward one gets painted over by
+     the next cell). Mobile is a single stacked column. */
+  .trust__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border-strong);
+    border-left: 1px solid var(--color-border-strong);
+    box-shadow: var(--shadow-md);
+  }
+  .trust__cell {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 11rem;
+    overflow: hidden;
+    background: var(--cell-bg);
+    color: var(--cell-text);
+    /* Theme variables the graphics read, so a graphic follows whichever cell it
+       lands in: a light cell is paper with ink strokes, a dark cell the reverse. */
+    --cell-bg: var(--color-surface);
+    --cell-ink: var(--color-border-strong);
+    /* Gold art on a light cell: a step toward the deep wood for contrast on white. */
+    --cell-gold: #b38a5b;
+    --cell-gold: color-mix(in srgb, var(--color-accent) 60%, var(--color-accent-deep));
+    --cell-text: var(--color-text);
+  }
+  /* The cell's right + bottom rule sits on its own overlay layer so graphics
+     layered inside the cell can never paint over it. */
+  .trust__cell::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    box-shadow: inset -1px -1px 0 var(--color-border-strong);
+    pointer-events: none;
+  }
+  .trust__cell--tall {
+    min-height: 19rem;
+  }
+  /* Phones, map cell: kept short so the copy rides up under the map (the map is
+     absolutely placed from the top, so a shorter cell moves the text toward it). */
+  .trust__cell--tertiary.trust__cell--tall {
+    min-height: 20rem;
+  }
+  /* Phones, shield cell: a short image area, so the shield (same size as ever)
+     ends up behind the copy instead of floating above a tall empty block. The
+     tablet and desktop rules below set their own heights. */
+  .trust__cell--tall.trust__cell--bleed {
+    min-height: 16rem;
+  }
+
+  /* Decorative graphics. */
+  .trust__art {
+    pointer-events: none;
+  }
+  /* Inline: in flow at the top of the cell, line art at a fixed height. */
+  .trust__art--inline {
+    height: 10rem;
+    padding: var(--space-lg) var(--space-lg) 0;
+    align-self: flex-start;
+    /* Phones: contracts sit left (the copy is right-aligned beneath), drawn
+       ~66% larger than the slot, tipped further than on any other breakpoint
+       (left edge low, right edge high) and dropped to keep the raised right
+       side inside the cell. Tablet+ retunes these below. */
+    --licensed-scale: 1.66;
+    --licensed-tilt: -10deg;
+    --licensed-origin: left center;
+    --licensed-x: -1.25rem;
+    --licensed-y: 3.25rem;
+  }
+  /* Phones, contracts cell: copy hangs right, opposite the contracts. */
+  @media (max-width: 39.99rem) {
+    .trust__cell--contracts .trust__copy {
+      text-align: right;
+    }
+    .trust__cell--contracts .trust__body {
+      margin-left: auto;
+    }
+  }
+  /* Stage: the badge is centred in the cell's free space above the copy and
+     sized to run slightly past it. On phones it sits right-aligned above the
+     title. Tilted, like a stamp. */
+  .trust__art--stage {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: var(--space-md) 0 0;
+  }
+  .trust__art--stage > :global(svg) {
+    height: 16rem;
+    width: auto;
+    margin-right: 1.5rem;
+    margin-bottom: -5rem; /* lets the badge run down behind the title */
+    transform: rotate(-8deg);
+  }
+  /* Bleed (shield) and backdrop (map): oversized and tilted, cropped by the cell
+     edge, tucked behind the copy. Each size comes from one variable so the
+     offsets scale with it. */
+  .trust__art--bleed {
+    --h: min(18rem, 72vw);
+    position: absolute;
+    top: calc(var(--h) * -0.08);
+    right: calc(var(--h) * -0.04);
+    height: var(--h);
+    transform: rotate(8deg);
+  }
+  .trust__art--bleed > :global(svg) {
+    display: block;
+    height: 100%;
+    width: auto;
+  }
+  .trust__art--backdrop {
+    --w: min(17rem, 68vw);
+    position: absolute;
+    top: calc(var(--w) * -0.23); /* 0.02, lifted by 0.25 of its width */
+    left: calc(50% - var(--w) / 2);
+    width: var(--w);
+    transform: rotate(-10deg); /* phones: left edge low, right edge high */
+  }
+  .trust__art--backdrop > :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Copy sits at the foot of the cell, always above any graphic behind it. */
+  .trust__copy {
+    position: relative;
+    margin-top: auto;
+    padding: var(--space-lg);
+    /* Text mask: a wide, soft halo in the cell's own background colour, so text
+       stays legible when a graphic sits behind it. Stacked for density. */
+    text-shadow:
+      0 0 18px var(--cell-bg),
+      0 0 10px var(--cell-bg),
+      0 0 4px var(--cell-bg),
+      /* Tight outline: a hard 1px ring in the cell's own colour (ink in a dark
+         cell, paper in a light one), so text stays legible over a graphic whichever
+         way the cell is themed. */
+      1px 0 0 var(--cell-bg),
+      -1px 0 0 var(--cell-bg),
+      0 1px 0 var(--cell-bg),
+      0 -1px 0 var(--cell-bg),
+      1px 1px 0 var(--cell-bg),
+      -1px 1px 0 var(--cell-bg),
+      1px -1px 0 var(--cell-bg),
+      -1px -1px 0 var(--cell-bg);
+  }
+  /* Load-in (script in the markup above adds data-anim, then .is-in per cell). */
+  @media (prefers-reduced-motion: no-preference) {
+    .trust[data-anim] .trust__copy {
+      opacity: 0;
+      transform: translateY(20%);
+    }
+    .trust[data-anim] .trust__cell.is-in .trust__copy {
+      opacity: 1;
+      transform: none;
+      transition:
+        opacity 0.7s ease-out var(--delay, 0ms),
+        transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) var(--delay, 0ms);
+    }
+  }
+  /* Shield drop: a heavy object, so it falls under gravity (ease-in that
+     accelerates all the way down, no ease-out on the way in), hits the "ground"
+     at full speed, squashes against it, barely bounces and settles. The cell
+     takes the hit a beat later (a short, decaying jolt) so the thud lands with
+     the impact, not the fall. Timeline is 1.3s: fall to 48%, impact, settle.
+     The art wrapper is tilted 8deg, so the drop is skewed in local space
+     (x = y * tan 8deg) to fall straight down on screen. It starts above the
+     cell's top edge, where overflow:hidden hides it. */
+  @media (prefers-reduced-motion: no-preference) {
+    .trust[data-anim] .trust__cell--bleed .trust__art--bleed > :global(svg) {
+      --drop: calc(var(--h) * -1.2);
+      translate: calc(var(--drop) * 0.14) var(--drop);
+      transform-origin: 50% 100%;
+    }
+    .trust[data-anim] .trust__cell--bleed.is-in .trust__art--bleed > :global(svg) {
+      animation: shield-drop 1.3s linear calc(var(--delay, 0ms) + 150ms) both;
+    }
+    .trust[data-anim] .trust__cell--bleed.is-in {
+      animation: shield-thud 0.55s linear calc(var(--delay, 0ms) + 150ms + 624ms) both;
+    }
+  }
+  @keyframes shield-drop {
+    0% {
+      translate: calc(var(--drop) * 0.14) var(--drop);
+      scale: 1;
+      rotate: -2deg;
+      animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53); /* gravity: ease-in */
+    }
+    48% {
+      translate: 0 0;
+      scale: 1.06 0.9; /* impact: flattened against the ground */
+      rotate: 0deg;
+      animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1);
+    }
+    60% {
+      translate: 0 calc(var(--h) * -0.025); /* small rebound: it's heavy */
+      scale: 0.99 1.015;
+      rotate: 0.8deg;
+      animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+    }
+    72% {
+      translate: 0 0;
+      scale: 1.02 0.97;
+      rotate: -0.4deg;
+      animation-timing-function: ease-out;
+    }
+    100% {
+      translate: 0 0;
+      scale: 1;
+      rotate: 0deg;
+    }
+  }
+  /* The ground takes the hit: a quick vertical slam that decays, with a little
+     sideways wobble. Moves the whole cell, which overflow:hidden keeps tidy. */
+  @keyframes shield-thud {
+    0% { translate: 0 0; }
+    14% { translate: 1px 5px; }
+    30% { translate: -1px -3px; }
+    46% { translate: 1px 2px; }
+    62% { translate: 0 -1px; }
+    80% { translate: 0 0.5px; }
+    100% { translate: 0 0; }
+  }
+  .trust__title {
+    margin: 0 0 var(--space-xs);
+    font-family: var(--font-display);
+    font-weight: var(--weight-display);
+    font-size: var(--text-lg);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-tight);
+    text-wrap: balance;
+  }
+  .trust__body {
+    margin: 0;
+    max-width: 46ch;
+    font-size: var(--text-sm);
+    color: var(--color-text-soft);
+    text-wrap: pretty;
+  }
+
+  /* Primary: the one display-scale title. */
+  .trust__cell--primary {
+    min-height: 16rem;
+  }
+  .trust__cell--primary .trust__title {
+    font-size: var(--text-2xl);
+    line-height: var(--leading-tight);
+  }
+  .trust__cell--primary .trust__copy {
+    padding: var(--space-xl);
+  }
+  .trust__cell--primary .trust__body {
+    font-size: var(--text-base);
+  }
+
+  .trust__cell--secondary .trust__title {
+    font-size: var(--text-xl);
+  }
+
+  /* Dark cells: the primary and the small tertiary flip to ink, so the grid
+     alternates light and dark. White text, white strokes, gold stays gold. */
+  .trust__cell--primary,
+  .trust__cell--tertiary {
+    --cell-bg: var(--color-inverse-bg);
+    --cell-ink: var(--color-inverse-text);
+    --cell-text: var(--color-inverse-text);
+    --cell-gold: var(--color-accent);
+  }
+  .trust__cell--primary .trust__title,
+  .trust__cell--primary .trust__body,
+  .trust__cell--tertiary .trust__title,
+  .trust__cell--tertiary .trust__body {
+    color: var(--cell-text);
+  }
+
+  /* Fewer than four cells: an even ruled row, no bento. */
+  @media (min-width: 40rem) {
+    .trust__grid--flat {
+      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    }
+  }
+
+  /* Tablet: primary and tertiary run full width; the two secondaries keep a
+     side-by-side pair between them. Phones stack everything (the default). */
+  @media (min-width: 40rem) {
+    .trust__grid:not(.trust__grid--flat) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .trust__cell--primary,
+    .trust__cell--tertiary {
+      grid-column: 1 / -1;
+    }
+    /* Tablet contracts: drawn much larger and tilted (right edge low, unlike
+       phones), overflowing the slot (the slot's height is unchanged, so the cell
+       doesn't grow). */
+    .trust__art--inline {
+      align-self: flex-end;
+      --licensed-scale: 1.52;
+      --licensed-tilt: 6deg;
+      --licensed-origin: center;
+      --licensed-x: -1rem;
+      --licensed-y: 0.25rem;
+    }
+    /* Tablet shield: one fixed size (it doesn't scale with the screen), dropped
+       ~15% of its height from the phone position. Inset from the right edge, but
+       the inset only opens up as the cell widens: flush right at 40rem (where the
+       cell is narrowest) easing out to 3rem by 52rem. */
+    .trust__art--bleed {
+      --h: 19rem;
+      top: calc(var(--h) * 0.07);
+      right: clamp(0rem, calc((100vw - 40rem) / 4), 3rem);
+    }
+    /* Tablet primary: copy on the left, the badge centred in the right half. */
+    .trust__cell--primary {
+      flex-direction: row;
+      align-items: center;
+      min-height: 15rem;
+    }
+    .trust__cell--primary .trust__copy {
+      order: 1;
+      flex: 0 1 52%;
+      margin-top: 0;
+    }
+    .trust__cell--primary .trust__art--stage {
+      order: 2;
+      flex: 1 1 0;
+      justify-content: center;
+      padding: var(--space-lg);
+    }
+    /* Tablet badge: drawn at 23rem but the negative block margins cancel the
+       extra height, so the cell stays the size a 17rem badge made it and the
+       badge just runs a little past the cell's top and bottom edges. */
+    .trust__art--stage > :global(svg) {
+      height: 23rem;
+      margin: -3rem 0;
+    }
+    /* Tablet tertiary: copy bottom-left, the map big on the right. */
+    .trust__cell--tertiary {
+      min-height: 16rem;
+    }
+    .trust__cell--tertiary .trust__copy {
+      max-width: 55%;
+    }
+    .trust__cell--tertiary.trust__cell--tall {
+      min-height: 17rem;
+    }
+    /* Tablet map: drawn bigger (21.85rem, ~24rem tall) than the 17rem cell. It is
+       absolutely placed, so it adds no height. Sits well above centre, so the
+       cell's overflow crops more off the top than the bottom. */
+    .trust__art--backdrop {
+      --w: min(21.85rem, 46vw);
+      top: 50%;
+      left: auto;
+      right: 4%;
+      margin-top: calc(var(--w) * -0.83);
+      transform: rotate(9deg);
+    }
+  }
+
+  /* Tablet only: the full-width tertiary title matches the secondaries' size. */
+  @media (min-width: 40rem) and (max-width: 63.99rem) {
+    .trust__cell--tertiary .trust__title {
+      font-size: var(--text-xl);
+    }
+  }
+
+  /* Desktop bento: primary spans both rows on the left; the right is a wide
+     secondary over a secondary + tertiary pair. */
+  @media (min-width: 64rem) {
+    .trust__grid:not(.trust__grid--flat) {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: auto auto;
+    }
+    .trust__cell--primary {
+      grid-column: 1 / 6;
+      grid-row: 1 / 3;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .trust__cell--primary .trust__copy {
+      order: 0;
+      flex: none;
+    }
+    /* Desktop primary: badge centred both ways in the space above the copy. */
+    .trust__cell--primary .trust__art--stage {
+      order: 0;
+      flex: 1 1 auto;
+      justify-content: center;
+      padding: var(--space-lg) 0 0;
+    }
+    .trust__art--stage > :global(svg) {
+      height: clamp(18rem, 36vw, 32rem);
+      margin-block: 0;
+    }
+    .trust__cell--secondary:nth-of-type(2) {
+      grid-column: 6 / 13;
+      grid-row: 1;
+    }
+    .trust__cell--secondary:nth-of-type(3) {
+      grid-column: 6 / 10;
+      grid-row: 2;
+    }
+    .trust__cell--tertiary {
+      grid-column: 10 / 13;
+      grid-row: 2;
+    }
+    .trust__cell--tertiary.trust__cell--tall {
+      min-height: 22rem;
+    }
+    .trust__cell--tertiary .trust__copy {
+      max-width: none;
+    }
+    /* Desktop contracts: same tilt and slot, centred in the cell. The cell is a
+       third of the grid, so its width tracks the viewport until the container
+       caps at 84rem; the scale steps up with it so the stack overflows the slot
+       a little rather than far past it. The slot is a fixed 10rem tall; the
+       stack may run behind the title (the copy's text mask keeps it legible),
+       and the drop eases down as the cell gets room. */
+    .trust__art--inline {
+      align-self: center;
+      --licensed-scale: 1.55;
+      --licensed-x: 0rem;
+      --licensed-y: 0.4rem;
+    }
+    @media (min-width: 72rem) {
+      .trust__art--inline {
+        --licensed-scale: 1.45;
+        --licensed-y: 0.8rem;
+      }
+    }
+    @media (min-width: 80rem) {
+      .trust__art--inline {
+        --licensed-scale: 1.65;
+        --licensed-y: 2.2rem;
+      }
+    }
+    @media (min-width: 89rem) {
+      .trust__art--inline {
+        --licensed-scale: 1.9;
+        --licensed-y: 3.9rem;
+      }
+    }
+    .trust__art--bleed {
+      --h: clamp(15rem, 25vw, 22rem);
+      top: calc(var(--h) * 0.01);
+      right: calc(var(--h) * -0.12);
+    }
+    .trust__art--backdrop {
+      --w: clamp(13rem, 22vw, 21rem);
+      top: calc(var(--w) * -0.05);
+      right: calc(var(--w) * 0.02);
+      margin-top: 0;
+    }
+  }
+</style>

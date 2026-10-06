@@ -72,6 +72,8 @@ export interface PageHeaderAttrs {
   eyebrow?: string;
   heading?: string;
   intro?: string;
+  /** Media Library attachment ID, set when the image is picked in the editor. */
+  illustrationId?: number;
   illustrationUrl?: string;
   illustrationAlt?: string;
   primaryLabel?: string;
@@ -80,9 +82,19 @@ export interface PageHeaderAttrs {
   showPhone?: boolean;
 }
 
-export interface TrustStripAttrs {
-  /** Real credentials only — the strip renders nothing when empty. */
-  items?: string[];
+/** One bento cell. Position decides the role: 0 primary, 1-2 secondary, 3 tertiary. */
+export interface TrustCell {
+  title: string;
+  body?: string;
+  /** Named decorative graphic drawn in code (components/trust-art/). */
+  art?: 'years' | 'licensed' | 'warranty' | 'ontario';
+}
+
+export interface TrustAttrs {
+  /** Visually hidden h2 that gives the section its place in the page outline. */
+  heading?: string;
+  /** Real credentials only — the section renders nothing when empty. */
+  items?: TrustCell[];
 }
 
 export interface PhotoSlot {
@@ -165,6 +177,8 @@ export interface MediaTextAttrs {
   heading?: string;
   /** Paragraphs; inline HTML (links, bold) from the editor's RichText. */
   paragraphs?: string[];
+  /** Media Library attachment ID, set when the image is picked in the editor. */
+  imageId?: number;
   imageUrl?: string;
   imageAlt?: string;
   /** Which side the illustration sits on at desktop width (above 900px). */

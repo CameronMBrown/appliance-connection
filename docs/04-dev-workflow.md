@@ -50,6 +50,24 @@ cp web/.env.example web/.env
 npm run seed:export                          # fixtures → cms/scripts/seed/content.json
 wp eval-file cms/scripts/seed/seed.php       # run in Local's "Open site shell"
 ```
+
+**Fixtures are the source of truth.** The seed overwrites page bodies by slug, so content changes
+(sections, copy, SEO) belong in `web/src/fixtures/pages.ts`, committed with `content.json`.
+
+**Drift guard.** Each seeded post stores a fingerprint (`_ac_seed_fingerprint`: block tree + SEO
+title/description; hero media ignored). Before writing anything, `seed.php` does a dry pass and aborts,
+touching nothing, if any post was edited in WP since its last seed. Then:
+
+```bash
+wp eval-file cms/scripts/seed/export-from-wp.php   # read-only: WP → cms/scripts/seed/wp-pull.json + per-page diff vs fixtures
+# port the listed changes into web/src/fixtures/pages.ts, then:
+npm run seed:export && wp eval-file cms/scripts/seed/seed.php
+# or discard the WP edits on purpose:
+wp eval-file cms/scripts/seed/seed.php force       # (or AC_SEED_FORCE=1)
+```
+
+Posts seeded before the guard existed have no baseline: the first seed reports any whose content differs
+from the fixtures. Run the pull to see what, then port or `force`. Menus aren't guarded (rebuilt every seed).
 WP `home` and `siteurl` must both be the URL WordPress actually answers on (Settings → General).
 If they differ, the editor's REST calls go to the wrong host and fail.
 

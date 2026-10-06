@@ -4,7 +4,7 @@ import Edit from './edit';
 
 /**
  * Dynamic / attribute-only block: save() returns null. Astro renders the real
- * output from `editorBlocks` — see web/src/components/blocks/TrustStrip.astro.
+ * output from `editorBlocks` — see web/src/components/blocks/Trust.astro.
  */
 registerBlockType( metadata.name, {
 	edit: Edit,

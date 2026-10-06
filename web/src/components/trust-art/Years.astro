@@ -1,0 +1,107 @@
+---
+// A twelve-point starburst badge carrying "30+". Only the burst's outline is
+// gold; inside is the cell's background. The "30" is a cell-ink outline on that
+// background; the plus is a drawn cross (cell-ink outline, gold fill) so it sits on the badge's exact vertical centre
+// whatever the font does. The number is part of the graphic (the dev owns it,
+// like the other pictures), so the SVG is labelled for screen readers instead of
+// hidden: the cell's title then reads "years experience".
+const teeth = 12;
+const outer = 96;
+const inner = 85;
+const burst = Array.from({ length: teeth * 2 }, (_, i) => {
+  const radius = i % 2 === 0 ? outer : inner;
+  const angle = (Math.PI * i) / teeth - Math.PI / 2;
+  return `${(100 + radius * Math.cos(angle)).toFixed(1)},${(100 + radius * Math.sin(angle)).toFixed(1)}`;
+}).join(' ');
+const [cx, cy, arm, thick] = [148, 100, 15, 5.5];
+const plus = [
+  [cx - thick, cy - arm], [cx + thick, cy - arm], [cx + thick, cy - thick], [cx + arm, cy - thick],
+  [cx + arm, cy + thick], [cx + thick, cy + thick], [cx + thick, cy + arm], [cx - thick, cy + arm],
+  [cx - thick, cy + thick], [cx - arm, cy + thick], [cx - arm, cy - thick], [cx - thick, cy - thick],
+].map((pt) => pt.join(',')).join(' ');
+---
+
+<svg class="years" viewBox="0 0 200 200" role="img" aria-label="Over 30">
+  <polygon class="burst" points={burst} />
+  <text class="num" x="37" y="124" textLength="92" lengthAdjust="spacingAndGlyphs">30</text>
+  <polygon class="plus" points={plus} />
+</svg>
+
+<style>
+  .years {
+    display: block;
+    overflow: visible;
+  }
+  /* The outline's rotation is driven by the script below (see there). */
+  .years {
+    pointer-events: auto;
+  }
+  .burst {
+    fill: var(--cell-bg, var(--color-surface));
+    stroke: var(--color-accent);
+    stroke-width: 5;
+    stroke-linejoin: miter;
+    stroke-miterlimit: 10;
+  }
+  .num {
+    fill: var(--cell-bg, var(--color-surface));
+    stroke: var(--cell-ink, var(--color-border-strong));
+    stroke-width: 2.2;
+    stroke-linejoin: round;
+    font-family: var(--font-display);
+    font-weight: var(--weight-display);
+    font-size: 70px;
+  }
+  .plus {
+    fill: var(--color-accent);
+    stroke: var(--cell-ink, var(--color-border-strong));
+    stroke-width: 2.2;
+    stroke-linejoin: miter;
+  }
+</style>
+
+<script>
+  // Only the starburst outline turns; the "30+" stays put. Idle: slowly
+  // anti-clockwise. Hovered: clockwise at three times that speed. One angle is
+  // advanced every frame by a speed that eases toward whichever target applies, so
+  // the outline slows, reverses and speeds up smoothly instead of jumping when the
+  // pointer enters or leaves (two CSS animations couldn't hand over like that).
+  // Runs only while the badge is on screen, and not at all under reduced motion.
+  const HOVER_SPEED = 20; // degrees per second, clockwise (18s a turn)
+  const IDLE_SPEED = -HOVER_SPEED / 3; // anti-clockwise, a third as fast
+  const EASE_SECONDS = 0.4;
+
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll<SVGSVGElement>('svg.years').forEach((svg) => {
+      const burst = svg.querySelector('.burst');
+      if (!burst) return;
+      let angle = 0;
+      let speed = IDLE_SPEED;
+      let target = IDLE_SPEED;
+      let last = 0;
+      let frame = 0;
+
+      const tick = (now: number) => {
+        const dt = Math.min((now - last) / 1000, 0.1);
+        last = now;
+        speed += (target - speed) * (1 - Math.exp(-dt / EASE_SECONDS));
+        angle = (angle + speed * dt) % 360;
+        burst.setAttribute('transform', `rotate(${angle.toFixed(2)} 100 100)`);
+        frame = requestAnimationFrame(tick);
+      };
+      const start = () => {
+        if (frame) return;
+        last = performance.now();
+        frame = requestAnimationFrame(tick);
+      };
+      const stop = () => {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      };
+
+      svg.addEventListener('pointerenter', () => (target = HOVER_SPEED));
+      svg.addEventListener('pointerleave', () => (target = IDLE_SPEED));
+      new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop())).observe(svg);
+    });
+  }
+</script>

@@ -174,8 +174,34 @@ const home: PageData = {
       },
     },
     {
-      name: 'ac/trust-strip',
-      attributes: { items: ['Over 30 years experience', 'Fully licensed & insured', 'All work warrantied'] },
+      name: 'ac/trust',
+      attributes: {
+        heading: 'Why homeowners choose The Appliance Connection',
+        // Position decides the role: primary, secondary, secondary, tertiary.
+        // Draft copy; every claim here is one the client already states.
+        items: [
+          {
+            title: 'years experience',
+            art: 'years',
+            body: 'More than three decades of installing appliances means we have seen your problem before. Tight kitchens, old gas lines, awkward panel fits: we know how to handle them cleanly.',
+          },
+          {
+            title: 'Fully licensed & insured',
+            body: 'Gas and water connections carry real risk. We are licensed for the work and insured, so your home is protected.',
+            art: 'licensed',
+          },
+          {
+            title: 'All work warrantied',
+            body: 'If something we installed is not right, we come back and fix it.',
+            art: 'warranty',
+          },
+          {
+            title: 'Locally owned and operated',
+            body: 'The Appliance Connection is run by Craig Holmes, not a call centre. When you call, you reach the people who do the work.',
+            art: 'ontario',
+          },
+        ],
+      },
     },
     {
       name: 'ac/intro',
@@ -272,6 +298,8 @@ interface RegionContent {
   cites: string[];
   /** The retail partner that sells in this area, with the "Serving …" label for it. */
   partner: { partner: Partner; area: string };
+  /** Header illustration, picked from the Media Library (ID + URL as the editor stores them). */
+  art: { id: number; url: string; alt: string };
 }
 
 const REGIONS: RegionContent[] = [
@@ -296,6 +324,11 @@ const REGIONS: RegionContent[] = [
     ],
     cites: ['Homeowner, Whitby', 'Homeowner, Oshawa', 'Homeowner, Pickering'],
     partner: { partner: PADDYS_MARKET, area: 'Serving Durham Region' },
+    art: {
+      id: 167,
+      url: 'http://localhost:10018/wp-content/uploads/2026/09/durham-region.avif',
+      alt: 'Craig, in a black cap and tool belt, stands beside a large blue Durham Region sign.',
+    },
   },
   {
     slug: 'peterborough',
@@ -318,6 +351,11 @@ const REGIONS: RegionContent[] = [
     ],
     cites: ['Homeowner, Lakefield', 'Homeowner, Peterborough', 'Homeowner, Bridgenorth'],
     partner: { partner: PETERBOROUGH_APPLIANCES, area: 'Serving Peterborough' },
+    art: {
+      id: 168,
+      url: 'http://localhost:10018/wp-content/uploads/2026/09/Peterborough.avif',
+      alt: 'Craig and Harley peek over a Peterborough sign, with Craig waving.',
+    },
   },
   {
     slug: 'kawartha-lakes',
@@ -329,6 +367,11 @@ const REGIONS: RegionContent[] = [
     towns: ['Lindsay', 'Bobcaygeon', 'Fenelon Falls', 'Omemee', 'Woodville', 'Coboconk', 'Kirkfield', 'Little Britain'],
     cites: [],
     partner: { partner: PETERBOROUGH_APPLIANCES, area: 'Serving Kawartha Lakes' },
+    art: {
+      id: 178,
+      url: 'http://localhost:10018/wp-content/uploads/2026/09/Kawartha-Lakes.avif',
+      alt: 'Craig and Harley run forward with open arms beneath the Kawartha Lakes logo.',
+    },
   },
   {
     slug: 'northumberland',
@@ -340,6 +383,11 @@ const REGIONS: RegionContent[] = [
     towns: ['Cobourg', 'Port Hope', 'Brighton', 'Colborne', 'Campbellford', 'Grafton', 'Warkworth', 'Hastings'],
     cites: [],
     partner: { partner: PADDYS_MARKET, area: 'Serving Northumberland' },
+    art: {
+      id: 181,
+      url: 'http://localhost:10018/wp-content/uploads/2026/09/Northumberland.avif',
+      alt: 'Craig and Harley peek over a Northumberland County sign, with Craig waving.',
+    },
   },
 ];
 
@@ -375,8 +423,9 @@ const regionHub = (r: RegionContent): PageData => {
         eyebrow: 'Service area',
         heading: `Appliance installation in ${r.name}`,
         intro: r.intro,
-        illustrationUrl: '/illustrations/craig-harley-waving.webp',
-        illustrationAlt: 'Craig and Harley',
+        illustrationId: r.art.id,
+        illustrationUrl: r.art.url,
+        illustrationAlt: r.art.alt,
         primaryLabel: 'Contact Us',
         primaryUrl: '/contact/',
         showPhone: Boolean(phoneRegion),
@@ -581,6 +630,20 @@ const about: PageData = {
       },
     },
     STATS,
+    {
+      name: 'ac/media-text',
+      attributes: {
+        heading: 'Proudly Canadian',
+        paragraphs: [
+          'The Appliance Connection has been Canadian owned and operated for over 30 years. When you book with us, you’re dealing with the people who own the business and answer for the work.',
+          'Thousands of installs later, our standard hasn’t changed: do the job right, leave your home clean, and stand behind every install. Your satisfaction is on us, and if something isn’t right, we make it right.',
+        ],
+        imageId: 205,
+        imageUrl: 'http://localhost:10018/wp-content/uploads/2026/09/proudly-canadian.avif',
+        imageAlt: 'Cartoon Craig in red, maple leaf shaped sunglasses. He is proudly holding a waving Canadian flag',
+        background: 'dark',
+      },
+    },
     SERVICE_MAP,
     contactCta('Have a question?'),
   ],

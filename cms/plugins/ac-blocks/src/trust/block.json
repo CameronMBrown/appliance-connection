@@ -1,0 +1,25 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/trust",
+  "title": "Trust",
+  "category": "ac",
+  "icon": "yes-alt",
+  "description": "Four-cell trust bento (primary, two secondary, one tertiary) under the hero. Each cell: title, short copy, optional visual. Renders nothing when empty. Never fake trust.",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "Why homeowners choose The Appliance Connection"
+    },
+    "items": {
+      "type": "array",
+      "default": []
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

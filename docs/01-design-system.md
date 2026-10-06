@@ -94,7 +94,7 @@ copy**, never faked.
 | --- | --- | --- |
 | `ac/hero` | `Hero.astro` → DS `Hero` island | components/blocks/Hero |
 | `ac/page-header` | `PageHeader.astro` | templates/location, contact |
-| `ac/trust-strip` | `TrustStrip.astro` | templates/homepage |
+| `ac/trust` | `Trust.astro` | templates/homepage |
 | `ac/intro` | `Intro.astro` | templates/homepage |
 | `ac/partners` | `Partners.astro` | templates/homepage |
 | `ac/stat-block` | `StatBlock.astro` | components/blocks/StatBlock |
