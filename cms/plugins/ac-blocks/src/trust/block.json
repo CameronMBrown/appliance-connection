@@ -1,11 +1,11 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "ac/trust-strip",
-  "title": "Trust strip",
+  "name": "ac/trust",
+  "title": "Trust",
   "category": "ac",
   "icon": "yes-alt",
-  "description": "Ruled row of real credentials under the hero. Renders nothing when empty — never fake trust.",
+  "description": "Four-cell trust bento (primary, two secondary, one tertiary) under the hero. Each cell: title, short copy, optional visual. Renders nothing when empty. Never fake trust.",
   "textdomain": "ac-blocks",
   "attributes": {
     "items": {

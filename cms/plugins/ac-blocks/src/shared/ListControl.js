@@ -4,6 +4,7 @@ import {
 	Button,
 	TextControl,
 	TextareaControl,
+	SelectControl,
 	ToggleControl,
 	Flex,
 	FlexItem,
@@ -20,7 +21,7 @@ import {
  *   - omitted            → items are plain strings (one text input each)
  *   - { key, label, type } with type:
  *       'text' (default) | 'textarea' | 'rich' (inline links/bold, stored as HTML)
- *       'toggle' | 'lines' (textarea ⇄ string[]) | 'image' (sets key + `${key}Alt`)
+ *       'select' (pass `options`) | 'toggle' | 'lines' (textarea ⇄ string[]) | 'image' (sets key + `${key}Alt`)
  *       'list' (nested ListControl — pass `fields` for the inner items)
  *
  * @param {Object}   props
@@ -125,6 +126,15 @@ function Field( { field, item, onChange } ) {
 						onChange={ ( v ) => onChange( { [ key ]: v } ) }
 					/>
 				</div>
+			);
+		case 'select':
+			return (
+				<SelectControl
+					label={ label }
+					value={ value ?? '' }
+					options={ field.options }
+					onChange={ ( v ) => onChange( { [ key ]: v } ) }
+				/>
 			);
 		case 'toggle':
 			return <ToggleControl label={ label } checked={ !! value } onChange={ ( v ) => onChange( { [ key ]: v } ) } />;

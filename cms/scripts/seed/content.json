@@ -19,12 +19,29 @@
           }
         },
         {
-          "name": "ac/trust-strip",
+          "name": "ac/trust",
           "attributes": {
             "items": [
-              "Over 30 years experience",
-              "Fully licensed & insured",
-              "All work warrantied"
+              {
+                "title": "years experience",
+                "art": "years",
+                "body": "More than three decades of installing appliances means we have seen your problem before. Tight kitchens, old gas lines, awkward panel fits: we know how to handle them cleanly."
+              },
+              {
+                "title": "Fully licensed & insured",
+                "body": "Gas and water connections carry real risk. We are licensed for the work and insured, so your home is protected.",
+                "art": "licensed"
+              },
+              {
+                "title": "All work warrantied",
+                "body": "If something we installed is not right, we come back and fix it.",
+                "art": "warranty"
+              },
+              {
+                "title": "Locally owned and operated",
+                "body": "The Appliance Connection is run by Craig Holmes, not a call centre. When you call, you reach the people who do the work.",
+                "art": "ontario"
+              }
             ]
           }
         },
@@ -546,8 +563,9 @@
             "eyebrow": "Service area",
             "heading": "Appliance installation in Durham Region",
             "intro": "Licensed, insured and warrantied — over 30 years installing built-in appliances, gas lines and laundry rooms across Durham Region.",
-            "illustrationUrl": "/illustrations/craig-harley-waving.webp",
-            "illustrationAlt": "Craig and Harley",
+            "illustrationId": 167,
+            "illustrationUrl": "http://localhost:10018/wp-content/uploads/2026/09/durham-region.avif",
+            "illustrationAlt": "Craig, in a black cap and tool belt, stands beside a large blue Durham Region sign.",
             "primaryLabel": "Contact Us",
             "primaryUrl": "/contact/",
             "showPhone": true
@@ -777,8 +795,9 @@
             "eyebrow": "Service area",
             "heading": "Appliance installation in Peterborough",
             "intro": "Licensed, insured and warrantied — over 30 years installing built-in appliances, gas lines and laundry rooms across Peterborough and the Kawarthas.",
-            "illustrationUrl": "/illustrations/craig-harley-waving.webp",
-            "illustrationAlt": "Craig and Harley",
+            "illustrationId": 168,
+            "illustrationUrl": "http://localhost:10018/wp-content/uploads/2026/09/Peterborough.avif",
+            "illustrationAlt": "Craig and Harley peek over a Peterborough sign, with Craig waving.",
             "primaryLabel": "Contact Us",
             "primaryUrl": "/contact/",
             "showPhone": true
@@ -1007,8 +1026,9 @@
             "eyebrow": "Service area",
             "heading": "Appliance installation in Kawartha Lakes",
             "intro": "Licensed, insured and warrantied — over 30 years installing built-in appliances, gas lines and laundry rooms across the City of Kawartha Lakes.",
-            "illustrationUrl": "/illustrations/craig-harley-waving.webp",
-            "illustrationAlt": "Craig and Harley",
+            "illustrationId": 178,
+            "illustrationUrl": "http://localhost:10018/wp-content/uploads/2026/09/Kawartha-Lakes.avif",
+            "illustrationAlt": "Craig and Harley run forward with open arms beneath the Kawartha Lakes logo.",
             "primaryLabel": "Contact Us",
             "primaryUrl": "/contact/",
             "showPhone": false
@@ -1219,8 +1239,9 @@
             "eyebrow": "Service area",
             "heading": "Appliance installation in Northumberland",
             "intro": "Licensed, insured and warrantied — over 30 years installing built-in appliances, gas lines and laundry rooms across Northumberland County.",
-            "illustrationUrl": "/illustrations/craig-harley-waving.webp",
-            "illustrationAlt": "Craig and Harley",
+            "illustrationId": 181,
+            "illustrationUrl": "http://localhost:10018/wp-content/uploads/2026/09/Northumberland.avif",
+            "illustrationAlt": "Craig and Harley peek over a Northumberland County sign, with Craig waving.",
             "primaryLabel": "Contact Us",
             "primaryUrl": "/contact/",
             "showPhone": false
@@ -1460,6 +1481,20 @@
                 "label": "Installs completed"
               }
             ]
+          }
+        },
+        {
+          "name": "ac/media-text",
+          "attributes": {
+            "heading": "Proudly Canadian",
+            "paragraphs": [
+              "The Appliance Connection has been Canadian owned and operated for over 30 years. When you book with us, you’re dealing with the people who own the business and answer for the work.",
+              "Thousands of installs later, our standard hasn’t changed: do the job right, leave your home clean, and stand behind every install. Your satisfaction is on us, and if something isn’t right, we make it right."
+            ],
+            "imageId": 205,
+            "imageUrl": "http://localhost:10018/wp-content/uploads/2026/09/proudly-canadian.avif",
+            "imageAlt": "Cartoon Craig in red, maple leaf shaped sunglasses. He is proudly holding a waving Canadian flag",
+            "background": "dark"
           }
         },
         {

@@ -11,7 +11,7 @@
  */
 import Hero from '../../components/blocks/Hero.astro';
 import PageHeader from '../../components/blocks/PageHeader.astro';
-import TrustStrip from '../../components/blocks/TrustStrip.astro';
+import Trust from '../../components/blocks/Trust.astro';
 import Intro from '../../components/blocks/Intro.astro';
 import Partners from '../../components/blocks/Partners.astro';
 import StatBlock from '../../components/blocks/StatBlock.astro';
@@ -28,7 +28,7 @@ import CtaBand from '../../components/blocks/CtaBand.astro';
 export const registry = {
   'ac/hero': Hero,
   'ac/page-header': PageHeader,
-  'ac/trust-strip': TrustStrip,
+  'ac/trust': Trust,
   'ac/intro': Intro,
   'ac/partners': Partners,
   'ac/stat-block': StatBlock,

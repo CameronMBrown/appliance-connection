@@ -47,5 +47,8 @@ web/public/fonts/
 # Cloned separately into ./private — see README → Private files.
 private/
 
+# Snapshot of live WP content written by cms/scripts/seed/export-from-wp.php (a diff aid, not source)
+cms/scripts/seed/wp-pull.json
+
 # Hero video encode output (upload to WP Media Library, never commit)
 web/.video-out/

@@ -14,12 +14,25 @@
  *
  * Run: wp eval-file cms/scripts/seed/seed.php   (re-running updates in place)
  *
+ * Drift guard: the seed overwrites page bodies, so before writing anything it
+ * checks every existing post against the fingerprint stored at the last seed
+ * (`_ac_seed_fingerprint`). If a post was edited in WP since then, the seed
+ * aborts and lists it, touching nothing. Pull the edits first with
+ * export-from-wp.php and port them into web/src/fixtures/pages.ts, or discard
+ * them deliberately:
+ *
+ *   wp eval-file cms/scripts/seed/seed.php force      (or AC_SEED_FORCE=1)
+ *
  * @package AcCore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+require_once __DIR__ . '/lib.php';
+
+$ac_force = in_array( 'force', isset( $args ) ? (array) $args : array(), true ) || (bool) getenv( 'AC_SEED_FORCE' );
 
 // Save as an administrator so kses leaves the editor's rich text (links) intact,
 // exactly as if an admin had saved the block in the editor.
@@ -54,7 +67,7 @@ function ac_seed_block( array $b ): array {
  * existing media attributes over so re-running doesn't wipe them.
  */
 function ac_seed_keep_hero_media( array $blocks, string $existing_content ): array {
-	$keys = array( 'videoSources', 'posterId', 'posterUrl', 'posterSrcset', 'posterWidth', 'posterHeight' );
+	$keys = ac_seed_hero_media_keys();
 	$kept = array();
 	foreach ( parse_blocks( $existing_content ) as $b ) {
 		if ( 'ac/hero' === $b['blockName'] ) {
@@ -74,11 +87,24 @@ function ac_seed_keep_hero_media( array $blocks, string $existing_content ): arr
 	return $blocks;
 }
 
+/** Collects posts edited in WP since their last seed (static so it works however WP-CLI scopes this file). */
+function ac_seed_drift_log( ?array $entry = null ): array {
+	static $log = array();
+	if ( $entry ) {
+		$log[] = $entry;
+	}
+	return $log;
+}
+
 /**
  * Create or update one post; returns its ID.
+ *
+ * With $dry, writes nothing: it only records drift (the DB copy differs from
+ * both the last-seeded copy and what this seed would write) and returns the
+ * existing ID (0 if none) so child posts can still resolve their parent.
  */
-function ac_seed_post( string $type, string $slug, string $title, array $page, int $parent = 0, int $order = 0 ): int {
-	$found   = get_posts(
+function ac_seed_post( string $type, string $slug, string $title, array $page, int $parent = 0, int $order = 0, bool $dry = false ): int {
+	$found  = get_posts(
 		array(
 			'post_type'   => $type,
 			'name'        => $slug,
@@ -87,6 +113,23 @@ function ac_seed_post( string $type, string $slug, string $title, array $page, i
 			'numberposts' => 1,
 		)
 	);
+	$new_fp = ac_seed_fingerprint( $page['blocks'], false, $page['title'] ?? '', $page['description'] ?? '' );
+	if ( $dry ) {
+		if ( ! $found ) {
+			return 0;
+		}
+		$current  = ac_seed_post_fingerprint( $found[0] );
+		$baseline = (string) get_post_meta( $found[0]->ID, '_ac_seed_fingerprint', true );
+		if ( $current !== $new_fp && $current !== $baseline ) {
+			ac_seed_drift_log(
+				array(
+					'label'  => sprintf( '%s %s', $type, $slug ),
+					'reason' => '' === $baseline ? 'no seed baseline and content differs from fixtures' : 'edited in WP since last seed',
+				)
+			);
+		}
+		return $found[0]->ID;
+	}
 	if ( $found ) {
 		$page['blocks'] = ac_seed_keep_hero_media( $page['blocks'], $found[0]->post_content );
 	}
@@ -110,6 +153,7 @@ function ac_seed_post( string $type, string $slug, string $title, array $page, i
 	}
 	update_post_meta( $id, 'ac_seo_title', $page['title'] ?? '' );
 	update_post_meta( $id, 'ac_seo_description', $page['description'] ?? '' );
+	update_post_meta( $id, '_ac_seed_fingerprint', $new_fp );
 	WP_CLI::log( sprintf( '  %-12s %-28s #%d', $type, $slug, $id ) );
 	return $id;
 }
@@ -132,6 +176,68 @@ $ac_region_names = array(
 	'northumberland' => 'Northumberland',
 );
 
+/**
+ * Walk every fixture page and create/update its post. With $dry, nothing is
+ * written: ac_seed_post() only records drift (see its docblock).
+ */
+function ac_seed_content( array $seed, array $region_names, array $terms, bool $dry ): void {
+	$hubs  = array();
+	$order = 0;
+
+	// Hubs before towns (towns need their parent), so sort by path depth.
+	$paths = array_keys( $seed['pages'] );
+	usort( $paths, fn( $a, $b ) => substr_count( $a, '/' ) <=> substr_count( $b, '/' ) ); // stable: keeps fixture order within a depth
+
+	foreach ( $paths as $path ) {
+		$page  = $seed['pages'][ $path ];
+		$parts = array_values( array_filter( explode( '/', $path ) ) );
+
+		if ( '/' === $path ) {
+			$id = ac_seed_post( 'page', 'home', 'Home', $page, 0, 0, $dry );
+			if ( ! $dry ) {
+				update_option( 'show_on_front', 'page' );
+				update_option( 'page_on_front', $id );
+			}
+		} elseif ( 'services' === $parts[0] && 2 === count( $parts ) ) {
+			ac_seed_post( 'ac_service', $parts[1], ac_seed_title( $page, $parts[1] ), $page, 0, ++$order, $dry );
+		} elseif ( isset( $region_names[ $parts[0] ] ) ) {
+			$region = $parts[0];
+			if ( 1 === count( $parts ) ) {
+				$id              = ac_seed_post( 'ac_location', $region, $region_names[ $region ], $page, 0, 0, $dry );
+				$hubs[ $region ] = $id;
+				$phone           = $seed['phones'][ $region ] ?? null;
+				if ( $phone && ! $dry ) {
+					update_post_meta( $id, 'ac_phone', $phone['phone'] );
+				}
+			} else {
+				$town = ucwords( str_replace( '-', ' ', $parts[1] ) );
+				$id   = ac_seed_post( 'ac_location', $parts[1], $town, $page, $hubs[ $region ] ?? 0, 0, $dry );
+			}
+			if ( ! $dry ) {
+				wp_set_object_terms( $id, array( $terms[ $region ] ), 'ac_region' );
+			}
+		} else {
+			ac_seed_post( 'page', $parts[0], ac_seed_title( $page, ucfirst( $parts[0] ) ), $page, 0, 0, $dry );
+		}
+	}
+}
+
+// --- Drift guard: dry pass first, so a refusal leaves WP untouched ----------------
+ac_seed_content( $ac_seed, $ac_region_names, array(), true );
+$ac_drift = ac_seed_drift_log();
+if ( $ac_drift ) {
+	WP_CLI::warning( 'These posts were edited in WP since the last seed; seeding would overwrite them:' );
+	foreach ( $ac_drift as $d ) {
+		WP_CLI::log( sprintf( '  %-40s %s', $d['label'], $d['reason'] ) );
+	}
+	if ( ! $ac_force ) {
+		WP_CLI::error(
+			"Nothing was changed. Run export-from-wp.php to pull the edits and port them into web/src/fixtures/pages.ts (then npm run seed:export), or discard them deliberately: wp eval-file cms/scripts/seed/seed.php force"
+		);
+	}
+	WP_CLI::warning( 'force: overwriting the edits above.' );
+}
+
 // --- Region terms -------------------------------------------------------------
 $ac_terms = array();
 foreach ( $ac_region_names as $slug => $name ) {
@@ -143,41 +249,7 @@ foreach ( $ac_region_names as $slug => $name ) {
 }
 
 WP_CLI::log( 'Content:' );
-$ac_hubs  = array();
-$ac_order = 0;
-
-// Hubs before towns (towns need their parent), so sort by path depth.
-$ac_paths = array_keys( $ac_seed['pages'] );
-usort( $ac_paths, fn( $a, $b ) => substr_count( $a, '/' ) <=> substr_count( $b, '/' ) ); // stable: keeps fixture order within a depth
-
-foreach ( $ac_paths as $path ) {
-	$page  = $ac_seed['pages'][ $path ];
-	$parts = array_values( array_filter( explode( '/', $path ) ) );
-
-	if ( '/' === $path ) {
-		$id = ac_seed_post( 'page', 'home', 'Home', $page );
-		update_option( 'show_on_front', 'page' );
-		update_option( 'page_on_front', $id );
-	} elseif ( 'services' === $parts[0] && 2 === count( $parts ) ) {
-		ac_seed_post( 'ac_service', $parts[1], ac_seed_title( $page, $parts[1] ), $page, 0, ++$ac_order );
-	} elseif ( isset( $ac_region_names[ $parts[0] ] ) ) {
-		$region = $parts[0];
-		if ( 1 === count( $parts ) ) {
-			$id                 = ac_seed_post( 'ac_location', $region, $ac_region_names[ $region ], $page );
-			$ac_hubs[ $region ] = $id;
-			$phone              = $ac_seed['phones'][ $region ] ?? null;
-			if ( $phone ) {
-				update_post_meta( $id, 'ac_phone', $phone['phone'] );
-			}
-		} else {
-			$town = ucwords( str_replace( '-', ' ', $parts[1] ) );
-			$id   = ac_seed_post( 'ac_location', $parts[1], $town, $page, $ac_hubs[ $region ] ?? 0 );
-		}
-		wp_set_object_terms( $id, array( $ac_terms[ $region ] ), 'ac_region' );
-	} else {
-		ac_seed_post( 'page', $parts[0], ac_seed_title( $page, ucfirst( $parts[0] ) ), $page );
-	}
-}
+ac_seed_content( $ac_seed, $ac_region_names, $ac_terms, false );
 
 // The default WP sample content isn't part of this site.
 foreach ( array( 'sample-page' => 'page', 'hello-world' => 'post' ) as $slug => $type ) {
