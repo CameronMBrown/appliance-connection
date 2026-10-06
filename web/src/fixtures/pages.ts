@@ -176,6 +176,7 @@ const home: PageData = {
     {
       name: 'ac/trust',
       attributes: {
+        heading: 'Why homeowners choose The Appliance Connection',
         // Position decides the role: primary, secondary, secondary, tertiary.
         // Draft copy; every claim here is one the client already states.
         items: [

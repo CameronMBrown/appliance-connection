@@ -17,7 +17,7 @@ interface Props extends TrustAttrs {
   context?: BlockContext;
 }
 
-const { items = [] } = Astro.props;
+const { items = [], heading = 'Why homeowners choose The Appliance Connection' } = Astro.props;
 const roles = ['primary', 'secondary', 'secondary', 'tertiary'] as const;
 // Modes: `stage` is centred in the cell's free space (overflowing a little);
 // `inline` sits in flow above the copy; `bleed` and `backdrop` are oversized,
@@ -40,7 +40,12 @@ const bento = cells.length === roles.length;
 
 {
   cells.length > 0 && (
-    <section class="trust">
+    <section class="trust" aria-labelledby={heading ? 'trust-heading' : undefined}>
+      {heading && (
+        <h2 id="trust-heading" class="trust__heading">
+          {heading}
+        </h2>
+      )}
       <svg class="trust__defs" width="0" height="0" aria-hidden="true" focusable="false">
         <symbol id="ac-truck" viewBox="0 0 478 451">
           <path fill-rule="evenodd" d={truckPath} />
@@ -103,6 +108,19 @@ const bento = cells.length === roles.length;
 }
 
 <style>
+  /* Visually hidden section heading: in the outline for screen readers and search
+     engines, not drawn. */
+  .trust__heading {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
   .trust__defs {
     position: absolute;
     width: 0;
@@ -159,8 +177,10 @@ const bento = cells.length === roles.length;
   .trust__cell--tall {
     min-height: 19rem;
   }
+  /* Phones, map cell: kept short so the copy rides up under the map (the map is
+     absolutely placed from the top, so a shorter cell moves the text toward it). */
   .trust__cell--tertiary.trust__cell--tall {
-    min-height: 24rem;
+    min-height: 20rem;
   }
   /* Phones, shield cell: a short image area, so the shield (same size as ever)
      ends up behind the copy instead of floating above a tall empty block. The
@@ -254,7 +274,18 @@ const bento = cells.length === roles.length;
     text-shadow:
       0 0 18px var(--cell-bg),
       0 0 10px var(--cell-bg),
-      0 0 4px var(--cell-bg);
+      0 0 4px var(--cell-bg),
+      /* Tight outline: a hard 1px ring in the cell's own colour (ink in a dark
+         cell, paper in a light one), so text stays legible over a graphic whichever
+         way the cell is themed. */
+      1px 0 0 var(--cell-bg),
+      -1px 0 0 var(--cell-bg),
+      0 1px 0 var(--cell-bg),
+      0 -1px 0 var(--cell-bg),
+      1px 1px 0 var(--cell-bg),
+      -1px 1px 0 var(--cell-bg),
+      1px -1px 0 var(--cell-bg),
+      -1px -1px 0 var(--cell-bg);
   }
   /* Load-in (script in the markup above adds data-anim, then .is-in per cell). */
   @media (prefers-reduced-motion: no-preference) {
@@ -402,21 +433,25 @@ const bento = cells.length === roles.length;
     .trust__cell--tertiary {
       grid-column: 1 / -1;
     }
-    /* Tablet contracts: drawn much larger and tilted, overflowing the slot
-       (the slot's height is unchanged, so the cell doesn't grow). */
+    /* Tablet contracts: drawn much larger and tilted (right edge low, unlike
+       phones), overflowing the slot (the slot's height is unchanged, so the cell
+       doesn't grow). */
     .trust__art--inline {
       align-self: flex-end;
-      --licensed-scale: 1.45;
-      --licensed-tilt: -6deg;
+      --licensed-scale: 1.52;
+      --licensed-tilt: 6deg;
       --licensed-origin: center;
       --licensed-x: -1rem;
       --licensed-y: 0.25rem;
     }
-    /* Tablet shield: one fixed size (it doesn't scale with the screen) and
-       inset from the right edge, so it sits further left than on phones. */
+    /* Tablet shield: one fixed size (it doesn't scale with the screen), dropped
+       ~15% of its height from the phone position. Inset from the right edge, but
+       the inset only opens up as the cell widens: flush right at 40rem (where the
+       cell is narrowest) easing out to 3rem by 52rem. */
     .trust__art--bleed {
       --h: 19rem;
-      right: 3rem;
+      top: calc(var(--h) * 0.07);
+      right: clamp(0rem, calc((100vw - 40rem) / 4), 3rem);
     }
     /* Tablet primary: copy on the left, the badge centred in the right half. */
     .trust__cell--primary {
@@ -452,11 +487,11 @@ const bento = cells.length === roles.length;
     .trust__cell--tertiary.trust__cell--tall {
       min-height: 17rem;
     }
-    /* Tablet map: drawn bigger (19rem, ~21rem tall) than the 17rem cell. It is
+    /* Tablet map: drawn bigger (21.85rem, ~24rem tall) than the 17rem cell. It is
        absolutely placed, so it adds no height. Sits well above centre, so the
        cell's overflow crops more off the top than the bottom. */
     .trust__art--backdrop {
-      --w: min(19rem, 40vw);
+      --w: min(21.85rem, 46vw);
       top: 50%;
       left: auto;
       right: 4%;
@@ -521,15 +556,14 @@ const bento = cells.length === roles.length;
     /* Desktop contracts: same tilt and slot, centred in the cell. The cell is a
        third of the grid, so its width tracks the viewport until the container
        caps at 84rem; the scale steps up with it so the stack overflows the slot
-       a little rather than far past it. The slot is a fixed 10rem tall, so on
-       narrow desktops the stack is kept high (negative drop, growing upward into
-       the cell padding) to stay clear of the title; the drop eases down as the
-       cell gets room. */
+       a little rather than far past it. The slot is a fixed 10rem tall; the
+       stack may run behind the title (the copy's text mask keeps it legible),
+       and the drop eases down as the cell gets room. */
     .trust__art--inline {
       align-self: center;
-      --licensed-scale: 1.25;
+      --licensed-scale: 1.55;
       --licensed-x: 0rem;
-      --licensed-y: -0.8rem;
+      --licensed-y: 0.4rem;
     }
     @media (min-width: 72rem) {
       .trust__art--inline {

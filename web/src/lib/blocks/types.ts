@@ -91,6 +91,8 @@ export interface TrustCell {
 }
 
 export interface TrustAttrs {
+  /** Visually hidden h2 that gives the section its place in the page outline. */
+  heading?: string;
   /** Real credentials only — the section renders nothing when empty. */
   items?: TrustCell[];
 }
