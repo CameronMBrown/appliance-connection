@@ -1,0 +1,29 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/stack",
+  "title": "Stack",
+  "category": "ac",
+  "icon": "index-card",
+  "description": "Scroll-stacking showcase: each item is a card (photo + eyebrow, title, copy, optional button) that pins to the top as you scroll, leaving its eyebrow visible under the next card. Use for services or past work. 3 to 8 items.",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "items": {
+      "type": "array",
+      "default": [
+        { "eyebrow": "", "title": "", "body": "", "buttonText": "", "buttonUrl": "" },
+        { "eyebrow": "", "title": "", "body": "", "buttonText": "", "buttonUrl": "" },
+        { "eyebrow": "", "title": "", "body": "", "buttonText": "", "buttonUrl": "" }
+      ]
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

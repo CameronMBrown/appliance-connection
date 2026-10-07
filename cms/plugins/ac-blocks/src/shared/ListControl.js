@@ -21,7 +21,8 @@ import {
  *   - omitted            → items are plain strings (one text input each)
  *   - { key, label, type } with type:
  *       'text' (default) | 'textarea' | 'rich' (inline links/bold, stored as HTML)
- *       'select' (pass `options`) | 'toggle' | 'lines' (textarea ⇄ string[]) | 'image' (sets key + `${key}Alt`)
+ *       'select' (pass `options`) | 'toggle' | 'lines' (textarea ⇄ string[]) | 'image' (sets key + `${key}Alt`;
+ *       with `responsive: true` also `${key}Srcset` / `${key}Width` / `${key}Height` from the sizes WP already generated)
  *       'list' (nested ListControl — pass `fields` for the inner items)
  *
  * @param {Object}   props
@@ -30,8 +31,10 @@ import {
  * @param {Function} props.onChange  Receives the new array.
  * @param {Array}    [props.fields]  Item field definitions (see above).
  * @param {string}   [props.itemLabel] Singular noun for the add button.
+ * @param {number}   [props.min]     Fewest items allowed (Remove is disabled at this count).
+ * @param {number}   [props.max]     Most items allowed (Add is disabled at this count).
  */
-export default function ListControl( { label, value = [], onChange, fields, itemLabel = __( 'item', 'ac-blocks' ) } ) {
+export default function ListControl( { label, value = [], onChange, fields, itemLabel = __( 'item', 'ac-blocks' ), min = 0, max = Infinity } ) {
 	const isStrings = ! fields;
 	const blank = () =>
 		isStrings ? '' : Object.fromEntries( fields.map( ( f ) => [ f.key, blankFor( f ) ] ) );
@@ -77,14 +80,14 @@ export default function ListControl( { label, value = [], onChange, fields, item
 							<Button size="small" icon="arrow-down-alt2" label={ __( 'Move down', 'ac-blocks' ) } onClick={ () => move( i, 1 ) } disabled={ i === value.length - 1 } />
 						</FlexItem>
 						<FlexItem>
-							<Button size="small" isDestructive variant="link" onClick={ () => remove( i ) }>
+							<Button size="small" isDestructive variant="link" onClick={ () => remove( i ) } disabled={ value.length <= min }>
 								{ __( 'Remove', 'ac-blocks' ) }
 							</Button>
 						</FlexItem>
 					</Flex>
 				</div>
 			) ) }
-			<Button variant="secondary" onClick={ () => onChange( [ ...value, blank() ] ) }>
+			<Button variant="secondary" onClick={ () => onChange( [ ...value, blank() ] ) } disabled={ value.length >= max }>
 				{ __( 'Add', 'ac-blocks' ) } { itemLabel }
 			</Button>
 		</div>
@@ -94,6 +97,28 @@ export default function ListControl( { label, value = [], onChange, fields, item
 /** Towns may arrive as plain strings (legacy/fixtures); edit them as objects. */
 function normalise( item ) {
 	return typeof item === 'string' ? { name: item } : item;
+}
+
+/**
+ * Reuse the sizes WordPress already generated for the attachment (thumbnail,
+ * medium, large, …) as a `srcset`, so Astro can serve a phone the small file
+ * instead of the full-size photo. Built at pick time, so no extra query.
+ */
+function responsiveAttrs( key, media ) {
+	const byWidth = new Map();
+	Object.values( media.sizes ?? {} ).forEach( ( s ) => s?.url && s.width && byWidth.set( s.width, s.url ) );
+	if ( media.url && media.width ) {
+		byWidth.set( media.width, media.url );
+	}
+	const srcset = [ ...byWidth ]
+		.sort( ( a, b ) => a[ 0 ] - b[ 0 ] )
+		.map( ( [ w, url ] ) => `${ url } ${ w }w` )
+		.join( ', ' );
+	return {
+		[ `${ key }Srcset` ]: srcset,
+		[ `${ key }Width` ]: media.width,
+		[ `${ key }Height` ]: media.height,
+	};
 }
 
 function blankFor( field ) {
@@ -152,7 +177,13 @@ function Field( { field, item, onChange } ) {
 				<MediaUploadCheck>
 					<MediaUpload
 						allowedTypes={ [ 'image' ] }
-						onSelect={ ( m ) => onChange( { [ key ]: m.url, [ `${ key }Alt` ]: m.alt } ) }
+						onSelect={ ( m ) =>
+							onChange( {
+								[ key ]: m.url,
+								[ `${ key }Alt` ]: m.alt,
+								...( field.responsive ? responsiveAttrs( key, m ) : {} ),
+							} )
+						}
 						render={ ( { open } ) => (
 							<div className="ac-list__image">
 								{ value && <img src={ value } alt="" style={ { maxWidth: '120px', display: 'block' } } /> }

@@ -24,6 +24,7 @@ import Testimonials from '../../components/blocks/Testimonials.astro';
 import Faq from '../../components/blocks/Faq.astro';
 import Contact from '../../components/blocks/Contact.astro';
 import CtaBand from '../../components/blocks/CtaBand.astro';
+import Stack from '../../components/blocks/Stack.astro';
 
 export const registry = {
   'ac/hero': Hero,
@@ -41,6 +42,7 @@ export const registry = {
   'ac/faq': Faq,
   'ac/contact': Contact,
   'ac/cta-band': CtaBand,
+  'ac/stack': Stack,
 } as const;
 
 export type BlockName = keyof typeof registry;

@@ -97,6 +97,29 @@ export interface TrustAttrs {
   items?: TrustCell[];
 }
 
+/** One stack card. Eyebrow, title and body are required; photo and button are optional. */
+export interface StackItem {
+  eyebrow: string;
+  title: string;
+  body?: string;
+  /** Without a photo the card shows the graph-paper placeholder. */
+  image?: string;
+  imageAlt?: string;
+  /** WP's generated sizes as a `srcset` string, so phones get the small file. */
+  imageSrcset?: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  buttonText?: string;
+  buttonUrl?: string;
+}
+
+export interface StackAttrs {
+  /** Visually hidden h2 that gives the section its place in the page outline. */
+  heading?: string;
+  /** 3 to 8 cards; later cards stack over earlier ones as you scroll. */
+  items?: StackItem[];
+}
+
 export interface PhotoSlot {
   url?: string;
   alt?: string;

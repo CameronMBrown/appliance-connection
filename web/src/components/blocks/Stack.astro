@@ -1,0 +1,304 @@
+---
+// ac/stack — scroll-stacking showcase (inspired by the enerblock.net "stack").
+// Each item is a full-width opaque row with `position: sticky`; the row's `top`
+// is its index times a fixed strip height (--i is set inline), so earlier cards
+// pin as thin strips (eyebrow + a sliver of photo) while the next card slides up
+// over their bodies. It's pure CSS — no scroll listeners — and any item count
+// works because the offset is computed, not hard-coded.
+//
+// The eyebrow is one element that moves with CSS grid: beside the title on
+// desktop, in a full-width strip row on tablet/mobile. That strip is what stays
+// visible when cards stack. Below 480px sticky is switched off (plain list).
+//
+// The photo is optional per item: without one it shows the graph-paper
+// placeholder, so cards stay whole while real photos are still being shot.
+// The photo runs flush to the card's top, bottom and left edges (and both sides
+// on phones); the copy keeps the page gutter. Odd cards flip to
+// the dark (inverse) theme for rhythm; below 480px every card stays light.
+import type { BlockContext, EditorBlock, StackAttrs } from '../../lib/blocks/types';
+
+interface Props extends StackAttrs {
+  innerBlocks?: EditorBlock[];
+  context?: BlockContext;
+}
+
+const { heading, items = [] } = Astro.props;
+// Eyebrow and title are required; an item missing either can't make a strip.
+const cards = items.filter((c) => c.eyebrow && c.title);
+---
+
+{
+  cards.length > 0 && (
+    <section class="stack" aria-labelledby={heading ? 'stack-heading' : undefined}>
+      {heading && (
+        <h2 id="stack-heading" class="stack__heading">
+          {heading}
+        </h2>
+      )}
+      <div class="stack__list">
+        {cards.map((c, i) => (
+          <article class:list={['stack__item', { 'stack__item--dark': i % 2 === 1 }]} style={`--i:${i}`}>
+            <div class="stack__in">
+              <p class="stack__eyebrow">{c.eyebrow}</p>
+              <div class="stack__media">
+                {c.image ? (
+                  <img
+                    src={c.image}
+                    srcset={c.imageSrcset || undefined}
+                    sizes="(max-width: 480px) 100vw, (max-width: 1024px) 40vw, 30rem"
+                    alt={c.imageAlt ?? ''}
+                    width={c.imageWidth}
+                    height={c.imageHeight}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <div class="photo-ph stack__ph" aria-hidden="true" />
+                )}
+              </div>
+              <div class="stack__text">
+                <h3 class="stack__title">{c.title}</h3>
+                <div class="stack__foot">
+                  {c.body && <p class="stack__body">{c.body}</p>}
+                  {c.buttonText && c.buttonUrl && (
+                    <a class="btn btn--secondary stack__btn" href={c.buttonUrl}>
+                      {c.buttonText}
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<script>
+  // Sticky cards leave the section when their own bottom meets the section's
+  // bottom, so cards of different heights peel off one at a time and one can
+  // peek out above the last card. CSS can't equalise heights for copy it hasn't
+  // seen, so this sizes every card to the tallest one. Without JS the cards
+  // keep their natural heights (a small peek, nothing broken).
+  //
+  // Loading: Astro ships this as a deferred module (never blocks rendering),
+  // and it does nothing until a stack is within ~one screen of the viewport.
+  function equalise(stack: HTMLElement) {
+    const items = [...stack.querySelectorAll<HTMLElement>('.stack__item')];
+    items.forEach((el) => (el.style.minHeight = ''));
+    if (matchMedia('(max-width: 480px)').matches) return;
+    // Round up: fractional heights would still leave a sub-pixel difference.
+    const tallest = Math.ceil(Math.max(...items.map((el) => el.getBoundingClientRect().height)));
+    items.forEach((el) => (el.style.minHeight = `${tallest}px`));
+  }
+
+  function start(stack: HTMLElement) {
+    let width = 0;
+    new ResizeObserver(([entry]) => {
+      // Height changes are ours; only a width change needs re-measuring.
+      if (entry.contentRect.width === width) return;
+      width = entry.contentRect.width;
+      equalise(stack);
+    }).observe(stack);
+    document.fonts?.ready.then(() => equalise(stack));
+  }
+
+  const near = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        near.unobserve(entry.target);
+        start(entry.target as HTMLElement);
+      });
+    },
+    { rootMargin: '100% 0px' },
+  );
+  document.querySelectorAll<HTMLElement>('.stack').forEach((stack) => near.observe(stack));
+</script>
+
+<style>
+  .stack {
+    /* Height of the strip each pinned card leaves visible. */
+    --strip-h: 4rem;
+    /* Breathing room around every piece of copy (the photo alone is flush). */
+    --stack-pad: clamp(1.5rem, 4vw, 3.5rem);
+    border-top: 1px solid var(--color-border-strong);
+  }
+  .stack__heading {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .stack__list {
+    border-bottom: 1px solid var(--color-border-strong);
+  }
+  .stack__item {
+    position: sticky;
+    top: calc(var(--i) * var(--strip-h));
+    background: var(--color-bg);
+    color: var(--color-text);
+    border-top: 1px solid var(--color-border-strong);
+    /* The inner grid must fill the card (the equalised min-height lands here),
+       otherwise the photo cell stops short and leaves a gap at the bottom. */
+    display: flex;
+    flex-direction: column;
+  }
+  .stack__item:first-child {
+    border-top: 0;
+  }
+
+  /* Desktop: photo left, flush to the card's top and bottom and spanning both
+     rows; eyebrow then copy on the right. The min-height gives the photo room
+     to be a real portrait even when the copy is short. */
+  .stack__in {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: minmax(0, clamp(18rem, 32vw, 30rem)) minmax(0, 1fr);
+    grid-template-rows: var(--strip-h) 1fr;
+    grid-template-areas:
+      'media eyebrow'
+      'media text';
+    min-height: 32rem;
+  }
+  .stack__eyebrow {
+    grid-area: eyebrow;
+    align-self: start;
+    margin: 0;
+    padding: var(--stack-pad) var(--stack-pad) 0;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+  /* The photo is absolutely filled into its cell so its intrinsic height never
+     sizes the card: every card is the same height, which is what lets the whole
+     stack release together when the section scrolls away (sticky items leave
+     when their own bottom hits the section's bottom, so unequal heights would
+     peel one card off early). */
+  .stack__media {
+    grid-area: media;
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .stack__media img,
+  .stack__ph {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* Title pinned to the top, body + button pushed to the bottom. */
+  .stack__text {
+    grid-area: text;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-xl);
+    padding: var(--space-xl) var(--stack-pad) var(--stack-pad);
+    min-width: 0;
+  }
+  .stack__foot {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-lg);
+  }
+  .stack__title {
+    margin: 0;
+    font-size: var(--text-2xl);
+    max-width: 18ch;
+    color: inherit;
+    font-family: var(--font-display);
+    font-weight: var(--weight-display);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    text-wrap: balance;
+  }
+  .stack__body {
+    margin: 0;
+    max-width: 36rem;
+    font-size: var(--text-md);
+    color: var(--color-text-soft);
+  }
+
+  /* Alternating dark cards. Same role flip as `.on-dark` in the design system
+     (inverse tokens, white hairlines, ghost button), scoped here so it can be
+     switched off on the smallest phones. */
+  @media (min-width: 481px) {
+    .stack__item--dark {
+      --color-bg: var(--color-inverse-bg);
+      --color-bg-sunken: var(--color-inverse-bg-alt);
+      --color-text: var(--color-inverse-text);
+      --color-text-soft: var(--color-inverse-text-soft);
+      --color-text-muted: var(--neutral-400);
+      --color-border: rgb(255 255 255 / 0.2);
+      --color-border-strong: var(--color-inverse-text);
+      --grid-line: rgb(255 255 255 / 0.075);
+      --cta2-bg: transparent;
+      --cta2-border: var(--color-inverse-text);
+      --cta2-text: var(--color-inverse-text);
+    }
+  }
+
+  /* Tablet: still stacked. The eyebrow becomes a full-width strip row. */
+  @media (max-width: 1024px) {
+    .stack {
+      --strip-h: 3.25rem;
+    }
+    .stack__in {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      grid-template-areas:
+        'eyebrow eyebrow'
+        'media text';
+      grid-template-rows: var(--strip-h) minmax(22rem, 1fr);
+      min-height: 0;
+    }
+    .stack__eyebrow {
+      align-self: center;
+      padding: 0 var(--stack-pad);
+    }
+    .stack__text {
+      padding-top: var(--space-md);
+    }
+  }
+
+  /* Smallest phones: no pinning, a plain list. */
+  @media (max-width: 480px) {
+    .stack__item {
+      position: static;
+    }
+    .stack__in {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        'eyebrow'
+        'media'
+        'text';
+      grid-template-rows: auto;
+      row-gap: var(--space-lg);
+    }
+    .stack__media {
+      aspect-ratio: 4 / 3;
+    }
+    .stack__eyebrow {
+      padding: var(--stack-pad) var(--stack-pad) 0;
+    }
+    .stack__text {
+      gap: var(--space-lg);
+      padding-top: 0;
+    }
+    .stack__btn {
+      align-self: flex-end;
+    }
+  }
+</style>
