@@ -24,7 +24,7 @@
             "heading": "Why homeowners choose The Appliance Connection",
             "items": [
               {
-                "title": "years experience",
+                "title": "Years of experience",
                 "art": "years",
                 "body": "More than three decades of installing appliances means we have seen your problem before. Tight kitchens, old gas lines, awkward panel fits: we know how to handle them cleanly."
               },
@@ -65,6 +65,71 @@
               },
               {
                 "label": "Photo — laundry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "ac/stack",
+          "attributes": {
+            "heading": "What we install",
+            "items": [
+              {
+                "eyebrow": "Appliance installation",
+                "title": "Freestanding and built-in, installed right",
+                "body": "Ranges, cooktops, wall ovens, dishwashers, OTR microwaves, laundry, and custom panels. Every make and model.",
+                "image": "http://localhost:10018/wp-content/uploads/2026/10/stove-and-range-3-768x1024.avif",
+                "imageAlt": "A freestanding range installed in a finished kitchen",
+                "imageSrcset": "http://localhost:10018/wp-content/uploads/2026/10/stove-and-range-3-225x300.avif 225w, http://localhost:10018/wp-content/uploads/2026/10/stove-and-range-3-768x1024.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/stove-and-range-3-1152x1536.avif 1152w, http://localhost:10018/wp-content/uploads/2026/10/stove-and-range-3-1536x2048.avif 1536w",
+                "imageWidth": 768,
+                "imageHeight": 1024,
+                "buttonText": "Learn more",
+                "buttonUrl": "/services/appliance-installation/"
+              },
+              {
+                "eyebrow": "Kitchens",
+                "title": "From rough-in to the finished install",
+                "body": "Full kitchen work, from rough-in through to the finished install, with every appliance installed to code.",
+                "image": "http://localhost:10018/wp-content/uploads/2026/10/unfinished-kitchen-768x1024.avif",
+                "imageAlt": "A kitchen mid-renovation, ready for appliances",
+                "imageSrcset": "http://localhost:10018/wp-content/uploads/2026/10/unfinished-kitchen-225x300.avif 225w, http://localhost:10018/wp-content/uploads/2026/10/unfinished-kitchen-768x1024.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/unfinished-kitchen-1152x1536.avif 1152w, http://localhost:10018/wp-content/uploads/2026/10/unfinished-kitchen-1536x2048.avif 1536w",
+                "imageWidth": 768,
+                "imageHeight": 1024,
+                "buttonText": "Learn more",
+                "buttonUrl": "/services/kitchens/"
+              },
+              {
+                "eyebrow": "Laundry rooms",
+                "title": "Washers, dryers and venting, in the right place",
+                "body": "Washers, dryers, venting and relocations, including upstairs moves.",
+                "image": "http://localhost:10018/wp-content/uploads/2026/10/washer-dryer-768x1024.avif",
+                "imageAlt": "A washer and dryer installed side by side",
+                "imageSrcset": "http://localhost:10018/wp-content/uploads/2026/10/washer-dryer-225x300.avif 225w, http://localhost:10018/wp-content/uploads/2026/10/washer-dryer-768x1024.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/washer-dryer-1152x1536.avif 1152w, http://localhost:10018/wp-content/uploads/2026/10/washer-dryer-1536x2048.avif 1536w",
+                "imageWidth": 768,
+                "imageHeight": 1024,
+                "buttonText": "Learn more",
+                "buttonUrl": "/services/laundry-rooms/"
+              },
+              {
+                "eyebrow": "Gas piping",
+                "title": "Licensed gas fitting, above and below grade",
+                "body": "Licensed gas fitting for ranges, dryers, BBQs, garage and shop heaters, and pool and water heaters.",
+                "buttonText": "Learn more",
+                "buttonUrl": "/services/gas-piping/"
+              },
+              {
+                "eyebrow": "Plumbing fixtures",
+                "title": "Sinks, taps and shut-offs, done to code",
+                "body": "Sinks, taps, water lines and shut-offs, installed cleanly and tested before we leave.",
+                "buttonText": "Learn more",
+                "buttonUrl": "/services/plumbing-fixtures/"
+              },
+              {
+                "eyebrow": "Heaters",
+                "title": "Shop, garage, pool and water heaters",
+                "body": "Shop and garage heaters, pool heaters and water heaters, gas-fitted and installed by a licensed crew.",
+                "buttonText": "Learn more",
+                "buttonUrl": "/services/heaters/"
               }
             ]
           }

@@ -152,6 +152,77 @@ const SERVICE_MAP: EditorBlock = {
 
 // --- Home (templates/homepage) ---------------------------------------------
 
+/**
+ * Home services stack. Photos are the WP-generated 3:4 sizes (225/768/1152/1536w)
+ * of real jobsite shots; items without a photo yet fall back to the graph-paper
+ * placeholder. Most-requested services lead.
+ */
+const WP_UPLOADS = 'http://localhost:10018/wp-content/uploads/2026/10';
+const stackPhoto = (name: string, alt: string) => ({
+  image: `${WP_UPLOADS}/${name}-768x1024.avif`,
+  imageAlt: alt,
+  imageSrcset: [225, 768, 1152, 1536]
+    .map((w) => `${WP_UPLOADS}/${name}-${w}x${Math.round((w * 4) / 3)}.avif ${w}w`)
+    .join(', '),
+  imageWidth: 768,
+  imageHeight: 1024,
+});
+
+const HOME_STACK: EditorBlock = {
+  name: 'ac/stack',
+  attributes: {
+    heading: 'What we install',
+    items: [
+      {
+        eyebrow: 'Appliance installation',
+        title: 'Freestanding and built-in, installed right',
+        body: 'Ranges, cooktops, wall ovens, dishwashers, OTR microwaves, laundry, and custom panels. Every make and model.',
+        ...stackPhoto('stove-and-range-3', 'A freestanding range installed in a finished kitchen'),
+        buttonText: 'Learn more',
+        buttonUrl: '/services/appliance-installation/',
+      },
+      {
+        eyebrow: 'Kitchens',
+        title: 'From rough-in to the finished install',
+        body: 'Full kitchen work, from rough-in through to the finished install, with every appliance installed to code.',
+        ...stackPhoto('unfinished-kitchen', 'A kitchen mid-renovation, ready for appliances'),
+        buttonText: 'Learn more',
+        buttonUrl: '/services/kitchens/',
+      },
+      {
+        eyebrow: 'Laundry rooms',
+        title: 'Washers, dryers and venting, in the right place',
+        body: 'Washers, dryers, venting and relocations, including upstairs moves.',
+        ...stackPhoto('washer-dryer', 'A washer and dryer installed side by side'),
+        buttonText: 'Learn more',
+        buttonUrl: '/services/laundry-rooms/',
+      },
+      {
+        eyebrow: 'Gas piping',
+        title: 'Licensed gas fitting, above and below grade',
+        body: 'Licensed gas fitting for ranges, dryers, BBQs, garage and shop heaters, and pool and water heaters.',
+        buttonText: 'Learn more',
+        buttonUrl: '/services/gas-piping/',
+      },
+      {
+        eyebrow: 'Plumbing fixtures',
+        title: 'Sinks, taps and shut-offs, done to code',
+        body: 'Sinks, taps, water lines and shut-offs, installed cleanly and tested before we leave.',
+        buttonText: 'Learn more',
+        buttonUrl: '/services/plumbing-fixtures/',
+      },
+      {
+        eyebrow: 'Heaters',
+        title: 'Shop, garage, pool and water heaters',
+        body: 'Shop and garage heaters, pool heaters and water heaters, gas-fitted and installed by a licensed crew.',
+        buttonText: 'Learn more',
+        buttonUrl: '/services/heaters/',
+      },
+    ],
+  },
+};
+
+
 const home: PageData = {
   title: 'The Appliance Connection — Complete Home Appliance Installation',
   description: 'Licensed, insured appliance installation across Durham & Peterborough.',
@@ -181,7 +252,7 @@ const home: PageData = {
         // Draft copy; every claim here is one the client already states.
         items: [
           {
-            title: 'years experience',
+            title: 'Years of experience',
             art: 'years',
             body: 'More than three decades of installing appliances means we have seen your problem before. Tight kitchens, old gas lines, awkward panel fits: we know how to handle them cleanly.',
           },
@@ -220,6 +291,7 @@ const home: PageData = {
         ],
       },
     },
+    HOME_STACK,
     SERVICE_MAP,
     {
       name: 'ac/partners',
