@@ -7,9 +7,14 @@
 // all carry the AC truck mark near the top (the shared #ac-truck vector symbol,
 // black on transparent), but the layout differs, and signatures / ink stamps are
 // scattered across them rather than repeated on every sheet.
+interface Props {
+  /** No intro slide-in or hover fan: all three contracts simply sit there. */
+  static?: boolean;
+}
+const { static: isStatic = false } = Astro.props;
 ---
 
-<svg class="licensed" viewBox="0 0 250 160" aria-hidden="true" focusable="false">
+<svg class="licensed" viewBox="0 0 250 160" aria-hidden="true" focusable="false" data-static={isStatic ? "" : undefined}>
   <!-- Back: letterhead left, big tick-box, scrawled signature. -->
   <g class="doc doc--back">
     <g transform="translate(10 22) rotate(-8)">
@@ -93,7 +98,7 @@
   // scrolls into view, once.
   (function () {
     var svg = document.currentScript.previousElementSibling;
-    if (!svg || !svg.classList.contains('licensed')) return;
+    if (!svg || !svg.classList.contains('licensed') || svg.hasAttribute('data-static')) return;
     if (!('IntersectionObserver' in window)) return;
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     svg.setAttribute('data-intro', '');
@@ -160,16 +165,16 @@
     }
   }
   @media (prefers-reduced-motion: no-preference) {
-    .licensed:hover .doc--back {
+    .licensed:not([data-static]):hover .doc--back {
       --lift: -7px;
     }
-    .licensed:hover .doc--middle {
+    .licensed:not([data-static]):hover .doc--middle {
       --lift: -4px;
     }
-    .licensed:hover .doc--front {
+    .licensed:not([data-static]):hover .doc--front {
       --lift: -6px;
     }
-    .licensed .doc:hover {
+    .licensed:not([data-static]) .doc:hover {
       --own: -4px;
     }
   }

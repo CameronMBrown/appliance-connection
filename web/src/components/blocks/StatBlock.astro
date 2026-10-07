@@ -1,8 +1,16 @@
 ---
 // ac/stat-block — static port of design-system/components/blocks/StatBlock.jsx.
 // Credential row: ruled cells sharing one ink outline, a Benguiat value over a
-// line of plain copy; `mark` prefixes a wood ✓ cell for credentials.
+// line of plain copy. A stat may carry a small still graphic from the trust
+// section (`art`, drawn in code, never animated at this size); without one,
+// `mark` prefixes a wood ✓ cell for credentials.
 import type { BlockContext, EditorBlock, StatBlockAttrs } from '../../lib/blocks/types';
+import Handshake from '../trust-art/Handshake.astro';
+import Licensed from '../trust-art/Licensed.astro';
+import Stamp from '../trust-art/Stamp.astro';
+import Warranty from '../trust-art/Warranty.astro';
+import Years from '../trust-art/Years.astro';
+import { truckPath } from '../trust-art/truck-path';
 
 interface Props extends StatBlockAttrs {
   innerBlocks?: EditorBlock[];
@@ -10,26 +18,47 @@ interface Props extends StatBlockAttrs {
 }
 
 const { stats = [] } = Astro.props;
+const art = { years: Years, licensed: Licensed, stamp: Stamp, warranty: Warranty, handshake: Handshake } as const;
+// Licensed and Warranty draw the AC mark from a shared <symbol>.
+const needsTruck = stats.some((s) => s.art && (s.art === 'licensed' || s.art === 'warranty'));
 ---
 
 {
   stats.length > 0 && (
     <section class="sb">
-      <div class="container">
-        <div class="ac-stats">
-          {stats.map((s) => (
-            <div class:list={['ac-stat', { 'ac-stat--mark': s.mark }]}>
-              <span class="ac-stat__v">
-                {s.mark && (
-                  <span class="ac-stat__tick" aria-hidden="true">
-                    ✓
-                  </span>
+      <div class="sb__in">
+        {needsTruck && (
+          <svg class="ac-stats__defs" width="0" height="0" aria-hidden="true" focusable="false">
+            <symbol id="ac-truck" viewBox="0 0 478 451">
+              <path fill-rule="evenodd" d={truckPath} />
+            </symbol>
+          </svg>
+        )}
+        <div class="ac-stats" data-count={stats.length}>
+          {stats.map((s) => {
+            const Art = s.art ? art[s.art] : undefined;
+            const tick = s.mark && !Art;
+            return (
+              <div class:list={['ac-stat', { 'ac-stat--mark': tick, 'ac-stat--art': Art }]}>
+                {Art && (
+                  <div class="ac-stat__art" aria-hidden="true">
+                    <Art static />
+                  </div>
                 )}
-                {s.value}
-              </span>
-              <span class="ac-stat__l">{s.label}</span>
-            </div>
-          ))}
+                <div class="ac-stat__copy">
+                  <span class="ac-stat__v">
+                    {tick && (
+                      <span class="ac-stat__tick" aria-hidden="true">
+                        ✓
+                      </span>
+                    )}
+                    {s.value}
+                  </span>
+                  <span class="ac-stat__l">{s.label}</span>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -40,8 +69,19 @@ const { stats = [] } = Astro.props;
   .sb {
     padding-bottom: clamp(2rem, 5vw, 3.5rem);
   }
+  /* Wide container, matching the trust section. */
+  .sb__in {
+    max-width: var(--container-wide);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+  /* One shared ruling: the grid draws top + left, each cell its own right +
+     bottom (see below). Columns follow the stat count so a row never ends on an
+     orphan: phones stack, then four stats go 2x2, then 4x1 (three go 3x1, six
+     3x2). Any other count falls back to auto-fit. */
   .ac-stats {
     display: grid;
+    grid-template-columns: 1fr;
     background: var(--color-surface);
     border-top: 1px solid var(--color-border-strong);
     border-left: 1px solid var(--color-border-strong);
@@ -51,38 +91,158 @@ const { stats = [] } = Astro.props;
     box-shadow:
       inset -1px -1px 0 var(--color-border-strong),
       var(--shadow-md);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  }
+  .ac-stats:not([data-count='2']):not([data-count='3']):not([data-count='4']):not([data-count='6']) {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+  @media (min-width: 36rem) {
+    .ac-stats[data-count='2'],
+    .ac-stats[data-count='4'],
+    .ac-stats[data-count='6'] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 48rem) {
+    .ac-stats[data-count='3'],
+    .ac-stats[data-count='6'] {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 64rem) {
+    .ac-stats[data-count='4'] {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  /* Graphic size multiplier: a little larger than the first cut everywhere, and
+     larger again on tablet, where the 2-up cells have the most spare room. */
+  .ac-stats {
+    --k: 1.15;
+  }
+  @media (min-width: 36rem) and (max-width: 63.99rem) {
+    .ac-stats {
+      --k: 1.45;
+    }
+    .ac-stat {
+      min-height: 10.5rem;
+    }
+  }
+  .ac-stats__defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
   }
   .ac-stat {
-    background: var(--color-surface);
-    box-shadow:
-      inset -1px -1px 0 var(--color-border-strong);
-    padding: var(--space-xl) var(--space-lg);
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--space-xs);
+    min-width: 0;
+    min-height: 8.5rem;
+    overflow: hidden;
+    background: var(--color-surface);
+    box-shadow: inset -1px -1px 0 var(--color-border-strong);
+    /* Theme variables the trust graphics (and the text halo) read. */
+    --cell-bg: var(--color-surface);
+    --cell-ink: var(--color-border-strong);
+  }
+  /* Copy sits at the foot of the cell, above the graphic. The halo is the cell's
+     own colour, so text stays legible wherever the picture runs behind it. */
+  .ac-stat__copy {
+    position: relative;
+    z-index: 1;
+    margin-top: auto;
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs, 0.25rem);
+    min-width: 0;
+    text-shadow:
+      0 0 14px var(--cell-bg),
+      0 0 7px var(--cell-bg),
+      0 0 3px var(--cell-bg),
+      1px 0 0 var(--cell-bg),
+      -1px 0 0 var(--cell-bg),
+      0 1px 0 var(--cell-bg),
+      0 -1px 0 var(--cell-bg);
+  }
+  /* Decorative graphic: top right, tilted, and bleeding off the cell edge so it
+     sits behind the copy instead of owning a column. Each picture sets its own
+     height (--h), tilt and nudge. */
+  .ac-stat__art {
+    --h: calc(5.5rem * var(--k));
+    --tilt: 7deg;
+    position: absolute;
+    z-index: 0;
+    top: calc(var(--h) * -0.06);
+    right: calc(var(--h) * -0.1);
+    height: var(--h);
+    transform: rotate(var(--tilt));
+    pointer-events: none;
+  }
+  .ac-stat__art > :global(svg) {
+    display: block;
+    height: 100%;
+    width: auto;
+  }
+  .ac-stat__art:has(> :global(svg.years)) {
+    --h: calc(6rem * var(--k));
+    --tilt: -6deg;
+    right: calc(var(--h) * 0.05);
+    top: calc(var(--h) * 0.02);
+  }
+  .ac-stat__art:has(> :global(svg.licensed)) {
+    --h: calc(5.75rem * var(--k));
+    --tilt: 5deg;
+    top: calc(var(--h) * 0.02);
+    right: calc(var(--h) * -0.12);
+  }
+  .ac-stat__art:has(> :global(svg.warranty)) {
+    --h: calc(6.5rem * var(--k));
+    --tilt: 8deg;
+    right: calc(var(--h) * 0.02);
+  }
+  .ac-stat__art:has(> :global(svg.stamp)) {
+    --h: calc(4.5rem * var(--k));
+    --tilt: -12deg;
+    top: calc(var(--h) * 0.3);
+    right: calc(var(--h) * 0.35);
+  }
+  .ac-stat__art:has(> :global(svg.handshake)) {
+    --h: calc(4.25rem * var(--k));
+    --tilt: -7deg;
+    right: calc(var(--h) * 0.5);
+    top: calc(var(--h) * 0.38);
+  }
+  /* The contracts are drawn at natural size here: the trust cell scales them. */
+  .ac-stat__art > :global(svg.licensed) {
+    --licensed-scale: 1;
   }
   .ac-stat__v {
     font-family: var(--font-display);
     font-weight: var(--weight-display);
-    font-size: var(--text-xl);
-    line-height: 1.05;
+    font-size: var(--text-lg);
+    line-height: var(--leading-snug, 1.15);
     letter-spacing: var(--tracking-tight);
     color: var(--color-text);
     min-width: 0;
     overflow-wrap: break-word;
+    text-wrap: balance;
+  }
+  /* With a graphic behind, the value wraps before it reaches the picture. */
+  .ac-stat--art .ac-stat__v {
+    max-width: 62%;
   }
   .ac-stat__l {
     font-size: var(--text-sm);
     color: var(--color-text-soft);
-    max-width: 22ch;
+    max-width: 24ch;
+    text-wrap: pretty;
   }
   .ac-stat--mark .ac-stat__v {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: var(--space-xs) var(--space-sm);
-    font-size: var(--text-lg);
   }
   .ac-stat__tick {
     width: 1.35rem;
@@ -95,10 +255,6 @@ const { stats = [] } = Astro.props;
     place-items: center;
     font-family: var(--font-body);
     font-size: 0.8rem;
-  }
-  @media (max-width: 600px) {
-    .ac-stat {
-      padding: var(--space-lg);
-    }
+    text-shadow: none;
   }
 </style>

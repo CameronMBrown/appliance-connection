@@ -64,11 +64,13 @@ const serviceCards = (): EditorBlock[] =>
 const STATS: EditorBlock = {
   name: 'ac/stat-block',
   attributes: {
+    // Value is the headline, label finishes the thought. The years badge draws
+    // the "30+", so the value doesn't repeat the number.
     stats: [
-      { value: '30+', label: 'Years installing appliances across Southern Ontario' },
-      { value: 'Licensed', label: 'Fully licensed and insured, gas fitting included', mark: true },
-      { value: 'Warrantied', label: 'Every job we do is warrantied', mark: true },
-      { value: '1000s', label: 'Installs completed' },
+      { value: 'Years of experience', label: 'Installing appliances across Southern Ontario', art: 'years' },
+      { value: 'Warranty', label: 'Covers every job we do', mark: true, art: 'warranty' },
+      { value: 'Licensed & insured', label: 'Licensed for gas fitting and plumbing', mark: true, art: 'stamp' },
+      { value: '1,000s', label: 'Of installs completed', art: 'handshake' },
     ],
   },
 };

@@ -210,22 +210,26 @@
           "attributes": {
             "stats": [
               {
-                "value": "30+",
-                "label": "Years installing appliances across Southern Ontario"
+                "value": "Years of experience",
+                "label": "Installing appliances across Southern Ontario",
+                "art": "years"
               },
               {
-                "value": "Licensed",
-                "label": "Fully licensed and insured, gas fitting included",
-                "mark": true
+                "value": "Warranty",
+                "label": "Covers every job we do",
+                "mark": true,
+                "art": "warranty"
               },
               {
-                "value": "Warrantied",
-                "label": "Every job we do is warrantied",
-                "mark": true
+                "value": "Licensed & insured",
+                "label": "Licensed for gas fitting and plumbing",
+                "mark": true,
+                "art": "stamp"
               },
               {
-                "value": "1000s",
-                "label": "Installs completed"
+                "value": "1,000s",
+                "label": "Of installs completed",
+                "art": "handshake"
               }
             ]
           }
@@ -321,22 +325,26 @@
           "attributes": {
             "stats": [
               {
-                "value": "30+",
-                "label": "Years installing appliances across Southern Ontario"
+                "value": "Years of experience",
+                "label": "Installing appliances across Southern Ontario",
+                "art": "years"
               },
               {
-                "value": "Licensed",
-                "label": "Fully licensed and insured, gas fitting included",
-                "mark": true
+                "value": "Warranty",
+                "label": "Covers every job we do",
+                "mark": true,
+                "art": "warranty"
               },
               {
-                "value": "Warrantied",
-                "label": "Every job we do is warrantied",
-                "mark": true
+                "value": "Licensed & insured",
+                "label": "Licensed for gas fitting and plumbing",
+                "mark": true,
+                "art": "stamp"
               },
               {
-                "value": "1000s",
-                "label": "Installs completed"
+                "value": "1,000s",
+                "label": "Of installs completed",
+                "art": "handshake"
               }
             ]
           }
@@ -374,22 +382,26 @@
           "attributes": {
             "stats": [
               {
-                "value": "30+",
-                "label": "Years installing appliances across Southern Ontario"
+                "value": "Years of experience",
+                "label": "Installing appliances across Southern Ontario",
+                "art": "years"
               },
               {
-                "value": "Licensed",
-                "label": "Fully licensed and insured, gas fitting included",
-                "mark": true
+                "value": "Warranty",
+                "label": "Covers every job we do",
+                "mark": true,
+                "art": "warranty"
               },
               {
-                "value": "Warrantied",
-                "label": "Every job we do is warrantied",
-                "mark": true
+                "value": "Licensed & insured",
+                "label": "Licensed for gas fitting and plumbing",
+                "mark": true,
+                "art": "stamp"
               },
               {
-                "value": "1000s",
-                "label": "Installs completed"
+                "value": "1,000s",
+                "label": "Of installs completed",
+                "art": "handshake"
               }
             ]
           }
@@ -427,22 +439,26 @@
           "attributes": {
             "stats": [
               {
-                "value": "30+",
-                "label": "Years installing appliances across Southern Ontario"
+                "value": "Years of experience",
+                "label": "Installing appliances across Southern Ontario",
+                "art": "years"
               },
               {
-                "value": "Licensed",
-                "label": "Fully licensed and insured, gas fitting included",
-                "mark": true
+                "value": "Warranty",
+                "label": "Covers every job we do",
+                "mark": true,
+                "art": "warranty"
               },
               {
-                "value": "Warrantied",
-                "label": "Every job we do is warrantied",
-                "mark": true
+                "value": "Licensed & insured",
+                "label": "Licensed for gas fitting and plumbing",
+                "mark": true,
+                "art": "stamp"
               },
               {
-                "value": "1000s",
-                "label": "Installs completed"
+                "value": "1,000s",
+                "label": "Of installs completed",
+                "art": "handshake"
               }
             ]
           }
@@ -480,22 +496,26 @@
           "attributes": {
             "stats": [
               {
-                "value": "30+",
-                "label": "Years installing appliances across Southern Ontario"
+                "value": "Years of experience",
+                "label": "Installing appliances across Southern Ontario",
+                "art": "years"
               },
               {
-                "value": "Licensed",
-                "label": "Fully licensed and insured, gas fitting included",
-                "mark": true
+                "value": "Warranty",
+                "label": "Covers every job we do",
+                "mark": true,
+                "art": "warranty"
               },
               {
-                "value": "Warrantied",
-                "label": "Every job we do is warrantied",
-                "mark": true
+                "value": "Licensed & insured",
+                "label": "Licensed for gas fitting and plumbing",
+                "mark": true,
+                "art": "stamp"
               },
               {
-                "value": "1000s",
-                "label": "Installs completed"
+                "value": "1,000s",
+                "label": "Of installs completed",
+                "art": "handshake"
               }
             ]
           }
@@ -533,22 +553,26 @@
           "attributes": {
             "stats": [
               {
-                "value": "30+",
-                "label": "Years installing appliances across Southern Ontario"
+                "value": "Years of experience",
+                "label": "Installing appliances across Southern Ontario",
+                "art": "years"
               },
               {
-                "value": "Licensed",
-                "label": "Fully licensed and insured, gas fitting included",
-                "mark": true
+                "value": "Warranty",
+                "label": "Covers every job we do",
+                "mark": true,
+                "art": "warranty"
               },
               {
-                "value": "Warrantied",
-                "label": "Every job we do is warrantied",
-                "mark": true
+                "value": "Licensed & insured",
+                "label": "Licensed for gas fitting and plumbing",
+                "mark": true,
+                "art": "stamp"
               },
               {
-                "value": "1000s",
-                "label": "Installs completed"
+                "value": "1,000s",
+                "label": "Of installs completed",
+                "art": "handshake"
               }
             ]
           }
@@ -586,22 +610,26 @@
           "attributes": {
             "stats": [
               {
-                "value": "30+",
-                "label": "Years installing appliances across Southern Ontario"
+                "value": "Years of experience",
+                "label": "Installing appliances across Southern Ontario",
+                "art": "years"
               },
               {
-                "value": "Licensed",
-                "label": "Fully licensed and insured, gas fitting included",
-                "mark": true
+                "value": "Warranty",
+                "label": "Covers every job we do",
+                "mark": true,
+                "art": "warranty"
               },
               {
-                "value": "Warrantied",
-                "label": "Every job we do is warrantied",
-                "mark": true
+                "value": "Licensed & insured",
+                "label": "Licensed for gas fitting and plumbing",
+                "mark": true,
+                "art": "stamp"
               },
               {
-                "value": "1000s",
-                "label": "Installs completed"
+                "value": "1,000s",
+                "label": "Of installs completed",
+                "art": "handshake"
               }
             ]
           }
@@ -642,22 +670,26 @@
           "attributes": {
             "stats": [
               {
-                "value": "30+",
-                "label": "Years installing appliances across Southern Ontario"
+                "value": "Years of experience",
+                "label": "Installing appliances across Southern Ontario",
+                "art": "years"
               },
               {
-                "value": "Licensed",
-                "label": "Fully licensed and insured, gas fitting included",
-                "mark": true
+                "value": "Warranty",
+                "label": "Covers every job we do",
+                "mark": true,
+                "art": "warranty"
               },
               {
-                "value": "Warrantied",
-                "label": "Every job we do is warrantied",
-                "mark": true
+                "value": "Licensed & insured",
+                "label": "Licensed for gas fitting and plumbing",
+                "mark": true,
+                "art": "stamp"
               },
               {
-                "value": "1000s",
-                "label": "Installs completed"
+                "value": "1,000s",
+                "label": "Of installs completed",
+                "art": "handshake"
               }
             ]
           }
@@ -874,22 +906,26 @@
           "attributes": {
             "stats": [
               {
-                "value": "30+",
-                "label": "Years installing appliances across Southern Ontario"
+                "value": "Years of experience",
+                "label": "Installing appliances across Southern Ontario",
+                "art": "years"
               },
               {
-                "value": "Licensed",
-                "label": "Fully licensed and insured, gas fitting included",
-                "mark": true
+                "value": "Warranty",
+                "label": "Covers every job we do",
+                "mark": true,
+                "art": "warranty"
               },
               {
-                "value": "Warrantied",
-                "label": "Every job we do is warrantied",
-                "mark": true
+                "value": "Licensed & insured",
+                "label": "Licensed for gas fitting and plumbing",
+                "mark": true,
+                "art": "stamp"
               },
               {
-                "value": "1000s",
-                "label": "Installs completed"
+                "value": "1,000s",
+                "label": "Of installs completed",
+                "art": "handshake"
               }
             ]
           }
@@ -1105,22 +1141,26 @@
           "attributes": {
             "stats": [
               {
-                "value": "30+",
-                "label": "Years installing appliances across Southern Ontario"
+                "value": "Years of experience",
+                "label": "Installing appliances across Southern Ontario",
+                "art": "years"
               },
               {
-                "value": "Licensed",
-                "label": "Fully licensed and insured, gas fitting included",
-                "mark": true
+                "value": "Warranty",
+                "label": "Covers every job we do",
+                "mark": true,
+                "art": "warranty"
               },
               {
-                "value": "Warrantied",
-                "label": "Every job we do is warrantied",
-                "mark": true
+                "value": "Licensed & insured",
+                "label": "Licensed for gas fitting and plumbing",
+                "mark": true,
+                "art": "stamp"
               },
               {
-                "value": "1000s",
-                "label": "Installs completed"
+                "value": "1,000s",
+                "label": "Of installs completed",
+                "art": "handshake"
               }
             ]
           }
@@ -1318,22 +1358,26 @@
           "attributes": {
             "stats": [
               {
-                "value": "30+",
-                "label": "Years installing appliances across Southern Ontario"
+                "value": "Years of experience",
+                "label": "Installing appliances across Southern Ontario",
+                "art": "years"
               },
               {
-                "value": "Licensed",
-                "label": "Fully licensed and insured, gas fitting included",
-                "mark": true
+                "value": "Warranty",
+                "label": "Covers every job we do",
+                "mark": true,
+                "art": "warranty"
               },
               {
-                "value": "Warrantied",
-                "label": "Every job we do is warrantied",
-                "mark": true
+                "value": "Licensed & insured",
+                "label": "Licensed for gas fitting and plumbing",
+                "mark": true,
+                "art": "stamp"
               },
               {
-                "value": "1000s",
-                "label": "Installs completed"
+                "value": "1,000s",
+                "label": "Of installs completed",
+                "art": "handshake"
               }
             ]
           }
@@ -1529,22 +1573,26 @@
           "attributes": {
             "stats": [
               {
-                "value": "30+",
-                "label": "Years installing appliances across Southern Ontario"
+                "value": "Years of experience",
+                "label": "Installing appliances across Southern Ontario",
+                "art": "years"
               },
               {
-                "value": "Licensed",
-                "label": "Fully licensed and insured, gas fitting included",
-                "mark": true
+                "value": "Warranty",
+                "label": "Covers every job we do",
+                "mark": true,
+                "art": "warranty"
               },
               {
-                "value": "Warrantied",
-                "label": "Every job we do is warrantied",
-                "mark": true
+                "value": "Licensed & insured",
+                "label": "Licensed for gas fitting and plumbing",
+                "mark": true,
+                "art": "stamp"
               },
               {
-                "value": "1000s",
-                "label": "Installs completed"
+                "value": "1,000s",
+                "label": "Of installs completed",
+                "art": "handshake"
               }
             ]
           }
