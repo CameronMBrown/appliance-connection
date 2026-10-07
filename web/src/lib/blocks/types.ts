@@ -214,26 +214,11 @@ export interface MediaTextAttrs {
   background?: Background | 'dark';
 }
 
-export interface Town {
-  name: string;
-  href?: string;
-}
-
-export interface TownRegion {
-  name: string;
-  href?: string;
-  note?: string;
-  towns: (string | Town)[];
-}
-
-export interface TownGridAttrs extends SectionHeaderAttrs {
-  regions?: TownRegion[];
-  background?: Background;
-  /** CTA: Contact button label/URL. Empty label + no phone = no CTA. */
-  primaryLabel?: string;
-  primaryUrl?: string;
-  /** Adds a "Call <region>" phone button using the page's region number. */
-  showPhone?: boolean;
+export interface TownCarouselAttrs {
+  /** Label at the left of the strip; also the section's heading for screen readers. */
+  heading?: string;
+  /** Towns we cover, in display order. Plain names: they do not link. */
+  towns?: (string | { name: string })[];
 }
 
 export interface TestimonialItem {

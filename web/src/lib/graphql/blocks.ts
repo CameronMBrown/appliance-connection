@@ -2,7 +2,7 @@
  * GraphQL for our blocks, generated from their block.json files.
  *
  * WPGraphQL Content Blocks gives each block a type named after it
- * (`ac/town-grid` → `AcTownGrid`) whose `attributes` has one field per
+ * (`ac/town-carousel` → `AcTownCarousel`) whose `attributes` has one field per
  * block.json attribute. Instead of hand-writing (and forgetting to update) a
  * fragment per block, we read every block.json at build time and generate the
  * fragments. Add an attribute in block.json → it's queried automatically.
@@ -25,7 +25,7 @@ const blockJsons = import.meta.glob<BlockJson>('../../../../cms/plugins/ac-block
 
 const BLOCKS = Object.values(blockJsons);
 
-/** `ac/town-grid` → `AcTownGrid` (Content Blocks' type naming). */
+/** `ac/town-carousel` → `AcTownCarousel` (Content Blocks' type naming). */
 const typeName = (blockName: string) =>
   blockName
     .split(/[/-]/)

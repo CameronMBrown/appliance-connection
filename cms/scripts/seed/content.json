@@ -769,33 +769,21 @@
           }
         },
         {
-          "name": "ac/town-grid",
+          "name": "ac/town-carousel",
           "attributes": {
-            "eyebrow": "Coverage",
             "heading": "Towns we cover",
-            "text": "All on the route — town pages are coming, this is the full list for now.",
-            "regions": [
-              {
-                "name": "Durham Region",
-                "note": "Same-week booking",
-                "towns": [
-                  "Oshawa",
-                  "Whitby",
-                  "Pickering",
-                  "Ajax",
-                  "Bowmanville",
-                  "Courtice",
-                  "Port Perry",
-                  "Uxbridge",
-                  "Brooklin",
-                  "Clarington"
-                ]
-              }
-            ],
-            "background": "alt",
-            "primaryLabel": "Contact Us",
-            "primaryUrl": "/contact/",
-            "showPhone": true
+            "towns": [
+              "Oshawa",
+              "Whitby",
+              "Pickering",
+              "Ajax",
+              "Bowmanville",
+              "Courtice",
+              "Port Perry",
+              "Uxbridge",
+              "Brooklin",
+              "Clarington"
+            ]
           }
         },
         {
@@ -1005,33 +993,21 @@
           }
         },
         {
-          "name": "ac/town-grid",
+          "name": "ac/town-carousel",
           "attributes": {
-            "eyebrow": "Coverage",
             "heading": "Towns we cover",
-            "text": "All on the route — town pages are coming, this is the full list for now.",
-            "regions": [
-              {
-                "name": "Peterborough",
-                "note": "Same-week booking",
-                "towns": [
-                  "Lakefield",
-                  "Bridgenorth",
-                  "Ennismore",
-                  "Selwyn",
-                  "Douro",
-                  "Keene",
-                  "Millbrook",
-                  "Norwood",
-                  "Buckhorn",
-                  "Apsley"
-                ]
-              }
-            ],
-            "background": "alt",
-            "primaryLabel": "Contact Us",
-            "primaryUrl": "/contact/",
-            "showPhone": true
+            "towns": [
+              "Lakefield",
+              "Bridgenorth",
+              "Ennismore",
+              "Selwyn",
+              "Douro",
+              "Keene",
+              "Millbrook",
+              "Norwood",
+              "Buckhorn",
+              "Apsley"
+            ]
           }
         },
         {
@@ -1240,30 +1216,19 @@
           }
         },
         {
-          "name": "ac/town-grid",
+          "name": "ac/town-carousel",
           "attributes": {
-            "eyebrow": "Coverage",
             "heading": "Towns we cover",
-            "text": "All on the route — town pages are coming, this is the full list for now.",
-            "regions": [
-              {
-                "name": "Kawartha Lakes",
-                "towns": [
-                  "Lindsay",
-                  "Bobcaygeon",
-                  "Fenelon Falls",
-                  "Omemee",
-                  "Woodville",
-                  "Coboconk",
-                  "Kirkfield",
-                  "Little Britain"
-                ]
-              }
-            ],
-            "background": "alt",
-            "primaryLabel": "Contact Us",
-            "primaryUrl": "/contact/",
-            "showPhone": false
+            "towns": [
+              "Lindsay",
+              "Bobcaygeon",
+              "Fenelon Falls",
+              "Omemee",
+              "Woodville",
+              "Coboconk",
+              "Kirkfield",
+              "Little Britain"
+            ]
           }
         },
         {
@@ -1457,30 +1422,19 @@
           }
         },
         {
-          "name": "ac/town-grid",
+          "name": "ac/town-carousel",
           "attributes": {
-            "eyebrow": "Coverage",
             "heading": "Towns we cover",
-            "text": "All on the route — town pages are coming, this is the full list for now.",
-            "regions": [
-              {
-                "name": "Northumberland",
-                "towns": [
-                  "Cobourg",
-                  "Port Hope",
-                  "Brighton",
-                  "Colborne",
-                  "Campbellford",
-                  "Grafton",
-                  "Warkworth",
-                  "Hastings"
-                ]
-              }
-            ],
-            "background": "alt",
-            "primaryLabel": "Contact Us",
-            "primaryUrl": "/contact/",
-            "showPhone": false
+            "towns": [
+              "Cobourg",
+              "Port Hope",
+              "Brighton",
+              "Colborne",
+              "Campbellford",
+              "Grafton",
+              "Warkworth",
+              "Hastings"
+            ]
           }
         },
         {

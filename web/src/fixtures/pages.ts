@@ -532,16 +532,10 @@ const regionHub = (r: RegionContent): PageData => {
       },
     },
     {
-      name: 'ac/town-grid',
+      name: 'ac/town-carousel',
       attributes: {
-        eyebrow: 'Coverage',
         heading: 'Towns we cover',
-        text: 'All on the route — town pages are coming, this is the full list for now.',
-        regions: [{ name: r.name, note: phoneRegion ? 'Same-week booking' : undefined, towns: r.towns }],
-        background: 'alt',
-        primaryLabel: 'Contact Us',
-        primaryUrl: '/contact/',
-        showPhone: Boolean(phoneRegion),
+        towns: r.towns.map((t) => (typeof t === 'string' ? t : t.name)),
       },
     },
     r.cites.length > 0
@@ -605,7 +599,7 @@ const cityPage = (region: RegionSlug, town: string): PageData => ({
       innerBlocks: serviceCards(),
     },
     { name: 'ac/media-text', attributes: {} },
-    { name: 'ac/town-grid', attributes: {} },
+    { name: 'ac/town-carousel', attributes: {} },
     { name: 'ac/testimonials', attributes: {} },
     { name: 'ac/faq', attributes: {} },
     { name: 'ac/partners', attributes: {} },

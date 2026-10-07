@@ -96,7 +96,7 @@ add_action(
 						array( 'ac/stat-block' ),
 						array( 'ac/service-grid' ),
 						array( 'ac/media-text' ),
-						array( 'ac/town-grid' ),
+						array( 'ac/town-carousel' ),
 						array( 'ac/testimonials' ),
 						array( 'ac/faq' ),
 						array( 'ac/partners' ),

@@ -19,7 +19,7 @@ import ServiceMap from '../../components/blocks/ServiceMap.astro';
 import ServiceGrid from '../../components/blocks/ServiceGrid.astro';
 import ServiceCard from '../../components/blocks/ServiceCard.astro';
 import MediaText from '../../components/blocks/MediaText.astro';
-import TownGrid from '../../components/blocks/TownGrid.astro';
+import TownCarousel from '../../components/blocks/TownCarousel.astro';
 import Testimonials from '../../components/blocks/Testimonials.astro';
 import Faq from '../../components/blocks/Faq.astro';
 import Contact from '../../components/blocks/Contact.astro';
@@ -37,7 +37,7 @@ export const registry = {
   'ac/service-grid': ServiceGrid,
   'ac/service-card': ServiceCard,
   'ac/media-text': MediaText,
-  'ac/town-grid': TownGrid,
+  'ac/town-carousel': TownCarousel,
   'ac/testimonials': Testimonials,
   'ac/faq': Faq,
   'ac/contact': Contact,
