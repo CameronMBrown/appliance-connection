@@ -100,7 +100,7 @@ copy**, never faked.
 | `ac/stat-block` | `StatBlock.astro` | components/blocks/StatBlock |
 | `ac/service-grid` + `ac/service-card` | `ServiceGrid.astro`, `ServiceCard.astro` | components/blocks/ServiceGrid, ServiceCard |
 | `ac/media-text` | `MediaText.astro` | templates/location |
-| `ac/town-grid` | `TownGrid.astro` | components/blocks/TownGrid |
+| `ac/town-carousel` | `TownCarousel.astro` | (ours; replaced the DS TownGrid) |
 | `ac/testimonials` | `Testimonials.astro` | components/feedback/Testimonial |
 | `ac/faq` | `Faq.astro` → DS `Accordion` island | components/blocks/Accordion |
 | `ac/contact` | `Contact.astro` → DS `QuoteForm` island | templates/contact |

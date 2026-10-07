@@ -1,0 +1,25 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/town-carousel",
+  "title": "Town carousel",
+  "category": "ac",
+  "icon": "location-alt",
+  "description": "Service-area coverage: a slow, looping strip of town names separated by the truck mark. Informational only; towns do not link.",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "Towns we cover"
+    },
+    "towns": {
+      "type": "array",
+      "default": []
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}
