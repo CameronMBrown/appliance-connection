@@ -1,0 +1,56 @@
+---
+// Decorative: a round ink stamp carrying a check mark, all in one wood gold.
+// The simple stand-in for the fanned contracts (Licensed.astro). The rubber-stamp
+// look is an SVG filter: the outline is nudged by low-frequency noise (wobbly
+// edges, like a worn die), then punched with fine speckle where the ink didn't
+// take, plus a slow mottle so the impression is heavier in places.
+---
+
+<svg class="stamp" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="stamp-impression" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="7" result="wobble" />
+      <feDisplacementMap in="SourceGraphic" in2="wobble" scale="4.5" xChannelSelector="R" yChannelSelector="G" result="rough" />
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="3" result="grain" />
+      <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 11 -3.2" result="speckle" />
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="11" result="blot" />
+      <feColorMatrix in="blot" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.6 0.3" result="mottle" />
+      <feComposite in="rough" in2="speckle" operator="in" result="inked" />
+      <feComposite in="inked" in2="mottle" operator="in" />
+    </filter>
+  </defs>
+  <g class="impression" filter="url(#stamp-impression)">
+    <circle class="ring" cx="60" cy="60" r="55" />
+    <circle class="ring ring--thin" cx="60" cy="60" r="47" />
+    <path class="check" d="M37 62 L53 78 L84 41" />
+  </g>
+</svg>
+
+<style>
+  .stamp {
+    display: block;
+    height: 100%;
+    width: auto;
+    overflow: visible;
+    /* A deeper step of the wood than the fills, so a thin stamp line still reads
+       on white. */
+    --stamp-ink: #b38a5b;
+    --stamp-ink: color-mix(in srgb, var(--color-accent) 60%, var(--color-accent-deep));
+  }
+  .ring,
+  .check {
+    fill: none;
+    stroke: var(--stamp-ink);
+  }
+  .ring {
+    stroke-width: 5;
+  }
+  .ring--thin {
+    stroke-width: 2.25;
+  }
+  .check {
+    stroke-width: 14;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+  }
+</style>

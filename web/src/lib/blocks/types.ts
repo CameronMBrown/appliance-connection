@@ -162,6 +162,8 @@ export interface Stat {
   value: string;
   label: string;
   mark?: boolean;
+  /** Small still graphic from components/trust-art/; replaces the ✓. */
+  art?: 'years' | 'licensed' | 'warranty' | 'stamp' | 'handshake';
 }
 
 export interface StatBlockAttrs {

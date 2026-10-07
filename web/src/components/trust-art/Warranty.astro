@@ -2,9 +2,14 @@
 // Decorative: a rounded crest-shield carrying the AC truck mark. The mark is
 // the client's own basic truck logo, traced to vector (see truck-path.ts) and drawn
 // from the shared #ac-truck symbol, kept small so the shield reads first and the truck second.
+interface Props {
+  /** No hover shimmer. */
+  static?: boolean;
+}
+const { static: isStatic = false } = Astro.props;
 ---
 
-<svg class="warranty" viewBox="0 0 160 190" aria-hidden="true" focusable="false">
+<svg class="warranty" viewBox="0 0 160 190" aria-hidden="true" focusable="false" data-static={isStatic ? "" : undefined}>
   <defs>
     <clipPath id="warranty-shield-clip">
       <path
@@ -86,7 +91,7 @@
   // cut it off). Re-entering mid-sweep doesn't restart it; entering again after it
   // finishes plays it again. The animation itself is gated on reduced motion in CSS.
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.querySelectorAll<SVGSVGElement>('svg.warranty').forEach((svg) => {
+    document.querySelectorAll<SVGSVGElement>('svg.warranty:not([data-static])').forEach((svg) => {
       svg.addEventListener('pointerenter', () => svg.classList.add('is-shimmering'));
       svg.addEventListener('animationend', () => svg.classList.remove('is-shimmering'));
     });

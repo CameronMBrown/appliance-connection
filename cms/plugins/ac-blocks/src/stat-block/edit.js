@@ -14,7 +14,20 @@ export default function Edit( { attributes, setAttributes } ) {
 				fields={ [
 					{ key: 'value', label: __( 'Value (e.g. 30+, Licensed)', 'ac-blocks' ) },
 					{ key: 'label', label: __( 'Label', 'ac-blocks' ) },
-					{ key: 'mark', label: __( 'Credential ✓ (not a count)', 'ac-blocks' ), type: 'toggle' },
+					{
+						key: 'art',
+						label: __( 'Graphic', 'ac-blocks' ),
+						type: 'select',
+						options: [
+							{ label: __( 'None', 'ac-blocks' ), value: '' },
+							{ label: __( 'Badge (30+ years)', 'ac-blocks' ), value: 'years' },
+							{ label: __( 'Contracts (licensed)', 'ac-blocks' ), value: 'licensed' },
+							{ label: __( 'Stamp with check mark', 'ac-blocks' ), value: 'stamp' },
+							{ label: __( 'Shield and truck (warranty)', 'ac-blocks' ), value: 'warranty' },
+							{ label: __( 'Handshake (installs)', 'ac-blocks' ), value: 'handshake' },
+						],
+					},
+					{ key: 'mark', label: __( 'Credential ✓ (when no graphic)', 'ac-blocks' ), type: 'toggle' },
 				] }
 				onChange={ ( stats ) => setAttributes( { stats } ) }
 			/>
