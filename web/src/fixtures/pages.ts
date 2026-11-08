@@ -75,22 +75,23 @@ const STATS: EditorBlock = {
   },
 };
 
-const PLACEHOLDER_QUOTES = [
-  'They installed our double wall oven and cooktop in an afternoon — spotless, and it just worked.',
-  'Ran a new gas line for the range and took the old one out. Showed up when they said they would.',
-  'Whole laundry room moved upstairs. Clean work, fair price, no surprises on the bill.',
-];
-
-const testimonials = (cites: string[], heading: string, background: 'paper' | 'alt'): EditorBlock => ({
-  name: 'ac/testimonials',
-  attributes: {
-    eyebrow: 'What customers say',
-    heading,
-    text: 'Placeholder quotes — swap in real ones before launch.',
-    items: PLACEHOLDER_QUOTES.map((quote, i) => ({ quote, cite: cites[i] })),
-    background,
+/** Real customer reviews (Google Business Profile, Yellow Pages). Cite = name as shown on the source site. */
+const REVIEWS = [
+  {
+    quote:
+      'Our call was returned first thing Thursday morning and Craig booked us in for the next day. Craig did a beautiful job installing the microwave. Not only did he install the microwave, he also cleaned everything up including hauling away all the packaging! We are very impressed with his services. We highly recommend his services and will be using them again!',
+    cite: 'J R, Google review',
   },
-});
+  {
+    quote:
+      'Excellent customer service, quick and fast response time, and educated in fixing the problem and returning my appliance.',
+    cite: 'Ramon C, Google review',
+  },
+  {
+    quote: 'Were able to fit me in quickly. Fast, friendly and very helpful service. Highly recommend!',
+    cite: 'Susie F, Yellow Pages review',
+  },
+];
 
 const contactCta = (heading: string, showPhone = false): EditorBlock => ({
   name: 'ac/cta-band',
@@ -368,8 +369,6 @@ interface RegionContent {
   intro: string;
   body: string;
   towns: (string | { name: string; href: string })[];
-  /** Homeowner cites for the testimonials row; empty = the row stays empty (no invented quotes). */
-  cites: string[];
   /** The retail partner that sells in this area, with the "Serving …" label for it. */
   partner: { partner: Partner; area: string };
   /** Header illustration, picked from the Media Library (ID + URL as the editor stores them). */
@@ -396,7 +395,6 @@ const REGIONS: RegionContent[] = [
       'Brooklin',
       'Clarington',
     ],
-    cites: ['Homeowner, Whitby', 'Homeowner, Oshawa', 'Homeowner, Pickering'],
     partner: { partner: PADDYS_MARKET, area: 'Serving Durham Region' },
     art: {
       id: 167,
@@ -423,7 +421,6 @@ const REGIONS: RegionContent[] = [
       'Buckhorn',
       'Apsley',
     ],
-    cites: ['Homeowner, Lakefield', 'Homeowner, Peterborough', 'Homeowner, Bridgenorth'],
     partner: { partner: PETERBOROUGH_APPLIANCES, area: 'Serving Peterborough' },
     art: {
       id: 168,
@@ -439,7 +436,6 @@ const REGIONS: RegionContent[] = [
       'Licensed, insured and warrantied — over 30 years installing built-in appliances, gas lines and laundry rooms across the City of Kawartha Lakes.',
     body: 'We cover the City of Kawartha Lakes, from Lindsay out to Bobcaygeon and Fenelon Falls. Send a quote request or give us a call and we will confirm timing for your address.',
     towns: ['Lindsay', 'Bobcaygeon', 'Fenelon Falls', 'Omemee', 'Woodville', 'Coboconk', 'Kirkfield', 'Little Britain'],
-    cites: [],
     partner: { partner: PETERBOROUGH_APPLIANCES, area: 'Serving Kawartha Lakes' },
     art: {
       id: 178,
@@ -455,7 +451,6 @@ const REGIONS: RegionContent[] = [
       'Licensed, insured and warrantied — over 30 years installing built-in appliances, gas lines and laundry rooms across Northumberland County.',
     body: 'We cover Northumberland County along the 401 corridor, from Port Hope and Cobourg out to Brighton and Campbellford. Send a quote request or give us a call and we will confirm timing for your address.',
     towns: ['Cobourg', 'Port Hope', 'Brighton', 'Colborne', 'Campbellford', 'Grafton', 'Warkworth', 'Hastings'],
-    cites: [],
     partner: { partner: PADDYS_MARKET, area: 'Serving Northumberland' },
     art: {
       id: 181,
@@ -538,10 +533,8 @@ const regionHub = (r: RegionContent): PageData => {
         towns: r.towns.map((t) => (typeof t === 'string' ? t : t.name)),
       },
     },
-    r.cites.length > 0
-      ? testimonials(r.cites, 'Recent work nearby', 'paper')
-      : // Locked Location template needs the block; no items = nothing renders.
-        { name: 'ac/testimonials', attributes: { heading: 'Recent work nearby', items: [], background: 'paper' } },
+    // Locked Location template needs the block; no items = nothing renders until real local reviews exist.
+    { name: 'ac/testimonials', attributes: { heading: 'Recent work nearby', items: [], background: 'paper' } },
     {
       name: 'ac/faq',
       attributes: { eyebrow: 'Before you book', heading: 'Frequently asked questions', items: REGION_FAQS },
@@ -641,11 +634,7 @@ const contact: PageData = {
       attributes: {
         eyebrow: 'What customers say',
         heading: 'Recent installs',
-        text: 'Placeholder quotes — swap in real ones before launch.',
-        items: PLACEHOLDER_QUOTES.map((quote, i) => ({
-          quote,
-          cite: ['Homeowner, Whitby', 'Homeowner, Oshawa', 'Homeowner, Lakefield'][i],
-        })),
+        items: REVIEWS,
         background: 'alt',
       },
     },
