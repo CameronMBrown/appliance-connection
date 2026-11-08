@@ -789,23 +789,8 @@
         {
           "name": "ac/testimonials",
           "attributes": {
-            "eyebrow": "What customers say",
             "heading": "Recent work nearby",
-            "text": "Placeholder quotes — swap in real ones before launch.",
-            "items": [
-              {
-                "quote": "They installed our double wall oven and cooktop in an afternoon — spotless, and it just worked.",
-                "cite": "Homeowner, Whitby"
-              },
-              {
-                "quote": "Ran a new gas line for the range and took the old one out. Showed up when they said they would.",
-                "cite": "Homeowner, Oshawa"
-              },
-              {
-                "quote": "Whole laundry room moved upstairs. Clean work, fair price, no surprises on the bill.",
-                "cite": "Homeowner, Pickering"
-              }
-            ],
+            "items": [],
             "background": "paper"
           }
         },
@@ -1013,23 +998,8 @@
         {
           "name": "ac/testimonials",
           "attributes": {
-            "eyebrow": "What customers say",
             "heading": "Recent work nearby",
-            "text": "Placeholder quotes — swap in real ones before launch.",
-            "items": [
-              {
-                "quote": "They installed our double wall oven and cooktop in an afternoon — spotless, and it just worked.",
-                "cite": "Homeowner, Lakefield"
-              },
-              {
-                "quote": "Ran a new gas line for the range and took the old one out. Showed up when they said they would.",
-                "cite": "Homeowner, Peterborough"
-              },
-              {
-                "quote": "Whole laundry room moved upstairs. Clean work, fair price, no surprises on the bill.",
-                "cite": "Homeowner, Bridgenorth"
-              }
-            ],
+            "items": [],
             "background": "paper"
           }
         },
@@ -1631,19 +1601,18 @@
           "attributes": {
             "eyebrow": "What customers say",
             "heading": "Recent installs",
-            "text": "Placeholder quotes — swap in real ones before launch.",
             "items": [
               {
-                "quote": "They installed our double wall oven and cooktop in an afternoon — spotless, and it just worked.",
-                "cite": "Homeowner, Whitby"
+                "quote": "Our call was returned first thing Thursday morning and Craig booked us in for the next day. Craig did a beautiful job installing the microwave. Not only did he install the microwave, he also cleaned everything up including hauling away all the packaging! We are very impressed with his services. We highly recommend his services and will be using them again!",
+                "cite": "J R, Google review"
               },
               {
-                "quote": "Ran a new gas line for the range and took the old one out. Showed up when they said they would.",
-                "cite": "Homeowner, Oshawa"
+                "quote": "Excellent customer service, quick and fast response time, and educated in fixing the problem and returning my appliance.",
+                "cite": "Ramon C, Google review"
               },
               {
-                "quote": "Whole laundry room moved upstairs. Clean work, fair price, no surprises on the bill.",
-                "cite": "Homeowner, Lakefield"
+                "quote": "Were able to fit me in quickly. Fast, friendly and very helpful service. Highly recommend!",
+                "cite": "Susie F, Yellow Pages review"
               }
             ],
             "background": "alt"
