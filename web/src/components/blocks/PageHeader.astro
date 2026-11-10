@@ -51,6 +51,10 @@ const phone = showPhone && context.region ? context.phones?.[0] : undefined;
 
 <style>
   .ph {
+    /* Opaque ground, like the other ruled bands (CtaBand, Partners). Without it
+       the body's own ruling shows through and stacks with this one: lines read
+       twice as dark, and double up unevenly where the two grids' origins differ. */
+    background-color: var(--color-bg);
     background-image: var(--grid-image);
     background-size: var(--grid-size) var(--grid-size);
   }
