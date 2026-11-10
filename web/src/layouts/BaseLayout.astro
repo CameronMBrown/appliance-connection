@@ -61,5 +61,53 @@ const nav = site?.nav ?? NAV;
     <main id="main"><slot /></main>
     <Footer phones={phones} links={site?.footerLinks ?? FOOTER_LINKS} legal={site?.legalLinks ?? LEGAL_LINKS} />
     <CallBar numbers={phones} />
+    <script>
+      // Publish the sticky header's bar height as --header-h so sticky content
+      // below it (e.g. the stack block) pins under the nav, not behind it. The
+      // bar's height changes at the desktop/mobile breakpoint, so measure it
+      // instead of hard-coding. The mobile drawer is excluded on purpose: it
+      // overlays when open and shouldn't shove pinned content around.
+      const root = document.documentElement;
+      const find = () => document.querySelector<HTMLElement>('.ac-hd__bar');
+      let bar: HTMLElement | null = null;
+      const set = () => {
+        if (bar) root.style.setProperty('--header-h', `${bar.offsetHeight + 1}px`); // +1 = header border
+      };
+      const resize = new ResizeObserver(set);
+      // React hydration can replace the server-rendered header with a new node,
+      // leaving a stale bar that measures 0. Re-find it on every DOM change.
+      function sync() {
+        const next = find();
+        if (next === bar) return;
+        if (bar) resize.unobserve(bar);
+        bar = next;
+        if (bar) resize.observe(bar);
+        set();
+      }
+      new MutationObserver(sync).observe(document.body, { childList: true, subtree: true });
+      sync();
+
+      // Header invert experiment: flag <html> whenever the page is scrolled at all.
+      const flag = () => root.toggleAttribute('data-scrolled', scrollY > 0);
+      addEventListener('scroll', flag, { passive: true });
+      flag();
+
+      // Mobile nav open state. The Header island owns it; mirror the burger's
+      // aria-expanded onto <html> (drives the page scrim in global.css), and
+      // close on any click outside the header by clicking the burger itself.
+      const burger = () => document.querySelector<HTMLElement>('.ac-hd__burger');
+      const navOpen = () => burger()?.getAttribute('aria-expanded') === 'true';
+      const syncNav = () => root.toggleAttribute('data-nav-open', navOpen());
+      new MutationObserver(syncNav).observe(document.body, {
+        subtree: true,
+        childList: true,
+        attributes: true,
+        attributeFilter: ['aria-expanded'],
+      });
+      document.addEventListener('click', (e) => {
+        if (navOpen() && !(e.target as Element).closest('.ac-hd')) burger()?.click();
+      });
+      syncNav();
+    </script>
   </body>
 </html>
