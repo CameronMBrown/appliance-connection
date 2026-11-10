@@ -89,3 +89,108 @@ astro-static-slot {
   background: var(--color-accent);
   z-index: 1;
 }
+
+/* Sticky primary nav. The Header island (design-system mirror, not hand-edited)
+   ships `position: relative`; override here. Doubled class beats its specificity
+   regardless of stylesheet order. z-index 40 already clears page content. */
+.ac-hd.ac-hd {
+  position: sticky;
+  top: 0;
+}
+/* Keep in-page anchor targets from hiding under the sticky bar. */
+html {
+  scroll-padding-top: calc(var(--header-h, 4.5rem) + 1rem);
+}
+
+/* ── Experiment: nav inverts once the page scrolls past 0% ──────────────────
+   Same role flip as `.on-dark` (design-system), scoped to the header and
+   driven by `html[data-scrolled]` (set in BaseLayout). Accent/CTA tokens and the
+   logo + wordmark (which use primitives, not these roles) are left alone.
+   Registering the colour tokens with @property lets the browser interpolate
+   them, so the header and everything inheriting from it fades linearly. */
+@property --color-bg { syntax: '<color>'; inherits: true; initial-value: #fff; }
+@property --color-bg-alt { syntax: '<color>'; inherits: true; initial-value: #fff; }
+@property --color-surface { syntax: '<color>'; inherits: true; initial-value: #fff; }
+@property --color-text { syntax: '<color>'; inherits: true; initial-value: #000; }
+@property --color-text-soft { syntax: '<color>'; inherits: true; initial-value: #000; }
+@property --color-text-muted { syntax: '<color>'; inherits: true; initial-value: #000; }
+@property --color-border { syntax: '<color>'; inherits: true; initial-value: #000; }
+@property --color-border-strong { syntax: '<color>'; inherits: true; initial-value: #000; }
+
+.ac-hd.ac-hd {
+  transition:
+    --color-bg 0.15s linear,
+    --color-bg-alt 0.15s linear,
+    --color-surface 0.15s linear,
+    --color-text 0.15s linear,
+    --color-text-soft 0.15s linear,
+    --color-text-muted 0.15s linear,
+    --color-border 0.15s linear,
+    --color-border-strong 0.15s linear;
+}
+html[data-scrolled] .ac-hd.ac-hd {
+  --color-bg: var(--color-inverse-bg);
+  --color-bg-alt: var(--color-inverse-bg-alt);
+  --color-surface: var(--color-inverse-bg-alt);
+  --color-text: var(--color-inverse-text);
+  --color-text-soft: var(--color-inverse-text-soft);
+  --color-text-muted: var(--neutral-400);
+  --color-border: rgb(255 255 255 / 0.2);
+  --color-border-strong: var(--neutral-0);
+}
+/* The wordmark is dark ink on a transparent ground; left alone it vanishes on the
+   inverted bar. Flip only its ink (the design system's own `light` tone). The
+   truck image is untouched. Delete this rule to keep the wordmark fixed. */
+.ac-hd .ac-wm--dark {
+  transition: color 0.3s linear;
+}
+html[data-scrolled] .ac-hd .ac-wm--dark {
+  color: var(--neutral-0);
+}
+
+/* Dropdown icons (dark line art) invert with the bar. CSS filter, no new assets.
+   The truck logo is a different <img> and is not matched. */
+.ac-hd .ac-hd__navicon {
+  transition: filter 0.3s linear;
+}
+html[data-scrolled] .ac-hd .ac-hd__navicon {
+  filter: invert(1);
+}
+
+/* Mobile nav open: dim the page to signal it's inert. Click-outside-to-close is
+   in BaseLayout. `data-nav-open` mirrors the burger's aria-expanded (the Header
+   island owns its state and is a mirror we don't hand-edit). Header is lifted
+   above the scrim; the scrim also covers the call bar. */
+html[data-nav-open] body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  background: rgb(0 0 0 / 0.25);
+}
+html[data-nav-open] .ac-hd.ac-hd {
+  z-index: calc(var(--z-overlay) + 1);
+}
+
+/* Burger bars morph to an X while the drawer is open. Bars are 2px tall with a
+   3px grid gap, so outer bars sit 5px from the middle one. Driven by the
+   button's aria-expanded; the Header mirror stays untouched. */
+.ac-hd__bars i {
+  transition:
+    transform 0.25s ease,
+    opacity 0.15s ease;
+}
+.ac-hd__burger[aria-expanded='true'] .ac-hd__bars i:nth-child(1) {
+  transform: translateY(5px) rotate(45deg);
+}
+.ac-hd__burger[aria-expanded='true'] .ac-hd__bars i:nth-child(2) {
+  opacity: 0;
+}
+.ac-hd__burger[aria-expanded='true'] .ac-hd__bars i:nth-child(3) {
+  transform: translateY(-5px) rotate(-45deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ac-hd__bars i {
+    transition: none;
+  }
+}

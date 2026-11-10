@@ -156,20 +156,59 @@ const SERVICE_MAP: EditorBlock = {
 // --- Home (templates/homepage) ---------------------------------------------
 
 /**
- * Home services stack. Photos are the WP-generated 3:4 sizes (225/768/1152/1536w)
- * of real jobsite shots; items without a photo yet fall back to the graph-paper
- * placeholder. Most-requested services lead.
+ * Home services stack. Photos are the real jobsite shots picked in the WP editor
+ * (attributes ported verbatim from the media library). Most-requested services lead.
  */
-const WP_UPLOADS = 'http://localhost:10018/wp-content/uploads/2026/10';
-const stackPhoto = (name: string, alt: string) => ({
-  image: `${WP_UPLOADS}/${name}-768x1024.avif`,
-  imageAlt: alt,
-  imageSrcset: [225, 768, 1152, 1536]
-    .map((w) => `${WP_UPLOADS}/${name}-${w}x${Math.round((w * 4) / 3)}.avif ${w}w`)
-    .join(', '),
-  imageWidth: 768,
-  imageHeight: 1024,
-});
+const STACK_PHOTOS = [
+  {
+    image: 'http://localhost:10018/wp-content/uploads/2026/10/wine-fridge-scaled.avif',
+    imageAlt: 'Under-counter wine fridge with a glass door in white cabinetry with brass handles.',
+    imageSrcset:
+      'http://localhost:10018/wp-content/uploads/2026/10/wine-fridge-150x150.avif 150w, http://localhost:10018/wp-content/uploads/2026/10/wine-fridge-225x300.avif 225w, http://localhost:10018/wp-content/uploads/2026/10/wine-fridge-768x1024.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/wine-fridge-scaled.avif 1920w',
+    imageWidth: 1920,
+    imageHeight: 2560,
+  },
+  {
+    image: 'http://localhost:10018/wp-content/uploads/2026/10/huge-stove-scaled.avif',
+    imageAlt: 'Large dual-oven stainless steel gas range with six burners under a stainless steel hood and white marble-look backsplash.',
+    imageSrcset:
+      'http://localhost:10018/wp-content/uploads/2026/10/huge-stove-150x150.avif 150w, http://localhost:10018/wp-content/uploads/2026/10/huge-stove-225x300.avif 225w, http://localhost:10018/wp-content/uploads/2026/10/huge-stove-768x1024.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/huge-stove-scaled.avif 1920w',
+    imageWidth: 1920,
+    imageHeight: 2560,
+  },
+  {
+    image: 'http://localhost:10018/wp-content/uploads/2026/10/washers-scaled.avif',
+    imageAlt: 'Stainless steel front-load dryer stacked on top of a washer in a narrow laundry closet.',
+    imageSrcset:
+      'http://localhost:10018/wp-content/uploads/2026/10/washers-150x150.avif 150w, http://localhost:10018/wp-content/uploads/2026/10/washers-225x300.avif 225w, http://localhost:10018/wp-content/uploads/2026/10/washers-768x1024.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/washers-scaled.avif 1920w',
+    imageWidth: 1920,
+    imageHeight: 2560,
+  },
+  {
+    image: 'http://localhost:10018/wp-content/uploads/2026/11/gas-piping-scaled.avif',
+    imageAlt: 'A man uses a wrench to work on a  gas line feeding a gas water heater',
+    imageSrcset:
+      'http://localhost:10018/wp-content/uploads/2026/11/gas-piping-150x150.avif 150w, http://localhost:10018/wp-content/uploads/2026/11/gas-piping-300x270.avif 300w, http://localhost:10018/wp-content/uploads/2026/11/gas-piping-1024x921.avif 1024w, http://localhost:10018/wp-content/uploads/2026/11/gas-piping-scaled.avif 2560w',
+    imageWidth: 2560,
+    imageHeight: 2304,
+  },
+  {
+    image: 'http://localhost:10018/wp-content/uploads/2026/11/plumbing.avif',
+    imageAlt: 'An unfinished bathroom featuring exposed plumbing for drains, bath, shower and fixtures.',
+    imageSrcset:
+      'http://localhost:10018/wp-content/uploads/2026/11/plumbing-150x150.avif 150w, http://localhost:10018/wp-content/uploads/2026/11/plumbing-300x167.avif 300w, http://localhost:10018/wp-content/uploads/2026/11/plumbing-1024x572.avif 1024w, http://localhost:10018/wp-content/uploads/2026/11/plumbing.avif 1376w',
+    imageWidth: 1376,
+    imageHeight: 768,
+  },
+  {
+    image: 'http://localhost:10018/wp-content/uploads/2026/11/shop-heater-square.avif',
+    imageAlt: 'A white, forced air shop heater mounted to the ceiling, with visible gas and venting hookups.',
+    imageSrcset:
+      'http://localhost:10018/wp-content/uploads/2026/11/shop-heater-square-150x150.avif 150w, http://localhost:10018/wp-content/uploads/2026/11/shop-heater-square-300x300.avif 300w, http://localhost:10018/wp-content/uploads/2026/11/shop-heater-square.avif 1024w',
+    imageWidth: 1024,
+    imageHeight: 1024,
+  },
+];
 
 const HOME_STACK: EditorBlock = {
   name: 'ac/stack',
@@ -180,7 +219,7 @@ const HOME_STACK: EditorBlock = {
         eyebrow: 'Appliance installation',
         title: 'Freestanding and built-in, installed right',
         body: 'Ranges, cooktops, wall ovens, dishwashers, OTR microwaves, laundry, and custom panels. Every make and model.',
-        ...stackPhoto('stove-and-range-3', 'A freestanding range installed in a finished kitchen'),
+        ...STACK_PHOTOS[0],
         buttonText: 'Learn more',
         buttonUrl: '/services/appliance-installation/',
       },
@@ -188,7 +227,7 @@ const HOME_STACK: EditorBlock = {
         eyebrow: 'Kitchens',
         title: 'From rough-in to the finished install',
         body: 'Full kitchen work, from rough-in through to the finished install, with every appliance installed to code.',
-        ...stackPhoto('unfinished-kitchen', 'A kitchen mid-renovation, ready for appliances'),
+        ...STACK_PHOTOS[1],
         buttonText: 'Learn more',
         buttonUrl: '/services/kitchens/',
       },
@@ -196,7 +235,7 @@ const HOME_STACK: EditorBlock = {
         eyebrow: 'Laundry rooms',
         title: 'Washers, dryers and venting, in the right place',
         body: 'Washers, dryers, venting and relocations, including upstairs moves.',
-        ...stackPhoto('washer-dryer', 'A washer and dryer installed side by side'),
+        ...STACK_PHOTOS[2],
         buttonText: 'Learn more',
         buttonUrl: '/services/laundry-rooms/',
       },
@@ -204,6 +243,7 @@ const HOME_STACK: EditorBlock = {
         eyebrow: 'Gas piping',
         title: 'Licensed gas fitting, above and below grade',
         body: 'Licensed gas fitting for ranges, dryers, BBQs, garage and shop heaters, and pool and water heaters.',
+        ...STACK_PHOTOS[3],
         buttonText: 'Learn more',
         buttonUrl: '/services/gas-piping/',
       },
@@ -211,6 +251,7 @@ const HOME_STACK: EditorBlock = {
         eyebrow: 'Plumbing fixtures',
         title: 'Sinks, taps and shut-offs, done to code',
         body: 'Sinks, taps, water lines and shut-offs, installed cleanly and tested before we leave.',
+        ...STACK_PHOTOS[4],
         buttonText: 'Learn more',
         buttonUrl: '/services/plumbing-fixtures/',
       },
@@ -218,6 +259,7 @@ const HOME_STACK: EditorBlock = {
         eyebrow: 'Heaters',
         title: 'Shop, garage, pool and water heaters',
         body: 'Shop and garage heaters, pool heaters and water heaters, gas-fitted and installed by a licensed crew.',
+        ...STACK_PHOTOS[5],
         buttonText: 'Learn more',
         buttonUrl: '/services/heaters/',
       },
@@ -225,6 +267,16 @@ const HOME_STACK: EditorBlock = {
   },
 };
 
+
+/** Shared "Our Selling Partners" section: home, services hub and most service pages. */
+const SELLING_PARTNERS: EditorBlock = {
+  name: 'ac/partners',
+  attributes: {
+    heading: 'Our Selling Partners',
+    background: 'alt',
+    partners: [PADDYS_MARKET, PETERBOROUGH_APPLIANCES],
+  },
+};
 
 const home: PageData = {
   title: 'The Appliance Connection — Complete Home Appliance Installation',
@@ -296,14 +348,7 @@ const home: PageData = {
     },
     HOME_STACK,
     SERVICE_MAP,
-    {
-      name: 'ac/partners',
-      attributes: {
-        heading: 'Our Selling Partners',
-        background: 'alt',
-        partners: [PADDYS_MARKET, PETERBOROUGH_APPLIANCES],
-      },
-    },
+    SELLING_PARTNERS,
   ],
 };
 
@@ -331,9 +376,13 @@ const servicesIndex: PageData = {
       attributes: { eyebrow: 'What we do', heading: 'Every install, one crew', numbered: true },
       innerBlocks: serviceCards(),
     },
+    SELLING_PARTNERS,
     contactCta('Have a question?'),
   ],
 };
+
+/** Service pages that skip the selling-partners section (no appliance purchase involved). */
+const NO_PARTNERS = ['gas-piping', 'plumbing-fixtures'];
 
 const servicePage = (s: (typeof SERVICES)[number]): PageData => ({
   title: `${s.title} — The Appliance Connection`,
@@ -351,6 +400,7 @@ const servicePage = (s: (typeof SERVICES)[number]): PageData => ({
       },
     },
     STATS,
+    ...(NO_PARTNERS.includes(s.slug) ? [] : [SELLING_PARTNERS]),
     contactCta('Have a question?'),
   ],
 });

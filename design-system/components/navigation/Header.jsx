@@ -30,7 +30,7 @@ export const DEFAULT_PHONES = [
 ];
 
 const CSS = `
-.ac-hd{position:relative;z-index:40;background:var(--color-bg);border-bottom:1px solid var(--color-border-strong);}
+.ac-hd{position:relative;z-index:40;background:var(--color-bg);border-bottom:1px solid var(--color-border-strong);Border-top:1px solid var(--color-border-strong);box-shadow: 0px 0px 10px #00000030;}
 .ac-hd__bar{position:relative;max-width:var(--container-wide);margin-inline:auto;padding-inline:var(--gutter);display:flex;align-items:stretch;gap:var(--space-lg);}
 .ac-hd__brand{display:flex;align-items:center;gap:var(--space-sm);text-decoration:none;color:var(--color-text);padding-block:var(--space-md);flex:none;}
 .ac-hd__brand img{height:2.75rem;width:auto;}
