@@ -464,8 +464,8 @@
             "eyebrow": "Service",
             "heading": "Gas piping",
             "intro": "Licensed gas fitting for ranges, dryers, BBQs, garage & shop heaters, pool and water heaters — above and below grade.",
-            "illustrationUrl": "/illustrations/craig-harley-carrying-box.webp",
-            "illustrationAlt": "Craig and Harley carrying an appliance box",
+            "illustrationUrl": "/illustrations/craig-harley-water-heater.avif",
+            "illustrationAlt": "Cartoon Harley and Craig work as a team to install a large tank natural gas water heater.",
             "primaryLabel": "Contact Us",
             "primaryUrl": "/contact/"
           }
@@ -516,13 +516,11 @@
       "title": "Kitchens — The Appliance Connection",
       "blocks": [
         {
-          "name": "ac/page-header",
+          "name": "ac/flipbook-header",
           "attributes": {
             "eyebrow": "Service",
             "heading": "Kitchens",
             "intro": "Full kitchen work, from rough-in through to the finished install — every appliance installed to code.",
-            "illustrationUrl": "/illustrations/craig-harley-carrying-box.webp",
-            "illustrationAlt": "Craig and Harley carrying an appliance box",
             "primaryLabel": "Contact Us",
             "primaryUrl": "/contact/"
           }
@@ -612,13 +610,45 @@
       "title": "Laundry rooms — The Appliance Connection",
       "blocks": [
         {
-          "name": "ac/page-header",
+          "name": "ac/video-header",
           "attributes": {
             "eyebrow": "Service",
             "heading": "Laundry rooms",
             "intro": "Washers, dryers, venting and relocations, including upstairs moves.",
-            "illustrationUrl": "/illustrations/craig-harley-carrying-box.webp",
-            "illustrationAlt": "Craig and Harley carrying an appliance box",
+            "videoSources": [
+              {
+                "url": "/video/laundry-rooms-480.webm",
+                "mime": "video/webm",
+                "width": 480
+              },
+              {
+                "url": "/video/laundry-rooms-480.mp4",
+                "mime": "video/mp4",
+                "width": 480
+              },
+              {
+                "url": "/video/laundry-rooms-720.webm",
+                "mime": "video/webm",
+                "width": 720
+              },
+              {
+                "url": "/video/laundry-rooms-720.mp4",
+                "mime": "video/mp4",
+                "width": 720
+              },
+              {
+                "url": "/video/laundry-rooms-960.webm",
+                "mime": "video/webm",
+                "width": 960
+              },
+              {
+                "url": "/video/laundry-rooms-960.mp4",
+                "mime": "video/mp4",
+                "width": 960
+              }
+            ],
+            "posterUrl": "/video/laundry-rooms-poster-960.webp",
+            "posterSrcset": "/video/laundry-rooms-poster-480.webp 480w, /video/laundry-rooms-poster-960.webp 960w",
             "primaryLabel": "Contact Us",
             "primaryUrl": "/contact/"
           }
@@ -708,13 +738,11 @@
       "title": "Plumbing fixtures — The Appliance Connection",
       "blocks": [
         {
-          "name": "ac/page-header",
+          "name": "ac/flipbook-header",
           "attributes": {
             "eyebrow": "Service",
             "heading": "Plumbing fixtures",
             "intro": "Sinks, taps, water lines and shut-offs, done to code.",
-            "illustrationUrl": "/illustrations/craig-harley-carrying-box.webp",
-            "illustrationAlt": "Craig and Harley carrying an appliance box",
             "primaryLabel": "Contact Us",
             "primaryUrl": "/contact/"
           }
@@ -770,8 +798,8 @@
             "eyebrow": "Service",
             "heading": "Heaters",
             "intro": "Shop and garage heaters, pool heaters and water heaters.",
-            "illustrationUrl": "/illustrations/craig-harley-carrying-box.webp",
-            "illustrationAlt": "Craig and Harley carrying an appliance box",
+            "illustrationUrl": "/illustrations/craig-harley-water-heater.avif",
+            "illustrationAlt": "Cartoon Harley and Craig work as a team to install a large tank natural gas water heater.",
             "primaryLabel": "Contact Us",
             "primaryUrl": "/contact/"
           }

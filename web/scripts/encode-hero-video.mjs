@@ -2,6 +2,18 @@
  * Encode the hero video into a responsive ladder + a poster frame.
  *
  *   npm run video:encode --workspace web -- <master-video> [out-dir]
+ *   npm run video:encode --workspace web -- <master-video> --name laundry-rooms \
+ *       --tiers 480,720,960 --posters 480,960 --out web/public/video
+ *
+ * Flags (all optional; with none it behaves exactly as the home hero encode):
+ *   --name     output basename (default hero-install)
+ *   --tiers    comma-separated rendition widths (default 640,960,1280)
+ *   --posters  comma-separated poster widths -> {name}-poster-{w}.webp
+ *              (default: one 1280w {name}-poster.webp)
+ *   --out      output directory (default web/.video-out/)
+ *
+ * The ac/video-header (service pages) uses the same ladder: 480/720/960 for a 960px
+ * square master, plus 480 + 960 posters.
  *
  * Output (default web/.video-out/, gitignored):
  *   hero-install-{640,960,1280}.webm   VP9   (smallest; browsers that can play it pick it first)
@@ -23,21 +35,40 @@ import { mkdirSync, statSync } from 'node:fs';
 import { basename, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const TIERS = [
-  // width, H.264 maxrate (kbps), VP9 CRF. Bitrate caps keep each tier honest.
-  { width: 640, maxrate: 600, crf: 36 },
-  { width: 960, maxrate: 1100, crf: 34 },
-  { width: 1280, maxrate: 1900, crf: 33 },
-];
-const NAME = 'hero-install';
+// Known tiers keep their hand-tuned settings; any other width is interpolated.
+const PRESETS = {
+  640: { maxrate: 600, crf: 36 },
+  960: { maxrate: 1100, crf: 34 },
+  1280: { maxrate: 1900, crf: 33 },
+};
+const tierSettings = (width) =>
+  PRESETS[width] ?? {
+    // H.264 maxrate scales with pixel count (~0.0012 kbps per px); VP9 CRF eases off as frames get smaller.
+    maxrate: Math.round(width * width * 0.0012),
+    crf: width <= 640 ? 36 : width <= 960 ? 34 : 33,
+  };
 const KEYFRAME_SECONDS = 2; // short GOP = fast loop restart and seeking
 
-const [input, outArg] = process.argv.slice(2);
+const argv = process.argv.slice(2);
+const flags = {};
+const positional = [];
+for (let i = 0; i < argv.length; i++) {
+  if (argv[i].startsWith('--')) flags[argv[i].slice(2)] = argv[++i];
+  else positional.push(argv[i]);
+}
+const widthList = (v, fallback) =>
+  v ? v.split(',').map((n) => Number(n.trim())).filter(Boolean).sort((a, b) => a - b) : fallback;
+
+const NAME = flags.name ?? 'hero-install';
+const TIERS = widthList(flags.tiers, [640, 960, 1280]).map((width) => ({ width, ...tierSettings(width) }));
+const POSTER_WIDTHS = widthList(flags.posters, null);
+
+const [input, outArg] = positional;
 if (!input) {
-  console.error('Usage: encode-hero-video.mjs <master-video> [out-dir]');
+  console.error('Usage: encode-hero-video.mjs <master-video> [out-dir] [--name n] [--tiers 480,720,960] [--posters 480,960] [--out dir]');
   process.exit(1);
 }
-const outDir = resolve(outArg ?? fileURLToPath(new URL('../.video-out/', import.meta.url)));
+const outDir = resolve(flags.out ?? outArg ?? fileURLToPath(new URL('../.video-out/', import.meta.url)));
 mkdirSync(outDir, { recursive: true });
 
 function ffmpeg(args) {
@@ -73,9 +104,11 @@ for (const { width, maxrate, crf } of TIERS) {
   results.push(webm, mp4);
 }
 
-const poster = join(outDir, `${NAME}-poster.webp`);
-ffmpeg(['-i', input, '-frames:v', '1', '-vf', scale(1280), '-c:v', 'libwebp', '-quality', '80', poster]);
-results.push(poster);
+for (const w of POSTER_WIDTHS ?? [null]) {
+  const poster = join(outDir, w ? `${NAME}-poster-${w}.webp` : `${NAME}-poster.webp`);
+  ffmpeg(['-i', input, '-frames:v', '1', '-vf', scale(w ?? 1280), '-c:v', 'libwebp', '-quality', '80', poster]);
+  results.push(poster);
+}
 
 console.log('\nEncoded:');
 for (const file of results) {

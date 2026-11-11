@@ -1,0 +1,482 @@
+---
+// ac/video-header — the page header with a square video in place of the
+// illustration (experiment: services pages; see branch services-page-hero-video).
+//
+// Desktop (> 900px): copy + buttons beside a ruled 1:1 video window.
+// Tablet (641-900px): the window is centred on the grid ground (capped at 36rem,
+// still 1:1) and the title, subtitle and buttons sit centred over it, on a dark overlay.
+// Mobile (<= 640px): the video fills the section edge to edge instead of the
+// square, same overlaid content, with a strip of grid kept below it.
+// One video element, restyled by CSS, so the file is downloaded once and no JS
+// is needed to switch layouts.
+//
+// The video is decorative: muted, aria-hidden. Nothing downloads until the section
+// is within a screen of the viewport, and nothing at all on Data Saver / 2G /
+// reduced motion (poster only, play button loads it). A ladder of renditions
+// (see lib/video-tier.ts) is picked from the window size and connection. It plays ONCE, stretched to
+// PLAY_SECONDS whatever the clip's own length (via playbackRate, so every
+// service's clip lands on the same pace without re-encoding), then holds its
+// last frame. It restarts from the top each time the section re-enters the
+// viewport after having fully left it. A pause/play button is the WCAG 2.2.2
+// control; reduced-motion visitors get the still poster until they press play.
+import type { BlockContext, EditorBlock, VideoHeaderAttrs } from '../../lib/blocks/types';
+import CtaButtons from '../CtaButtons.astro';
+
+interface Props extends VideoHeaderAttrs {
+  innerBlocks?: EditorBlock[];
+  context?: BlockContext;
+}
+
+const {
+  eyebrow,
+  heading,
+  intro,
+  videoSources = [],
+  posterUrl,
+  posterSrcset,
+  primaryLabel,
+  primaryUrl,
+  showPhone = false,
+  context = {},
+} = Astro.props;
+
+/** Target running time. The clip's playbackRate is set so it takes this long. */
+const PLAY_SECONDS = 6;
+
+const phone = showPhone && context.region ? context.phones?.[0] : undefined;
+---
+
+<section class="vh">
+  <div class="vh__in">
+    <div class="vh__content">
+    <div class="vh__text">
+      {eyebrow && <p class="vh__eyebrow">{eyebrow}</p>}
+      {heading && <h1 class="vh__h">{heading}</h1>}
+      {intro && <p class="vh__intro">{intro}</p>}
+    </div>
+    {
+      (primaryLabel || phone) && (
+        <div class="vh__actions">
+          <CtaButtons primaryLabel={primaryLabel} primaryUrl={primaryUrl} {phone} />
+        </div>
+      )
+    }
+    </div>
+    {
+      videoSources.length > 0 && (
+        <div class="vh__media" data-seconds={PLAY_SECONDS} data-sources={JSON.stringify(videoSources)}>
+          {/* The poster is a real <img> (srcset, high priority): it is the LCP element and
+              all that loads for Data Saver / 2G / reduced-motion visitors. <video poster>
+              can't take a srcset. The video has no src: the script picks a rendition. */}
+          {posterUrl && (
+            <img
+              class="vh__poster"
+              src={posterUrl}
+              srcset={posterSrcset || undefined}
+              sizes="(max-width: 640px) 100vw, (max-width: 900px) 36rem, 28rem"
+              width="960"
+              height="960"
+              alt=""
+              fetchpriority="high"
+              decoding="async"
+            />
+          )}
+          <video class="vh__video" width="960" height="960" muted playsinline preload="none" aria-hidden="true" tabindex="-1" />
+          <button type="button" class="vh__pause" aria-pressed="true" aria-label="Play background video">
+            <svg class="vh__ico vh__ico--pause" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+              <path d="M4 3h3v10H4zM9 3h3v10H9z" fill="currentColor" />
+            </svg>
+            <svg class="vh__ico vh__ico--play" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+              <path d="M5 3l8 5-8 5z" fill="currentColor" />
+            </svg>
+          </button>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  import { dpr, pickWidth, shouldSkipAutoplay } from '../../lib/video-tier';
+
+  interface Source {
+    url: string;
+    mime: string;
+    width: number;
+  }
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  document.querySelectorAll<HTMLElement>('.vh__media').forEach((media) => {
+    const video = media.querySelector<HTMLVideoElement>('video');
+    const btn = media.querySelector<HTMLButtonElement>('.vh__pause');
+    if (!video || !btn) return;
+
+    const target = Number(media.dataset.seconds) || 6;
+    const sources: Source[] = JSON.parse(media.dataset.sources || '[]');
+    const widths = [...new Set(sources.map((s) => s.width))].sort((a, b) => a - b);
+    if (!widths.length) return;
+
+    // Data Saver / 2G / reduced motion: download nothing until the visitor presses play.
+    const lowData = shouldSkipAutoplay();
+    const holdBack = lowData || reduce.matches;
+
+    let activeWidth = 0; // 0 = no rendition attached yet
+    let userPaused = holdBack; // pressed pause (or held back): don't auto-start on view
+    let armed = true; // true once the section has fully left the viewport (and at load)
+    let resumeOnVisible = false;
+
+    video.muted = true; // autoplay needs it; the attribute alone isn't always reflected
+
+    // Square video, covering a box: the longer side decides how many pixels it needs.
+    const needed = () => {
+      const { width, height } = media.getBoundingClientRect();
+      return Math.max(width, height) * dpr();
+    };
+
+    // Stretch/shrink the clip to the target running time, whatever its length.
+    const fit = () => {
+      if (!video.duration || !Number.isFinite(video.duration)) return;
+      const rate = video.duration / target;
+      video.defaultPlaybackRate = rate;
+      video.playbackRate = rate;
+    };
+    video.addEventListener('loadedmetadata', fit);
+
+    /** Attach the right tier. WebM first (smaller); the browser takes the first type it can play. */
+    const attach = (width: number, at = 0) => {
+      activeWidth = width;
+      video.replaceChildren(
+        ...sources
+          .filter((s) => s.width === width)
+          .sort((a) => (a.mime === 'video/webm' ? -1 : 1))
+          .map((s) => Object.assign(document.createElement('source'), { src: s.url, type: s.mime })),
+      );
+      video.preload = 'auto';
+      video.load();
+      if (at) video.addEventListener('loadedmetadata', () => (video.currentTime = at), { once: true });
+    };
+    const ensureLoaded = () => {
+      if (!activeWidth) attach(pickWidth(widths, needed()));
+    };
+
+    const sync = () => {
+      // Ended counts as paused: the button then offers a replay.
+      const idle = video.paused || video.ended;
+      btn.setAttribute('aria-pressed', String(idle));
+      btn.setAttribute('aria-label', idle ? 'Play background video' : 'Pause background video');
+    };
+    ['play', 'pause', 'ended'].forEach((e) => video.addEventListener(e, sync));
+    // Fade the video in over the poster once a frame is actually playing.
+    video.addEventListener('playing', () => media.classList.add('is-ready'), { once: true });
+
+    btn.addEventListener('click', () => {
+      if (video.paused || video.ended) {
+        userPaused = false;
+        ensureLoaded();
+        void video.play().catch(() => {}); // play() on an ended video restarts it
+      } else {
+        userPaused = true;
+        video.pause();
+      }
+    });
+
+    // Start fetching a screen early so the first frame is ready on arrival, but not on
+    // Data Saver / 2G / reduced motion, and never for a section the visitor never scrolls to.
+    if (!holdBack) {
+      const preload = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((e) => e.isIntersecting)) return;
+          ensureLoaded();
+          preload.disconnect();
+        },
+        { rootMargin: '100% 0px' },
+      );
+      preload.observe(media);
+    }
+
+    // Play from the start each time the section comes into view, but only after
+    // it has been fully out of view: a sliver scrolling in and out doesn't restart it.
+    new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            if (!armed) continue;
+            armed = false;
+            if (userPaused || reduce.matches) continue;
+            ensureLoaded();
+            video.currentTime = 0;
+            void video.play().catch(() => {});
+          } else {
+            // Fully out: reset to the first frame so re-entry never flashes the last one.
+            armed = true;
+            video.pause();
+            if (activeWidth) video.currentTime = 0;
+          }
+        }
+      },
+      { threshold: 0 },
+    ).observe(media);
+
+    // Resize / rotate: upgrade to a sharper tier if the box outgrew the current one. Never downgrade.
+    let resizeTimer = 0;
+    new ResizeObserver(() => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        if (!activeWidth) return;
+        const wanted = pickWidth(widths, needed());
+        if (wanted <= activeWidth) return;
+        const wasPlaying = !video.paused && !video.ended;
+        attach(wanted, video.ended ? 0 : video.currentTime);
+        if (wasPlaying) void video.play().catch(() => {});
+      }, 200);
+    }).observe(media);
+
+    // A hidden tab shouldn't keep decoding.
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && !video.paused) {
+        resumeOnVisible = true;
+        video.pause();
+      } else if (!document.hidden && resumeOnVisible) {
+        resumeOnVisible = false;
+        if (!userPaused) void video.play().catch(() => {});
+      }
+    });
+
+    sync();
+  });
+</script>
+
+<style>
+  .vh {
+    position: relative;
+    /* Opaque ground + ruling, same as the illustrated PageHeader. */
+    background-color: var(--color-bg);
+    background-image: var(--grid-image);
+    background-size: var(--grid-size) var(--grid-size);
+  }
+  .vh__in {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding: clamp(2.5rem, 6vw, 4.5rem) var(--gutter) clamp(2rem, 4vw, 3rem);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: 'text media' 'actions media';
+    grid-template-rows: auto auto;
+    align-content: center;
+    column-gap: clamp(1.5rem, 5vw, 4rem);
+  }
+  /* Desktop: the wrapper is transparent so text and actions are grid items. */
+  .vh__content {
+    display: contents;
+  }
+  .vh__text {
+    grid-area: text;
+    align-self: end;
+    min-width: 0;
+  }
+  .vh__eyebrow {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-md);
+  }
+  .vh__h {
+    font-size: var(--text-3xl);
+    line-height: var(--leading-tight);
+    margin: 0 0 var(--space-lg);
+    max-width: 18ch;
+  }
+  .vh__intro {
+    color: var(--color-text-soft);
+    font-size: var(--text-md);
+    max-width: 54ch;
+    margin: 0;
+  }
+  .vh__actions {
+    grid-area: actions;
+    align-self: start;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    align-items: center;
+    margin-top: var(--space-xl);
+  }
+
+  /* The 1:1 window: a ruled square, like the design system's other boxes. */
+  .vh__media {
+    grid-area: media;
+    align-self: center;
+    position: relative;
+    width: clamp(16rem, 34vw, 28rem);
+    aspect-ratio: 1;
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-inverse-bg);
+  }
+  .vh__poster,
+  .vh__video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* The poster fills the window; the video sits over it and fades in once a frame plays. */
+  .vh__poster {
+    position: absolute;
+    inset: 0;
+  }
+  .vh__video {
+    position: relative;
+    opacity: 0;
+    transition: opacity var(--dur-slow, 0.4s) var(--ease-standard, ease);
+  }
+  .vh__media.is-ready .vh__video {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .vh__video {
+      transition: none;
+    }
+  }
+  .vh__pause {
+    position: absolute;
+    right: var(--space-sm);
+    bottom: var(--space-sm);
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+  .vh__pause:hover {
+    background: var(--color-bg-alt);
+  }
+  .vh__ico--play,
+  .vh__pause[aria-pressed='true'] .vh__ico--pause {
+    display: none;
+  }
+  .vh__pause[aria-pressed='true'] .vh__ico--play {
+    display: block;
+  }
+
+  /* Tablet and mobile: copy and buttons move onto the video. Both layouts share
+     the dark overlay and the centred white text; only the video's box differs.
+     The eyebrow stays in the DOM for screen readers but is visually hidden so the
+     title, subtitle and buttons carry the screen. */
+  @media (max-width: 900px) {
+    .vh__in {
+      /* One cell, capped at 36rem: the square never grows to fill a wide tablet,
+         so the grid ground shows either side of it. Media and content share the cell. */
+      grid-template-columns: min(100%, 36rem);
+      grid-template-areas: 'stack';
+      grid-template-rows: auto;
+      justify-content: center;
+    }
+    .vh__media {
+      grid-area: stack;
+      width: 100%;
+    }
+    /* Overlay: the video "slightly darker", same ink as the home hero scrim. */
+    .vh__media::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(17, 17, 17, 0.55);
+      pointer-events: none;
+    }
+    .vh__content {
+      grid-area: stack;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--space-xl) var(--space-lg);
+      min-width: 0;
+    }
+    .vh__text,
+    .vh__actions {
+      align-self: auto;
+    }
+    .vh__h {
+      color: var(--color-inverse-text);
+      margin: 0 auto var(--space-md);
+      max-width: 14ch;
+    }
+    .vh__intro {
+      color: var(--color-inverse-text);
+      max-width: 34ch;
+      margin-inline: auto;
+    }
+    .vh__eyebrow {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .vh__actions {
+      justify-content: center;
+      margin-top: var(--space-lg);
+    }
+    /* Only the media area gets the overlay: keep the pause button above it. */
+    .vh__pause {
+      z-index: 2;
+    }
+  }
+
+  /* Mobile: the video IS the section background, full width. A strip of grid is
+     left below it (the section's bottom padding) so it doesn't butt up against
+     the next section. */
+  @media (max-width: 640px) {
+    .vh {
+      display: flex;
+      flex-direction: column;
+      min-height: clamp(26rem, 80svh, 36rem);
+      padding-bottom: var(--space-xl);
+    }
+    .vh__in {
+      flex: 1;
+      width: 100%;
+      grid-template-columns: 1fr;
+      padding: var(--space-2xl) var(--gutter);
+      align-content: center;
+    }
+    .vh__media {
+      /* Containing block is .vh (.vh__in isn't positioned), so the grid area
+         doesn't apply to this absolute box. */
+      position: absolute;
+      /* The base align-self: center would shrink-wrap this box to the video's
+         own height instead of filling the offsets. */
+      align-self: stretch;
+      justify-self: stretch;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: var(--space-xl);
+      width: auto;
+      aspect-ratio: auto;
+      border: 0;
+      border-bottom: 1px solid var(--color-border-strong);
+    }
+    .vh__content {
+      padding: 0;
+    }
+    .vh__h {
+      max-width: 12ch;
+    }
+    .vh__intro {
+      max-width: 30ch;
+    }
+  }
+</style>

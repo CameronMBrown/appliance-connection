@@ -11,6 +11,8 @@
  */
 import Hero from '../../components/blocks/Hero.astro';
 import PageHeader from '../../components/blocks/PageHeader.astro';
+import VideoHeader from '../../components/blocks/VideoHeader.astro';
+import FlipbookHeader from '../../components/blocks/FlipbookHeader.astro';
 import Trust from '../../components/blocks/Trust.astro';
 import Intro from '../../components/blocks/Intro.astro';
 import Partners from '../../components/blocks/Partners.astro';
@@ -29,6 +31,8 @@ import Stack from '../../components/blocks/Stack.astro';
 export const registry = {
   'ac/hero': Hero,
   'ac/page-header': PageHeader,
+  'ac/video-header': VideoHeader,
+  'ac/flipbook-header': FlipbookHeader,
   'ac/trust': Trust,
   'ac/intro': Intro,
   'ac/partners': Partners,

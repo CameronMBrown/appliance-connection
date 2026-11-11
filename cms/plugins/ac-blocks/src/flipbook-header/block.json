@@ -1,0 +1,25 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/flipbook-header",
+  "title": "Page header (flipbook)",
+  "category": "ac",
+  "icon": "images-alt2",
+  "description": "Title band with a square flipbook (1 to 15 square images, one second each, played once) in place of the illustration. On mobile the flipbook becomes the section background behind a centred title and buttons.",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "eyebrow": { "type": "string", "default": "" },
+    "heading": { "type": "string", "default": "" },
+    "intro": { "type": "string", "default": "" },
+    "frames": { "type": "array", "default": [] },
+    "primaryLabel": { "type": "string", "default": "Contact Us" },
+    "primaryUrl": { "type": "string", "default": "/contact/" },
+    "showPhone": { "type": "boolean", "default": false }
+  },
+  "supports": {
+    "html": false,
+    "multiple": false
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

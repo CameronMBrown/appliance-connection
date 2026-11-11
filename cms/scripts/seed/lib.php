@@ -19,6 +19,18 @@ function ac_seed_hero_media_keys(): array {
 	return array( 'videoSources', 'posterId', 'posterUrl', 'posterSrcset', 'posterWidth', 'posterHeight' );
 }
 
+/**
+ * Editor-picked media attributes per block. They survive re-seeds and never count
+ * as drift (fixtures can't know attachment IDs). Hero: video renditions + poster.
+ * Flipbook header: the frames.
+ */
+function ac_seed_media_keys_by_block(): array {
+	return array(
+		'ac/hero'            => ac_seed_hero_media_keys(),
+		'ac/flipbook-header' => array( 'frames' ),
+	);
+}
+
 /** Recursively ksort associative arrays so attribute key order never changes a fingerprint. */
 function ac_seed_canon_sort( $value ) {
 	if ( ! is_array( $value ) ) {
@@ -35,7 +47,7 @@ function ac_seed_canon_sort( $value ) {
  * Block tree → canonical array: name, sorted attributes, children.
  *
  * Takes either fixture blocks (`name` / `attributes`) or parse_blocks() output
- * (`blockName` / `attrs`). Whitespace between blocks is ignored, as is hero
+ * (`blockName` / `attrs`). Whitespace between blocks is ignored, as is editor-picked
  * media, so editor-saved and seed-saved content of the same page compare equal.
  */
 function ac_seed_canon_blocks( array $blocks, bool $parsed ): array {
@@ -50,8 +62,9 @@ function ac_seed_canon_blocks( array $blocks, bool $parsed ): array {
 			continue;
 		}
 		$attrs = $parsed ? ( $b['attrs'] ?? array() ) : ( $b['attributes'] ?? array() );
-		if ( 'ac/hero' === $name ) {
-			$attrs = array_diff_key( (array) $attrs, array_flip( ac_seed_hero_media_keys() ) );
+		$media_keys = ac_seed_media_keys_by_block()[ $name ] ?? array();
+		if ( $media_keys ) {
+			$attrs = array_diff_key( (array) $attrs, array_flip( $media_keys ) );
 		}
 		$out[] = array(
 			'n' => $name,

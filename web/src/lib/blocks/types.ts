@@ -82,6 +82,45 @@ export interface PageHeaderAttrs {
   showPhone?: boolean;
 }
 
+/** ac/video-header: the page header with a square looping video instead of the illustration. */
+export interface VideoHeaderAttrs {
+  eyebrow?: string;
+  heading?: string;
+  intro?: string;
+  /** Square (1:1) renditions, one per codec per width (web/scripts/encode-hero-video.mjs). */
+  videoSources?: HeroVideoSource[];
+  /** Still of the first frame: shown while loading and to reduced-motion / Data Saver visitors. */
+  posterUrl?: string;
+  /** srcset of square poster sizes, e.g. "…-480.webp 480w, …-960.webp 960w". */
+  posterSrcset?: string;
+  primaryLabel?: string;
+  primaryUrl?: string;
+  showPhone?: boolean;
+}
+
+/** One flipbook frame: a square image picked from the Media Library. */
+export interface FlipbookFrame {
+  id?: number;
+  url: string;
+  /** Square WP sizes, e.g. "…-300x300.avif 300w, …-768x768.avif 768w, …kitchen.avif 1024w". */
+  srcset?: string;
+  width?: number;
+  height?: number;
+  /** Required: each frame is content, not decoration. */
+  alt: string;
+}
+
+/** ac/flipbook-header: the page header with a square, play-once image flipbook (1 to 15 frames, 1s each). */
+export interface FlipbookHeaderAttrs {
+  eyebrow?: string;
+  heading?: string;
+  intro?: string;
+  frames?: FlipbookFrame[];
+  primaryLabel?: string;
+  primaryUrl?: string;
+  showPhone?: boolean;
+}
+
 /** One bento cell. Position decides the role: 0 primary, 1-2 secondary, 3 tertiary. */
 export interface TrustCell {
   title: string;
