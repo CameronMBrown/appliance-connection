@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/video-header",
+  "title": "Page header (video)",
+  "category": "ac",
+  "icon": "format-video",
+  "description": "Title band with a square video in place of the illustration. On mobile the video becomes the section background behind a centred title and buttons.",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "eyebrow": { "type": "string", "default": "" },
+    "heading": { "type": "string", "default": "" },
+    "intro": { "type": "string", "default": "" },
+    "videoSources": { "type": "array", "default": [] },
+    "posterId": { "type": "number" },
+    "posterUrl": { "type": "string", "default": "" },
+    "posterSrcset": { "type": "string", "default": "" },
+    "primaryLabel": { "type": "string", "default": "Contact Us" },
+    "primaryUrl": { "type": "string", "default": "/contact/" },
+    "showPhone": { "type": "boolean", "default": false }
+  },
+  "supports": {
+    "html": false,
+    "multiple": false
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

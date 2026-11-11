@@ -140,10 +140,20 @@ const needsTruck = stats.some((s) => s.art && (s.art === 'licensed' || s.art ===
     min-height: 8.5rem;
     overflow: hidden;
     background: var(--color-surface);
-    box-shadow: inset -1px -1px 0 var(--color-border-strong);
     /* Theme variables the trust graphics (and the text halo) read. */
     --cell-bg: var(--color-surface);
     --cell-ink: var(--color-border-strong);
+  }
+  /* The cell's right + bottom rule sits on its own overlay layer, above the
+     graphic and copy, so art can never paint over it (an inset box-shadow on the
+     cell itself is drawn beneath its children). */
+  .ac-stat::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    box-shadow: inset -1px -1px 0 var(--color-border-strong);
+    pointer-events: none;
   }
   /* Copy sits at the foot of the cell, above the graphic. The halo is the cell's
      own colour, so text stays legible wherever the picture runs behind it. */

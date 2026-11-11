@@ -62,25 +62,25 @@ function ac_seed_block( array $b ): array {
 }
 
 /**
- * Hero media (video renditions + poster) is chosen in the editor from the Media
- * Library; the fixtures can't know attachment IDs. On re-seed, carry the hero's
- * existing media attributes over so re-running doesn't wipe them.
+ * Editor-picked media (hero video renditions + poster, flipbook frames) is chosen
+ * from the Media Library; the fixtures can't know attachment IDs. On re-seed, carry
+ * each such block's existing media attributes over so re-running doesn't wipe them.
+ * Keys per block: ac_seed_media_keys_by_block() in lib.php.
  */
 function ac_seed_keep_hero_media( array $blocks, string $existing_content ): array {
-	$keys = ac_seed_hero_media_keys();
 	$kept = array();
 	foreach ( parse_blocks( $existing_content ) as $b ) {
-		if ( 'ac/hero' === $b['blockName'] ) {
-			$kept = array_intersect_key( $b['attrs'], array_flip( $keys ) );
-			break;
+		$keys = ac_seed_media_keys_by_block()[ $b['blockName'] ?? '' ] ?? null;
+		if ( $keys && ! isset( $kept[ $b['blockName'] ] ) ) {
+			$kept[ $b['blockName'] ] = array_intersect_key( $b['attrs'], array_flip( $keys ) );
 		}
 	}
 	if ( ! $kept ) {
 		return $blocks;
 	}
 	foreach ( $blocks as &$b ) {
-		if ( 'ac/hero' === $b['name'] ) {
-			$b['attributes'] = array_merge( $b['attributes'] ?? array(), $kept );
+		if ( ! empty( $kept[ $b['name'] ] ) ) {
+			$b['attributes'] = array_merge( $b['attributes'] ?? array(), $kept[ $b['name'] ] );
 		}
 	}
 	unset( $b );

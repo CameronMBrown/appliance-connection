@@ -1,0 +1,492 @@
+---
+// ac/flipbook-header — the page header with a square flipbook in place of the
+// illustration. Modelled on VideoHeader.astro: same layout, same overlay and
+// mobile behaviour; the <video> is swapped for a stack of 1 to 15 square images.
+//
+// Desktop (> 900px): copy + buttons beside a ruled 1:1 window.
+// Tablet (641-900px): the window is centred on the grid ground (capped at 36rem,
+// still 1:1) and the title, subtitle and buttons sit centred over it, on a dark overlay.
+// Mobile (<= 640px): the frames fill the section edge to edge instead of the
+// square, same overlaid content, with a strip of grid kept below it.
+//
+// The flipbook plays ONCE from the first frame, one second per frame (FRAME_MS),
+// and holds the last frame. It restarts from the first frame each time the
+// section re-enters the viewport after having fully left it. Frame 1 is a real,
+// eager <img> (it is the LCP element and all that shows with no JS, on Data Saver /
+// 2G, or with reduced motion); the rest are lazy until the section is within a
+// screen of the viewport. A pause/play button is the WCAG 2.2.2 control; Data Saver /
+// 2G / reduced-motion visitors get frame 1 until they press play.
+import type { BlockContext, EditorBlock, FlipbookHeaderAttrs } from '../../lib/blocks/types';
+import CtaButtons from '../CtaButtons.astro';
+
+interface Props extends FlipbookHeaderAttrs {
+  innerBlocks?: EditorBlock[];
+  context?: BlockContext;
+}
+
+const {
+  eyebrow,
+  heading,
+  intro,
+  frames: allFrames = [],
+  primaryLabel,
+  primaryUrl,
+  showPhone = false,
+  context = {},
+} = Astro.props;
+
+/** Every frame is on screen for exactly this long. */
+const FRAME_MS = 1000;
+/** Hard cap, matches the editor: more frames only cost first-paint bandwidth. */
+const MAX_FRAMES = 15;
+
+const frames = allFrames.filter((f) => f?.url).slice(0, MAX_FRAMES);
+const phone = showPhone && context.region ? context.phones?.[0] : undefined;
+---
+
+<section class="fb">
+  <div class="fb__in">
+    <div class="fb__content">
+    <div class="fb__text">
+      {eyebrow && <p class="fb__eyebrow">{eyebrow}</p>}
+      {heading && <h1 class="fb__h">{heading}</h1>}
+      {intro && <p class="fb__intro">{intro}</p>}
+    </div>
+    {
+      (primaryLabel || phone) && (
+        <div class="fb__actions">
+          <CtaButtons primaryLabel={primaryLabel} primaryUrl={primaryUrl} {phone} />
+        </div>
+      )
+    }
+    </div>
+    {
+      frames.length > 0 && (
+        <div class="fb__media" data-frame-ms={FRAME_MS}>
+          {/* Frame 1 is on from the first byte of HTML. The others are lazy and hidden from
+              assistive tech until the script shows them; the script keeps exactly one
+              frame exposed (aria-hidden=false) so a screen reader reads the current alt. */}
+          {frames.map((f, i) => (
+            <img
+              class:list={['fb__frame', { 'is-on': i === 0 }]}
+              src={f.url}
+              srcset={f.srcset || undefined}
+              sizes="(max-width: 900px) 36rem, 28rem"
+              width={f.width || 1024}
+              height={f.height || 1024}
+              alt={f.alt ?? ''}
+              aria-hidden={i === 0 ? undefined : 'true'}
+              loading={i === 0 ? 'eager' : 'lazy'}
+              fetchpriority={i === 0 ? 'high' : undefined}
+              decoding="async"
+            />
+          ))}
+          {frames.length > 1 && (
+            <button type="button" class="fb__pause" aria-label="Pause flipbook">
+              <svg class="fb__ico fb__ico--pause" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                <path d="M4 3h3v10H4zM9 3h3v10H9z" fill="currentColor" />
+              </svg>
+              <svg class="fb__ico fb__ico--play" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                <path d="M5 3l8 5-8 5z" fill="currentColor" />
+              </svg>
+            </button>
+          )}
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  import { shouldSkipAutoplay } from '../../lib/video-tier';
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  /** Give slow frames this long to arrive before the flipbook starts anyway. */
+  const LOAD_GRACE_MS = 4000;
+
+  document.querySelectorAll<HTMLElement>('.fb__media').forEach((media) => {
+    const imgs = [...media.querySelectorAll<HTMLImageElement>('.fb__frame')];
+    const btn = media.querySelector<HTMLButtonElement>('.fb__pause');
+    if (imgs.length < 2 || !btn) return;
+
+    const step = Number(media.dataset.frameMs) || 1000;
+    const last = imgs.length - 1;
+
+    const holdBack = shouldSkipAutoplay() || reduce.matches; // Data Saver / 2G / reduced motion
+    let current = 0;
+    let timer = 0;
+    let due = 0; // performance.now() when the current frame's second is up
+    let remaining = step; // what was left of it when paused
+    let running = false;
+    let userPaused = holdBack; // pressed pause (or held back): don't auto-start on view
+    let armed = true; // true once the section has fully left the viewport (and at load)
+    let loadedPromise: Promise<void> | null = null;
+    let run = 0; // bumped on every start/stop so a stale async start can't fire
+
+    /** Frames 0..i on, the rest off; only frame i is exposed to assistive tech. */
+    const show = (i: number) => {
+      current = i;
+      imgs.forEach((img, n) => {
+        img.classList.toggle('is-on', n <= i);
+        if (n === i) img.removeAttribute('aria-hidden');
+        else img.setAttribute('aria-hidden', 'true');
+      });
+    };
+
+    const sync = () => {
+      const idle = !running;
+      const ended = current === last && idle && remaining <= 0;
+      btn.toggleAttribute('data-idle', idle);
+      btn.setAttribute('aria-label', ended ? 'Replay flipbook' : idle ? 'Play flipbook' : 'Pause flipbook');
+    };
+
+    // Fetch the lazy frames and decode them so a cut never waits on the network.
+    const ensureLoaded = () => {
+      loadedPromise ??= Promise.race([
+        Promise.all(
+          imgs.map((img) => {
+            img.loading = 'eager';
+            return img.decode().catch(() => {});
+          }),
+        ).then(() => {}),
+        new Promise<void>((r) => window.setTimeout(r, LOAD_GRACE_MS)),
+      ]);
+      return loadedPromise;
+    };
+
+    // One timer, scheduled against a running deadline, so a late callback shortens
+    // the next wait instead of stretching the whole sequence. Every frame is on for `step`.
+    const schedule = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(advance, Math.max(0, due - performance.now()));
+    };
+    const advance = () => {
+      if (current >= last) {
+        running = false;
+        remaining = 0;
+        sync();
+        return;
+      }
+      show(current + 1);
+      due += step;
+      schedule();
+    };
+
+    const halt = () => {
+      run++;
+      window.clearTimeout(timer);
+      running = false;
+    };
+    const pause = () => {
+      if (!running) return;
+      remaining = Math.max(0, due - performance.now());
+      halt();
+      sync();
+    };
+    const resume = () => {
+      if (running || (current === last && remaining <= 0)) return;
+      running = true;
+      due = performance.now() + remaining;
+      schedule();
+      sync();
+    };
+    /** From frame 1, once the rest are in. */
+    const restart = async () => {
+      halt();
+      show(0);
+      remaining = step;
+      sync();
+      const mine = run;
+      await ensureLoaded();
+      if (mine !== run) return; // left the view, or paused, while loading
+      resume();
+    };
+
+    btn.addEventListener('click', () => {
+      const ended = current === last && !running && remaining <= 0;
+      if (running) {
+        userPaused = true;
+        pause();
+      } else {
+        userPaused = false;
+        if (ended || current === 0) void restart();
+        else void ensureLoaded().then(resume);
+      }
+    });
+
+    // Start fetching a screen early so every frame is ready on arrival, but not on
+    // Data Saver / 2G / reduced motion, and never for a section the visitor never scrolls to.
+    if (!holdBack) {
+      const preload = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((e) => e.isIntersecting)) return;
+          void ensureLoaded();
+          preload.disconnect();
+        },
+        { rootMargin: '100% 0px' },
+      );
+      preload.observe(media);
+    }
+
+    // Play from the first frame each time the section comes into view, but only after
+    // it has been fully out of view: a sliver scrolling in and out doesn't restart it.
+    new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            if (!armed) continue;
+            armed = false;
+            if (userPaused) continue;
+            void restart();
+          } else {
+            // Fully out: back to frame 1, so re-entry never flashes the last frame.
+            armed = true;
+            halt();
+            show(0);
+            remaining = step;
+            sync();
+          }
+        }
+      },
+      { threshold: 0 },
+    ).observe(media);
+
+    // A hidden tab throttles timers: stop, and carry on with what was left of the frame.
+    let resumeOnVisible = false;
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && running) {
+        resumeOnVisible = true;
+        pause();
+      } else if (!document.hidden && resumeOnVisible) {
+        resumeOnVisible = false;
+        if (!userPaused) resume();
+      }
+    });
+
+    sync();
+  });
+</script>
+
+<style>
+  .fb {
+    position: relative;
+    /* Opaque ground + ruling, same as the illustrated PageHeader. */
+    background-color: var(--color-bg);
+    background-image: var(--grid-image);
+    background-size: var(--grid-size) var(--grid-size);
+  }
+  .fb__in {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding: clamp(2.5rem, 6vw, 4.5rem) var(--gutter) clamp(2rem, 4vw, 3rem);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: 'text media' 'actions media';
+    grid-template-rows: auto auto;
+    align-content: center;
+    column-gap: clamp(1.5rem, 5vw, 4rem);
+  }
+  /* Desktop: the wrapper is transparent so text and actions are grid items. */
+  .fb__content {
+    display: contents;
+  }
+  .fb__text {
+    grid-area: text;
+    align-self: end;
+    min-width: 0;
+  }
+  .fb__eyebrow {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-md);
+  }
+  .fb__h {
+    font-size: var(--text-3xl);
+    line-height: var(--leading-tight);
+    margin: 0 0 var(--space-lg);
+    max-width: 18ch;
+  }
+  .fb__intro {
+    color: var(--color-text-soft);
+    font-size: var(--text-md);
+    max-width: 54ch;
+    margin: 0;
+  }
+  .fb__actions {
+    grid-area: actions;
+    align-self: start;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    align-items: center;
+    margin-top: var(--space-xl);
+  }
+
+  /* The 1:1 window: a ruled square, like the design system's other boxes. */
+  .fb__media {
+    grid-area: media;
+    align-self: center;
+    position: relative;
+    width: clamp(16rem, 34vw, 28rem);
+    aspect-ratio: 1;
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-inverse-bg);
+  }
+  /* Frames are stacked in DOM order and revealed with a hard cut (no fade): a
+     flipbook, not a slideshow. Showing frame N also leaves 0..N-1 on, so a frame that
+     is slow to decode shows the previous one instead of a hole. */
+  .fb__frame {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+  }
+  .fb__frame.is-on {
+    opacity: 1;
+  }
+  .fb__pause {
+    position: absolute;
+    right: var(--space-sm);
+    bottom: var(--space-sm);
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+  .fb__pause:hover {
+    background: var(--color-bg-alt);
+  }
+  .fb__ico--play,
+  .fb__pause[data-idle] .fb__ico--pause {
+    display: none;
+  }
+  .fb__pause[data-idle] .fb__ico--play {
+    display: block;
+  }
+
+  /* Tablet and mobile: copy and buttons move onto the flipbook. Both layouts share
+     the dark overlay and the centred white text; only the flipbook's box differs.
+     The eyebrow stays in the DOM for screen readers but is visually hidden so the
+     title, subtitle and buttons carry the screen. */
+  @media (max-width: 900px) {
+    .fb__in {
+      /* One cell, capped at 36rem: the square never grows to fill a wide tablet,
+         so the grid ground shows either side of it. Media and content share the cell. */
+      grid-template-columns: min(100%, 36rem);
+      grid-template-areas: 'stack';
+      grid-template-rows: auto;
+      justify-content: center;
+    }
+    .fb__media {
+      grid-area: stack;
+      width: 100%;
+    }
+    /* Overlay: the frames "slightly darker", same ink as the home hero scrim. */
+    .fb__media::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(17, 17, 17, 0.55);
+      pointer-events: none;
+    }
+    .fb__content {
+      grid-area: stack;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--space-xl) var(--space-lg);
+      min-width: 0;
+    }
+    .fb__text,
+    .fb__actions {
+      align-self: auto;
+    }
+    .fb__h {
+      color: var(--color-inverse-text);
+      margin: 0 auto var(--space-md);
+      max-width: 14ch;
+    }
+    .fb__intro {
+      color: var(--color-inverse-text);
+      max-width: 34ch;
+      margin-inline: auto;
+    }
+    .fb__eyebrow {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .fb__actions {
+      justify-content: center;
+      margin-top: var(--space-lg);
+    }
+    /* Only the media area gets the overlay: keep the pause button above it. */
+    .fb__pause {
+      z-index: 2;
+    }
+  }
+
+  /* Mobile: the flipbook IS the section background, full width. A strip of grid is
+     left below it (the section's bottom padding) so it doesn't butt up against
+     the next section. */
+  @media (max-width: 640px) {
+    .fb {
+      display: flex;
+      flex-direction: column;
+      min-height: clamp(26rem, 80svh, 36rem);
+      padding-bottom: var(--space-xl);
+    }
+    .fb__in {
+      flex: 1;
+      width: 100%;
+      grid-template-columns: 1fr;
+      padding: var(--space-2xl) var(--gutter);
+      align-content: center;
+    }
+    .fb__media {
+      /* Containing block is .fb (.fb__in isn't positioned), so the grid area
+         doesn't apply to this absolute box. */
+      position: absolute;
+      /* The base align-self: center would shrink-wrap this box to the frames'
+         own height instead of filling the offsets. */
+      align-self: stretch;
+      justify-self: stretch;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: var(--space-xl);
+      width: auto;
+      aspect-ratio: auto;
+      border: 0;
+      border-bottom: 1px solid var(--color-border-strong);
+    }
+    .fb__content {
+      padding: 0;
+    }
+    .fb__h {
+      max-width: 12ch;
+    }
+    .fb__intro {
+      max-width: 30ch;
+    }
+  }
+</style>

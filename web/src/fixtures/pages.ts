@@ -384,21 +384,89 @@ const servicesIndex: PageData = {
 /** Service pages that skip the selling-partners section (no appliance purchase involved). */
 const NO_PARTNERS = ['gas-piping', 'plumbing-fixtures'];
 
+/**
+ * Experiment (branch services-page-hero-video): services with a square looping
+ * video get the video header instead of the illustrated one. Files live in
+ * web/public/video/ (small, 1:1, no audio, faststart).
+ */
+/**
+ * Square (1:1) renditions made by web/scripts/encode-hero-video.mjs:
+ *   npm run video:encode --workspace web -- <master.mp4> --name <slug> \
+ *     --tiers 480,720,960 --posters 480,960 --out web/public/video
+ */
+const videoLadder = (name: string) => {
+  const dir = `/video/${name}`;
+  return {
+    videoSources: [480, 720, 960].flatMap((width) => [
+      { url: `${dir}-${width}.webm`, mime: 'video/webm', width },
+      { url: `${dir}-${width}.mp4`, mime: 'video/mp4', width },
+    ]),
+    posterUrl: `${dir}-poster-960.webp`,
+    posterSrcset: `${dir}-poster-480.webp 480w, ${dir}-poster-960.webp 960w`,
+  };
+};
+
+const SERVICE_VIDEOS: Record<string, ReturnType<typeof videoLadder>> = {
+  'laundry-rooms': videoLadder('laundry-rooms'),
+};
+
+/**
+ * Services whose header is the image flipbook (ac/flipbook-header). The frames are
+ * picked from the WP Media Library in the editor (attachment IDs aren't known
+ * here), so the fixture carries none and the seed keeps the ones already in WP.
+ */
+const SERVICE_FLIPBOOKS = ['kitchens', 'plumbing-fixtures'];
+
+/** Services with their own header illustration (ported from WP edits); the rest use the carrying-box default. */
+const WATER_HEATER_ILLUSTRATION = {
+  illustrationUrl: '/illustrations/craig-harley-water-heater.avif',
+  illustrationAlt: 'Cartoon Harley and Craig work as a team to install a large tank natural gas water heater.',
+};
+const SERVICE_ILLUSTRATIONS: Record<string, { illustrationUrl: string; illustrationAlt: string }> = {
+  'gas-piping': WATER_HEATER_ILLUSTRATION,
+  heaters: WATER_HEATER_ILLUSTRATION,
+};
+
 const servicePage = (s: (typeof SERVICES)[number]): PageData => ({
   title: `${s.title} — The Appliance Connection`,
   blocks: [
-    {
-      name: 'ac/page-header',
-      attributes: {
-        eyebrow: 'Service',
-        heading: s.title,
-        intro: s.subheading,
-        illustrationUrl: '/illustrations/craig-harley-carrying-box.webp',
-        illustrationAlt: 'Craig and Harley carrying an appliance box',
-        primaryLabel: 'Contact Us',
-        primaryUrl: '/contact/',
-      },
-    },
+    SERVICE_FLIPBOOKS.includes(s.slug)
+      ? {
+          name: 'ac/flipbook-header',
+          attributes: {
+            eyebrow: 'Service',
+            heading: s.title,
+            intro: s.subheading,
+            primaryLabel: 'Contact Us',
+            primaryUrl: '/contact/',
+          },
+        }
+      : SERVICE_VIDEOS[s.slug]
+      ? {
+          name: 'ac/video-header',
+          attributes: {
+            eyebrow: 'Service',
+            heading: s.title,
+            intro: s.subheading,
+            ...SERVICE_VIDEOS[s.slug],
+            primaryLabel: 'Contact Us',
+            primaryUrl: '/contact/',
+          },
+        }
+      : {
+          name: 'ac/page-header',
+          attributes: {
+            eyebrow: 'Service',
+            heading: s.title,
+            intro: s.subheading,
+            ...(SERVICE_ILLUSTRATIONS[s.slug] ?? {
+              illustrationUrl: '/illustrations/craig-harley-carrying-box.webp',
+              illustrationAlt: 'Craig and Harley carrying an appliance box',
+            }),
+            primaryLabel: 'Contact Us',
+            primaryUrl: '/contact/',
+          },
+        },
     STATS,
     ...(NO_PARTNERS.includes(s.slug) ? [] : [SELLING_PARTNERS]),
     contactCta('Have a question?'),

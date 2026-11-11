@@ -15,6 +15,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Wordmark } from '@ds/components/core/Wordmark.jsx';
 import type { HeroAttrs, HeroVideoSource } from '../../lib/blocks/types';
+import { dpr, pickWidth, shouldSkipAutoplay } from '../../lib/video-tier';
 
 const CSS = `
 .ac-hero{--grid-line:rgba(255,255,255,.075);background-color:var(--neutral-900);background-image:var(--grid-image);background-size:var(--grid-size) var(--grid-size);}
@@ -72,35 +73,10 @@ const CSS = `
 // --- Rendition choice ---------------------------------------------------------
 
 const ASPECT = 16 / 9;
-// A video under a 55% scrim doesn't need full device pixels. Capping DPR at 1.5
-// and tolerating a 15% upscale keeps phones on the middle tier, not the largest.
-const MAX_DPR = 1.5;
-const UPSCALE_SLACK = 0.85;
-
-interface NetworkInformation {
-  saveData?: boolean;
-  effectiveType?: string;
-}
-const network = (): NetworkInformation =>
-  (navigator as Navigator & { connection?: NetworkInformation }).connection ?? {};
-
-/** Data Saver or 2G: show the poster only; the visitor can still press play. */
-const shouldSkipAutoplay = () => {
-  const { saveData, effectiveType = '' } = network();
-  return Boolean(saveData) || /^(slow-)?2g$/.test(effectiveType);
-};
-
 /** Pixel width the video must cover: object-fit: cover scales it to fill both axes. */
 function neededWidth(frame: HTMLElement) {
   const { width, height } = frame.getBoundingClientRect();
-  return Math.max(width, height * ASPECT) * Math.min(window.devicePixelRatio || 1, MAX_DPR);
-}
-
-/** Smallest rendition width that is sharp enough, else the largest. Slow links get the smallest. */
-function pickWidth(widths: number[], needed: number) {
-  const slow = shouldSkipAutoplay() || network().effectiveType === '3g';
-  if (slow) return widths[0];
-  return widths.find((w) => w >= needed * UPSCALE_SLACK) ?? widths[widths.length - 1];
+  return Math.max(width, height * ASPECT) * dpr();
 }
 
 const PauseIcon = () => (
