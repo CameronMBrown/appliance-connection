@@ -77,7 +77,8 @@ optional town / source / source URL / review date / featured (sidebar panel), ta
 Each `ac/testimonials` block chooses **Show**: *All* (no filter: About, Contact, the generic
 installation page), *Region* (tagged with the page's region, or an override), *Service* (tagged with
 the page's service tag, or an override) or *Pick specific ones*. One quote shows at a time, rotating
-every 30s. The block sits just above the footer CTA on region pages, service pages and About.
+every 30s. Page order, bottom up: footer, CTA, FAQ (if any), selling partners (if any), testimonials.
+The block is on region pages, service pages, the Services index, About and Contact.
 Service pages are mapped to a tag in `SERVICE_TESTIMONIAL_TAG` (`web/src/fixtures/pages.ts`):
 kitchens→`kitchen`, laundry-rooms→`laundry`, plumbing-fixtures, gas-piping, heaters keep their slug;
 a future dishwashers page would use `dishwasher`. Other tags (microwave, oven…) are stored but match

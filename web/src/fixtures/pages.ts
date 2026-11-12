@@ -358,9 +358,9 @@ const servicesIndex: PageData = {
       attributes: { eyebrow: 'What we do', heading: 'Every install, one crew', numbered: true },
       innerBlocks: serviceCards(),
     },
-    SELLING_PARTNERS,
-    // No filtering: any testimonial may appear.
+    // No filtering: any testimonial may appear. Sits above the partners.
     { name: 'ac/testimonials', attributes: { mode: 'all' } },
+    SELLING_PARTNERS,
     contactCta('Have a question?'),
   ],
 };
@@ -474,8 +474,8 @@ const servicePage = (s: (typeof SERVICES)[number]): PageData => ({
           },
         },
     STATS,
-    ...(NO_PARTNERS.includes(s.slug) ? [] : [SELLING_PARTNERS]),
     serviceTestimonials(s.slug),
+    ...(NO_PARTNERS.includes(s.slug) ? [] : [SELLING_PARTNERS]),
     contactCta('Have a question?'),
   ],
 });
@@ -658,10 +658,8 @@ const regionHub = (r: RegionContent): PageData => {
         towns: r.towns.map((t) => (typeof t === 'string' ? t : t.name)),
       },
     },
-    {
-      name: 'ac/faq',
-      attributes: { eyebrow: 'Before you book', heading: 'Frequently asked questions', items: REGION_FAQS },
-    },
+    // Only testimonials from this region; renders nothing until one is tagged with it.
+    { name: 'ac/testimonials', attributes: { mode: 'region', filterRegion: r.slug } },
     {
       name: 'ac/partners',
       attributes: {
@@ -670,8 +668,10 @@ const regionHub = (r: RegionContent): PageData => {
         partners: [{ ...r.partner.partner, area: r.partner.area }],
       },
     },
-    // Only testimonials from this region; renders nothing until one is tagged with it.
-    { name: 'ac/testimonials', attributes: { mode: 'region', filterRegion: r.slug } },
+    {
+      name: 'ac/faq',
+      attributes: { eyebrow: 'Before you book', heading: 'Frequently asked questions', items: REGION_FAQS },
+    },
     contactCta(`Need a hand in ${r.short}?`, Boolean(phoneRegion)),
   ],
   };
@@ -718,9 +718,9 @@ const cityPage = (region: RegionSlug, town: string): PageData => ({
     },
     { name: 'ac/media-text', attributes: {} },
     { name: 'ac/town-carousel', attributes: {} },
-    { name: 'ac/faq', attributes: {} },
-    { name: 'ac/partners', attributes: {} },
     { name: 'ac/testimonials', attributes: { mode: 'region', filterRegion: region } },
+    { name: 'ac/partners', attributes: {} },
+    { name: 'ac/faq', attributes: {} },
     contactCta(`Need a hand in ${town}?`, true),
   ],
 });

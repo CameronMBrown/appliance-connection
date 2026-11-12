@@ -308,6 +308,12 @@
           ]
         },
         {
+          "name": "ac/testimonials",
+          "attributes": {
+            "mode": "all"
+          }
+        },
+        {
           "name": "ac/partners",
           "attributes": {
             "heading": "Our Selling Partners",
@@ -344,12 +350,6 @@
                 "directionsUrl": "https://www.openstreetmap.org/search?query=2849%20Lakefield%20Rd%2C%20Selwyn%2C%20ON"
               }
             ]
-          }
-        },
-        {
-          "name": "ac/testimonials",
-          "attributes": {
-            "mode": "all"
           }
         },
         {
@@ -410,6 +410,12 @@
           }
         },
         {
+          "name": "ac/testimonials",
+          "attributes": {
+            "mode": "all"
+          }
+        },
+        {
           "name": "ac/partners",
           "attributes": {
             "heading": "Our Selling Partners",
@@ -446,12 +452,6 @@
                 "directionsUrl": "https://www.openstreetmap.org/search?query=2849%20Lakefield%20Rd%2C%20Selwyn%2C%20ON"
               }
             ]
-          }
-        },
-        {
-          "name": "ac/testimonials",
-          "attributes": {
-            "mode": "all"
           }
         },
         {
@@ -574,6 +574,13 @@
           }
         },
         {
+          "name": "ac/testimonials",
+          "attributes": {
+            "mode": "service",
+            "filterAppliance": "kitchen"
+          }
+        },
+        {
           "name": "ac/partners",
           "attributes": {
             "heading": "Our Selling Partners",
@@ -610,13 +617,6 @@
                 "directionsUrl": "https://www.openstreetmap.org/search?query=2849%20Lakefield%20Rd%2C%20Selwyn%2C%20ON"
               }
             ]
-          }
-        },
-        {
-          "name": "ac/testimonials",
-          "attributes": {
-            "mode": "service",
-            "filterAppliance": "kitchen"
           }
         },
         {
@@ -709,6 +709,13 @@
           }
         },
         {
+          "name": "ac/testimonials",
+          "attributes": {
+            "mode": "service",
+            "filterAppliance": "laundry"
+          }
+        },
+        {
           "name": "ac/partners",
           "attributes": {
             "heading": "Our Selling Partners",
@@ -745,13 +752,6 @@
                 "directionsUrl": "https://www.openstreetmap.org/search?query=2849%20Lakefield%20Rd%2C%20Selwyn%2C%20ON"
               }
             ]
-          }
-        },
-        {
-          "name": "ac/testimonials",
-          "attributes": {
-            "mode": "service",
-            "filterAppliance": "laundry"
           }
         },
         {
@@ -874,6 +874,13 @@
           }
         },
         {
+          "name": "ac/testimonials",
+          "attributes": {
+            "mode": "service",
+            "filterAppliance": "heaters"
+          }
+        },
+        {
           "name": "ac/partners",
           "attributes": {
             "heading": "Our Selling Partners",
@@ -910,13 +917,6 @@
                 "directionsUrl": "https://www.openstreetmap.org/search?query=2849%20Lakefield%20Rd%2C%20Selwyn%2C%20ON"
               }
             ]
-          }
-        },
-        {
-          "name": "ac/testimonials",
-          "attributes": {
-            "mode": "service",
-            "filterAppliance": "heaters"
           }
         },
         {
@@ -1072,28 +1072,10 @@
           }
         },
         {
-          "name": "ac/faq",
+          "name": "ac/testimonials",
           "attributes": {
-            "eyebrow": "Before you book",
-            "heading": "Frequently asked questions",
-            "items": [
-              {
-                "question": "Do you supply the appliance, or just install it?",
-                "answer": "Either. We install what you have already bought, and we work with a local selling partner if you would rather buy through one."
-              },
-              {
-                "question": "Are you licensed for gas?",
-                "answer": "Yes. Gas fitting is licensed and insured, and every gas job is warrantied like the rest of our work."
-              },
-              {
-                "question": "How soon can you come out?",
-                "answer": "We respond to quote requests within 24 hours and can usually book within the week."
-              },
-              {
-                "question": "Do you charge for travel within the region?",
-                "answer": "Placeholder answer — confirm travel policy for outlying towns before launch."
-              }
-            ]
+            "mode": "region",
+            "filterRegion": "durham"
           }
         },
         {
@@ -1121,10 +1103,28 @@
           }
         },
         {
-          "name": "ac/testimonials",
+          "name": "ac/faq",
           "attributes": {
-            "mode": "region",
-            "filterRegion": "durham"
+            "eyebrow": "Before you book",
+            "heading": "Frequently asked questions",
+            "items": [
+              {
+                "question": "Do you supply the appliance, or just install it?",
+                "answer": "Either. We install what you have already bought, and we work with a local selling partner if you would rather buy through one."
+              },
+              {
+                "question": "Are you licensed for gas?",
+                "answer": "Yes. Gas fitting is licensed and insured, and every gas job is warrantied like the rest of our work."
+              },
+              {
+                "question": "How soon can you come out?",
+                "answer": "We respond to quote requests within 24 hours and can usually book within the week."
+              },
+              {
+                "question": "Do you charge for travel within the region?",
+                "answer": "Placeholder answer — confirm travel policy for outlying towns before launch."
+              }
+            ]
           }
         },
         {
@@ -1280,28 +1280,10 @@
           }
         },
         {
-          "name": "ac/faq",
+          "name": "ac/testimonials",
           "attributes": {
-            "eyebrow": "Before you book",
-            "heading": "Frequently asked questions",
-            "items": [
-              {
-                "question": "Do you supply the appliance, or just install it?",
-                "answer": "Either. We install what you have already bought, and we work with a local selling partner if you would rather buy through one."
-              },
-              {
-                "question": "Are you licensed for gas?",
-                "answer": "Yes. Gas fitting is licensed and insured, and every gas job is warrantied like the rest of our work."
-              },
-              {
-                "question": "How soon can you come out?",
-                "answer": "We respond to quote requests within 24 hours and can usually book within the week."
-              },
-              {
-                "question": "Do you charge for travel within the region?",
-                "answer": "Placeholder answer — confirm travel policy for outlying towns before launch."
-              }
-            ]
+            "mode": "region",
+            "filterRegion": "peterborough"
           }
         },
         {
@@ -1329,10 +1311,28 @@
           }
         },
         {
-          "name": "ac/testimonials",
+          "name": "ac/faq",
           "attributes": {
-            "mode": "region",
-            "filterRegion": "peterborough"
+            "eyebrow": "Before you book",
+            "heading": "Frequently asked questions",
+            "items": [
+              {
+                "question": "Do you supply the appliance, or just install it?",
+                "answer": "Either. We install what you have already bought, and we work with a local selling partner if you would rather buy through one."
+              },
+              {
+                "question": "Are you licensed for gas?",
+                "answer": "Yes. Gas fitting is licensed and insured, and every gas job is warrantied like the rest of our work."
+              },
+              {
+                "question": "How soon can you come out?",
+                "answer": "We respond to quote requests within 24 hours and can usually book within the week."
+              },
+              {
+                "question": "Do you charge for travel within the region?",
+                "answer": "Placeholder answer — confirm travel policy for outlying towns before launch."
+              }
+            ]
           }
         },
         {
@@ -1485,28 +1485,10 @@
           }
         },
         {
-          "name": "ac/faq",
+          "name": "ac/testimonials",
           "attributes": {
-            "eyebrow": "Before you book",
-            "heading": "Frequently asked questions",
-            "items": [
-              {
-                "question": "Do you supply the appliance, or just install it?",
-                "answer": "Either. We install what you have already bought, and we work with a local selling partner if you would rather buy through one."
-              },
-              {
-                "question": "Are you licensed for gas?",
-                "answer": "Yes. Gas fitting is licensed and insured, and every gas job is warrantied like the rest of our work."
-              },
-              {
-                "question": "How soon can you come out?",
-                "answer": "We respond to quote requests within 24 hours and can usually book within the week."
-              },
-              {
-                "question": "Do you charge for travel within the region?",
-                "answer": "Placeholder answer — confirm travel policy for outlying towns before launch."
-              }
-            ]
+            "mode": "region",
+            "filterRegion": "kawartha-lakes"
           }
         },
         {
@@ -1534,10 +1516,28 @@
           }
         },
         {
-          "name": "ac/testimonials",
+          "name": "ac/faq",
           "attributes": {
-            "mode": "region",
-            "filterRegion": "kawartha-lakes"
+            "eyebrow": "Before you book",
+            "heading": "Frequently asked questions",
+            "items": [
+              {
+                "question": "Do you supply the appliance, or just install it?",
+                "answer": "Either. We install what you have already bought, and we work with a local selling partner if you would rather buy through one."
+              },
+              {
+                "question": "Are you licensed for gas?",
+                "answer": "Yes. Gas fitting is licensed and insured, and every gas job is warrantied like the rest of our work."
+              },
+              {
+                "question": "How soon can you come out?",
+                "answer": "We respond to quote requests within 24 hours and can usually book within the week."
+              },
+              {
+                "question": "Do you charge for travel within the region?",
+                "answer": "Placeholder answer — confirm travel policy for outlying towns before launch."
+              }
+            ]
           }
         },
         {
@@ -1690,28 +1690,10 @@
           }
         },
         {
-          "name": "ac/faq",
+          "name": "ac/testimonials",
           "attributes": {
-            "eyebrow": "Before you book",
-            "heading": "Frequently asked questions",
-            "items": [
-              {
-                "question": "Do you supply the appliance, or just install it?",
-                "answer": "Either. We install what you have already bought, and we work with a local selling partner if you would rather buy through one."
-              },
-              {
-                "question": "Are you licensed for gas?",
-                "answer": "Yes. Gas fitting is licensed and insured, and every gas job is warrantied like the rest of our work."
-              },
-              {
-                "question": "How soon can you come out?",
-                "answer": "We respond to quote requests within 24 hours and can usually book within the week."
-              },
-              {
-                "question": "Do you charge for travel within the region?",
-                "answer": "Placeholder answer — confirm travel policy for outlying towns before launch."
-              }
-            ]
+            "mode": "region",
+            "filterRegion": "northumberland"
           }
         },
         {
@@ -1739,10 +1721,28 @@
           }
         },
         {
-          "name": "ac/testimonials",
+          "name": "ac/faq",
           "attributes": {
-            "mode": "region",
-            "filterRegion": "northumberland"
+            "eyebrow": "Before you book",
+            "heading": "Frequently asked questions",
+            "items": [
+              {
+                "question": "Do you supply the appliance, or just install it?",
+                "answer": "Either. We install what you have already bought, and we work with a local selling partner if you would rather buy through one."
+              },
+              {
+                "question": "Are you licensed for gas?",
+                "answer": "Yes. Gas fitting is licensed and insured, and every gas job is warrantied like the rest of our work."
+              },
+              {
+                "question": "How soon can you come out?",
+                "answer": "We respond to quote requests within 24 hours and can usually book within the week."
+              },
+              {
+                "question": "Do you charge for travel within the region?",
+                "answer": "Placeholder answer — confirm travel policy for outlying towns before launch."
+              }
+            ]
           }
         },
         {
