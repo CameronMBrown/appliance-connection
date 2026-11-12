@@ -75,24 +75,6 @@ const STATS: EditorBlock = {
   },
 };
 
-/** Real customer reviews (Google Business Profile, Yellow Pages). Cite = name as shown on the source site. */
-const REVIEWS = [
-  {
-    quote:
-      'Our call was returned first thing Thursday morning and Craig booked us in for the next day. Craig did a beautiful job installing the microwave. Not only did he install the microwave, he also cleaned everything up including hauling away all the packaging! We are very impressed with his services. We highly recommend his services and will be using them again!',
-    cite: 'J R, Google review',
-  },
-  {
-    quote:
-      'Excellent customer service, quick and fast response time, and educated in fixing the problem and returning my appliance.',
-    cite: 'Ramon C, Google review',
-  },
-  {
-    quote: 'Were able to fit me in quickly. Fast, friendly and very helpful service. Highly recommend!',
-    cite: 'Susie F, Yellow Pages review',
-  },
-];
-
 const contactCta = (heading: string, showPhone = false): EditorBlock => ({
   name: 'ac/cta-band',
   attributes: {
@@ -376,9 +358,33 @@ const servicesIndex: PageData = {
       attributes: { eyebrow: 'What we do', heading: 'Every install, one crew', numbered: true },
       innerBlocks: serviceCards(),
     },
+    // No filtering: any testimonial may appear. Sits above the partners.
+    { name: 'ac/testimonials', attributes: { mode: 'all' } },
     SELLING_PARTNERS,
     contactCta('Have a question?'),
   ],
+};
+
+/**
+ * Which ac_appliance tag each service page matches testimonials on. Absent =
+ * no filter (the generic installation page shows every testimonial). A future
+ * /services/dishwashers page would map to 'dishwasher'.
+ */
+const SERVICE_TESTIMONIAL_TAG: Record<string, string> = {
+  'gas-piping': 'gas-piping',
+  kitchens: 'kitchen',
+  'laundry-rooms': 'laundry',
+  'plumbing-fixtures': 'plumbing-fixtures',
+  heaters: 'heaters',
+};
+
+/** Quote section for a service page: its own tag, or everything when it has none. */
+const serviceTestimonials = (slug: string): EditorBlock => {
+  const tag = SERVICE_TESTIMONIAL_TAG[slug];
+  return {
+    name: 'ac/testimonials',
+    attributes: tag ? { mode: 'service', filterAppliance: tag } : { mode: 'all' },
+  };
 };
 
 /** Service pages that skip the selling-partners section (no appliance purchase involved). */
@@ -468,6 +474,7 @@ const servicePage = (s: (typeof SERVICES)[number]): PageData => ({
           },
         },
     STATS,
+    serviceTestimonials(s.slug),
     ...(NO_PARTNERS.includes(s.slug) ? [] : [SELLING_PARTNERS]),
     contactCta('Have a question?'),
   ],
@@ -651,12 +658,8 @@ const regionHub = (r: RegionContent): PageData => {
         towns: r.towns.map((t) => (typeof t === 'string' ? t : t.name)),
       },
     },
-    // Locked Location template needs the block; no items = nothing renders until real local reviews exist.
-    { name: 'ac/testimonials', attributes: { heading: 'Recent work nearby', items: [], background: 'paper' } },
-    {
-      name: 'ac/faq',
-      attributes: { eyebrow: 'Before you book', heading: 'Frequently asked questions', items: REGION_FAQS },
-    },
+    // Only testimonials from this region; renders nothing until one is tagged with it.
+    { name: 'ac/testimonials', attributes: { mode: 'region', filterRegion: r.slug } },
     {
       name: 'ac/partners',
       attributes: {
@@ -664,6 +667,10 @@ const regionHub = (r: RegionContent): PageData => {
         background: 'paper',
         partners: [{ ...r.partner.partner, area: r.partner.area }],
       },
+    },
+    {
+      name: 'ac/faq',
+      attributes: { eyebrow: 'Before you book', heading: 'Frequently asked questions', items: REGION_FAQS },
     },
     contactCta(`Need a hand in ${r.short}?`, Boolean(phoneRegion)),
   ],
@@ -711,9 +718,9 @@ const cityPage = (region: RegionSlug, town: string): PageData => ({
     },
     { name: 'ac/media-text', attributes: {} },
     { name: 'ac/town-carousel', attributes: {} },
-    { name: 'ac/testimonials', attributes: {} },
-    { name: 'ac/faq', attributes: {} },
+    { name: 'ac/testimonials', attributes: { mode: 'region', filterRegion: region } },
     { name: 'ac/partners', attributes: {} },
+    { name: 'ac/faq', attributes: {} },
     contactCta(`Need a hand in ${town}?`, true),
   ],
 });
@@ -749,12 +756,8 @@ const contact: PageData = {
     },
     {
       name: 'ac/testimonials',
-      attributes: {
-        eyebrow: 'What customers say',
-        heading: 'Recent installs',
-        items: REVIEWS,
-        background: 'alt',
-      },
+      // No filtering: any testimonial may rotate through here.
+      attributes: { mode: 'all' },
     },
     {
       name: 'ac/faq',
@@ -820,6 +823,8 @@ const about: PageData = {
       },
     },
     SERVICE_MAP,
+    // No filtering: any testimonial may appear.
+    { name: 'ac/testimonials', attributes: { mode: 'all' } },
     contactCta('Have a question?'),
   ],
 };

@@ -5,40 +5,47 @@
   "title": "Testimonials",
   "category": "ac",
   "icon": "format-quote",
-  "description": "Section header + a row of homeowner quotes (\"Homeowner, {town}\" — never a full name).",
+  "description": "One homeowner quote at a time, letters flipping in on a fixed-height stage and rotating every 30s. Quotes come from the Testimonials post type; auto-matches the page's tags or pin specific ones.",
   "textdomain": "ac-blocks",
   "attributes": {
-    "eyebrow": {
-      "type": "string",
-      "default": ""
-    },
     "heading": {
       "type": "string",
       "default": ""
     },
-    "text": {
+    "mode": {
       "type": "string",
-      "default": ""
+      "enum": [
+        "all",
+        "region",
+        "service",
+        "manual",
+        "auto"
+      ],
+      "default": "all"
     },
-    "linkLabel": {
-      "type": "string",
-      "default": ""
+    "limit": {
+      "type": "number",
+      "default": 20
     },
-    "linkUrl": {
-      "type": "string",
-      "default": ""
-    },
-    "items": {
+    "pinned": {
       "type": "array",
       "default": []
     },
-    "background": {
+    "filterRegion": {
       "type": "string",
-      "enum": [
-        "paper",
-        "alt"
-      ],
-      "default": "paper"
+      "default": ""
+    },
+    "filterAppliance": {
+      "type": "string",
+      "default": ""
+    },
+    "isDark": {
+      "type": "boolean",
+      "default": false
+    },
+    "showGrid": {
+      "type": "boolean",
+      "default": true
     }
   },
   "supports": {

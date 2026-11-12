@@ -97,9 +97,9 @@ add_action(
 						array( 'ac/service-grid' ),
 						array( 'ac/media-text' ),
 						array( 'ac/town-carousel' ),
-						array( 'ac/testimonials' ),
-						array( 'ac/faq' ),
+						array( 'ac/testimonials', array( 'mode' => 'region' ) ),
 						array( 'ac/partners' ),
+						array( 'ac/faq' ),
 						array( 'ac/cta-band', array( 'showPhone' => true ) ),
 					),
 					'template_lock'       => 'all',
@@ -186,6 +186,33 @@ add_action(
 );
 
 /* -------------------------------------------------------------------------
+ * Taxonomy — appliance (range, dishwasher, microwave…). Free-form tags: add a
+ * term by typing it. Attached to testimonials AND services; a service page and
+ * a testimonial that share a term are a match (see web/src/lib/testimonials.ts).
+ * ---------------------------------------------------------------------- */
+
+add_action(
+	'init',
+	function (): void {
+		register_taxonomy(
+			'ac_appliance',
+			array( 'ac_testimonial', 'ac_service' ),
+			array(
+				'label'               => __( 'Appliances', 'ac-core' ),
+				'hierarchical'        => false, // tag-style: grows as testimonials are added
+				'public'              => false,
+				'show_ui'             => true,
+				'show_admin_column'   => true,
+				'show_in_rest'        => true,
+				'show_in_graphql'     => true,
+				'graphql_single_name' => 'Appliance',
+				'graphql_plural_name' => 'Appliances',
+			)
+		);
+	}
+);
+
+/* -------------------------------------------------------------------------
  * Structured post meta (page-level fields that aren't body content).
  * register_post_meta() gives us the field + REST (for the editor sidebar).
  * ---------------------------------------------------------------------- */
@@ -211,6 +238,16 @@ function ac_core_meta_config(): array {
 			'ac_phone' => array( 'type' => 'string', 'graphql' => 'phone', 'gqlType' => 'String' ),
 			'ac_lat'   => array( 'type' => 'number', 'graphql' => 'lat',   'gqlType' => 'Float' ),
 			'ac_lng'   => array( 'type' => 'number', 'graphql' => 'lng',   'gqlType' => 'Float' ),
+		),
+		// Testimonial — title = author, body = quote. Everything here is optional.
+		'ac_testimonial' => array(
+			'ac_town'        => array( 'type' => 'string',  'graphql' => 'town',       'gqlType' => 'String' ),
+			'ac_source'      => array( 'type' => 'string',  'graphql' => 'source',     'gqlType' => 'String' ),
+			'ac_source_url'  => array( 'type' => 'string',  'graphql' => 'sourceUrl',  'gqlType' => 'String' ),
+			'ac_review_date' => array( 'type' => 'string',  'graphql' => 'reviewDate', 'gqlType' => 'String' ),
+			'ac_featured'    => array( 'type' => 'boolean', 'graphql' => 'featured',   'gqlType' => 'Boolean' ),
+			// Quote under 100 characters: lets layouts treat one-liners differently from full reviews.
+			'ac_short_review' => array( 'type' => 'boolean', 'graphql' => 'shortReview', 'gqlType' => 'Boolean' ),
 		),
 	);
 }
@@ -249,6 +286,7 @@ function ac_core_register_graphql_meta(): void {
 		'page'        => 'Page',
 		'ac_service'  => 'Service',
 		'ac_location' => 'Location',
+		'ac_testimonial' => 'Testimonial',
 	);
 	foreach ( ac_core_meta_config() as $post_type => $metas ) {
 		$gql_type = $graphql_type_for[ $post_type ] ?? null;
@@ -272,6 +310,9 @@ function ac_core_register_graphql_meta(): void {
 						}
 						if ( 'Float' === $def['gqlType'] ) {
 							return (float) $value;
+						}
+						if ( 'Boolean' === $def['gqlType'] ) {
+							return (bool) $value;
 						}
 						return (string) $value;
 					},

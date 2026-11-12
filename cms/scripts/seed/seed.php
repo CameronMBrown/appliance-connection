@@ -199,7 +199,9 @@ function ac_seed_content( array $seed, array $region_names, array $terms, bool $
 				update_option( 'page_on_front', $id );
 			}
 		} elseif ( 'services' === $parts[0] && 2 === count( $parts ) ) {
-			ac_seed_post( 'ac_service', $parts[1], ac_seed_title( $page, $parts[1] ), $page, 0, ++$order, $dry );
+			// Admin titles are Title Case from the slug ("Laundry Rooms"), not the page-header heading:
+			// service headers are video/flipbook blocks, and the heading casing varies.
+			ac_seed_post( 'ac_service', $parts[1], ucwords( str_replace( '-', ' ', $parts[1] ) ), $page, 0, ++$order, $dry );
 		} elseif ( isset( $region_names[ $parts[0] ] ) ) {
 			$region = $parts[0];
 			if ( 1 === count( $parts ) ) {
@@ -315,6 +317,9 @@ ac_seed_menu(
 		array( 'label' => 'Legal', 'href' => '/legal/' ),
 	)
 );
+
+// Testimonials: create-only (WP owns them), so this never clobbers client edits.
+require __DIR__ . '/seed-testimonials.php';
 
 flush_rewrite_rules();
 WP_CLI::success( 'Seeded.' );

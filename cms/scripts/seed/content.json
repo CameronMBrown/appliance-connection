@@ -308,6 +308,12 @@
           ]
         },
         {
+          "name": "ac/testimonials",
+          "attributes": {
+            "mode": "all"
+          }
+        },
+        {
           "name": "ac/partners",
           "attributes": {
             "heading": "Our Selling Partners",
@@ -401,6 +407,12 @@
                 "art": "handshake"
               }
             ]
+          }
+        },
+        {
+          "name": "ac/testimonials",
+          "attributes": {
+            "mode": "all"
           }
         },
         {
@@ -500,6 +512,13 @@
           }
         },
         {
+          "name": "ac/testimonials",
+          "attributes": {
+            "mode": "service",
+            "filterAppliance": "gas-piping"
+          }
+        },
+        {
           "name": "ac/cta-band",
           "attributes": {
             "heading": "Have a question?",
@@ -552,6 +571,13 @@
                 "art": "handshake"
               }
             ]
+          }
+        },
+        {
+          "name": "ac/testimonials",
+          "attributes": {
+            "mode": "service",
+            "filterAppliance": "kitchen"
           }
         },
         {
@@ -683,6 +709,13 @@
           }
         },
         {
+          "name": "ac/testimonials",
+          "attributes": {
+            "mode": "service",
+            "filterAppliance": "laundry"
+          }
+        },
+        {
           "name": "ac/partners",
           "attributes": {
             "heading": "Our Selling Partners",
@@ -777,6 +810,13 @@
           }
         },
         {
+          "name": "ac/testimonials",
+          "attributes": {
+            "mode": "service",
+            "filterAppliance": "plumbing-fixtures"
+          }
+        },
+        {
           "name": "ac/cta-band",
           "attributes": {
             "heading": "Have a question?",
@@ -831,6 +871,13 @@
                 "art": "handshake"
               }
             ]
+          }
+        },
+        {
+          "name": "ac/testimonials",
+          "attributes": {
+            "mode": "service",
+            "filterAppliance": "heaters"
           }
         },
         {
@@ -1027,9 +1074,32 @@
         {
           "name": "ac/testimonials",
           "attributes": {
-            "heading": "Recent work nearby",
-            "items": [],
-            "background": "paper"
+            "mode": "region",
+            "filterRegion": "durham"
+          }
+        },
+        {
+          "name": "ac/partners",
+          "attributes": {
+            "heading": "Our Selling Partner",
+            "background": "paper",
+            "partners": [
+              {
+                "name": "Paddy’s Market — The Appliance Specialist",
+                "url": "https://www.paddysmarket.ca/",
+                "logoUrl": "/logo/partners/paddys-market.png",
+                "area": "Serving Durham Region",
+                "phone": "906.263.8369",
+                "tel": "19062638369",
+                "email": "sales@paddysmarket.ca",
+                "address": [
+                  "2212 Taunton Rd",
+                  "Hampton, ON L0B 1J0"
+                ],
+                "mapEmbedUrl": "https://www.openstreetmap.org/export/embed.html?bbox=-78.7560%2C43.9390%2C-78.7340%2C43.9510&layer=mapnik&marker=43.9450%2C-78.7450",
+                "directionsUrl": "https://www.openstreetmap.org/search?query=2212%20Taunton%20Rd%2C%20Hampton%2C%20ON"
+              }
+            ]
           }
         },
         {
@@ -1053,30 +1123,6 @@
               {
                 "question": "Do you charge for travel within the region?",
                 "answer": "Placeholder answer — confirm travel policy for outlying towns before launch."
-              }
-            ]
-          }
-        },
-        {
-          "name": "ac/partners",
-          "attributes": {
-            "heading": "Our Selling Partner",
-            "background": "paper",
-            "partners": [
-              {
-                "name": "Paddy’s Market — The Appliance Specialist",
-                "url": "https://www.paddysmarket.ca/",
-                "logoUrl": "/logo/partners/paddys-market.png",
-                "area": "Serving Durham Region",
-                "phone": "906.263.8369",
-                "tel": "19062638369",
-                "email": "sales@paddysmarket.ca",
-                "address": [
-                  "2212 Taunton Rd",
-                  "Hampton, ON L0B 1J0"
-                ],
-                "mapEmbedUrl": "https://www.openstreetmap.org/export/embed.html?bbox=-78.7560%2C43.9390%2C-78.7340%2C43.9510&layer=mapnik&marker=43.9450%2C-78.7450",
-                "directionsUrl": "https://www.openstreetmap.org/search?query=2212%20Taunton%20Rd%2C%20Hampton%2C%20ON"
               }
             ]
           }
@@ -1236,9 +1282,32 @@
         {
           "name": "ac/testimonials",
           "attributes": {
-            "heading": "Recent work nearby",
-            "items": [],
-            "background": "paper"
+            "mode": "region",
+            "filterRegion": "peterborough"
+          }
+        },
+        {
+          "name": "ac/partners",
+          "attributes": {
+            "heading": "Our Selling Partner",
+            "background": "paper",
+            "partners": [
+              {
+                "name": "Peterborough Appliances",
+                "url": "https://www.peterboroughappliances.com/",
+                "logoUrl": "/logo/partners/peterborough-appliances.png",
+                "area": "Serving Peterborough",
+                "phone": "705.748.9781",
+                "tel": "17057489781",
+                "email": "sales@peterboroughappliances.com",
+                "address": [
+                  "2849 Lakefield Rd",
+                  "Selwyn, ON K9J 6X5"
+                ],
+                "mapEmbedUrl": "https://www.openstreetmap.org/export/embed.html?bbox=-78.3160%2C44.3390%2C-78.2940%2C44.3510&layer=mapnik&marker=44.3450%2C-78.3050",
+                "directionsUrl": "https://www.openstreetmap.org/search?query=2849%20Lakefield%20Rd%2C%20Selwyn%2C%20ON"
+              }
+            ]
           }
         },
         {
@@ -1262,30 +1331,6 @@
               {
                 "question": "Do you charge for travel within the region?",
                 "answer": "Placeholder answer — confirm travel policy for outlying towns before launch."
-              }
-            ]
-          }
-        },
-        {
-          "name": "ac/partners",
-          "attributes": {
-            "heading": "Our Selling Partner",
-            "background": "paper",
-            "partners": [
-              {
-                "name": "Peterborough Appliances",
-                "url": "https://www.peterboroughappliances.com/",
-                "logoUrl": "/logo/partners/peterborough-appliances.png",
-                "area": "Serving Peterborough",
-                "phone": "705.748.9781",
-                "tel": "17057489781",
-                "email": "sales@peterboroughappliances.com",
-                "address": [
-                  "2849 Lakefield Rd",
-                  "Selwyn, ON K9J 6X5"
-                ],
-                "mapEmbedUrl": "https://www.openstreetmap.org/export/embed.html?bbox=-78.3160%2C44.3390%2C-78.2940%2C44.3510&layer=mapnik&marker=44.3450%2C-78.3050",
-                "directionsUrl": "https://www.openstreetmap.org/search?query=2849%20Lakefield%20Rd%2C%20Selwyn%2C%20ON"
               }
             ]
           }
@@ -1442,9 +1487,32 @@
         {
           "name": "ac/testimonials",
           "attributes": {
-            "heading": "Recent work nearby",
-            "items": [],
-            "background": "paper"
+            "mode": "region",
+            "filterRegion": "kawartha-lakes"
+          }
+        },
+        {
+          "name": "ac/partners",
+          "attributes": {
+            "heading": "Our Selling Partner",
+            "background": "paper",
+            "partners": [
+              {
+                "name": "Peterborough Appliances",
+                "url": "https://www.peterboroughappliances.com/",
+                "logoUrl": "/logo/partners/peterborough-appliances.png",
+                "area": "Serving Kawartha Lakes",
+                "phone": "705.748.9781",
+                "tel": "17057489781",
+                "email": "sales@peterboroughappliances.com",
+                "address": [
+                  "2849 Lakefield Rd",
+                  "Selwyn, ON K9J 6X5"
+                ],
+                "mapEmbedUrl": "https://www.openstreetmap.org/export/embed.html?bbox=-78.3160%2C44.3390%2C-78.2940%2C44.3510&layer=mapnik&marker=44.3450%2C-78.3050",
+                "directionsUrl": "https://www.openstreetmap.org/search?query=2849%20Lakefield%20Rd%2C%20Selwyn%2C%20ON"
+              }
+            ]
           }
         },
         {
@@ -1468,30 +1536,6 @@
               {
                 "question": "Do you charge for travel within the region?",
                 "answer": "Placeholder answer — confirm travel policy for outlying towns before launch."
-              }
-            ]
-          }
-        },
-        {
-          "name": "ac/partners",
-          "attributes": {
-            "heading": "Our Selling Partner",
-            "background": "paper",
-            "partners": [
-              {
-                "name": "Peterborough Appliances",
-                "url": "https://www.peterboroughappliances.com/",
-                "logoUrl": "/logo/partners/peterborough-appliances.png",
-                "area": "Serving Kawartha Lakes",
-                "phone": "705.748.9781",
-                "tel": "17057489781",
-                "email": "sales@peterboroughappliances.com",
-                "address": [
-                  "2849 Lakefield Rd",
-                  "Selwyn, ON K9J 6X5"
-                ],
-                "mapEmbedUrl": "https://www.openstreetmap.org/export/embed.html?bbox=-78.3160%2C44.3390%2C-78.2940%2C44.3510&layer=mapnik&marker=44.3450%2C-78.3050",
-                "directionsUrl": "https://www.openstreetmap.org/search?query=2849%20Lakefield%20Rd%2C%20Selwyn%2C%20ON"
               }
             ]
           }
@@ -1648,9 +1692,32 @@
         {
           "name": "ac/testimonials",
           "attributes": {
-            "heading": "Recent work nearby",
-            "items": [],
-            "background": "paper"
+            "mode": "region",
+            "filterRegion": "northumberland"
+          }
+        },
+        {
+          "name": "ac/partners",
+          "attributes": {
+            "heading": "Our Selling Partner",
+            "background": "paper",
+            "partners": [
+              {
+                "name": "Paddy’s Market — The Appliance Specialist",
+                "url": "https://www.paddysmarket.ca/",
+                "logoUrl": "/logo/partners/paddys-market.png",
+                "area": "Serving Northumberland",
+                "phone": "906.263.8369",
+                "tel": "19062638369",
+                "email": "sales@paddysmarket.ca",
+                "address": [
+                  "2212 Taunton Rd",
+                  "Hampton, ON L0B 1J0"
+                ],
+                "mapEmbedUrl": "https://www.openstreetmap.org/export/embed.html?bbox=-78.7560%2C43.9390%2C-78.7340%2C43.9510&layer=mapnik&marker=43.9450%2C-78.7450",
+                "directionsUrl": "https://www.openstreetmap.org/search?query=2212%20Taunton%20Rd%2C%20Hampton%2C%20ON"
+              }
+            ]
           }
         },
         {
@@ -1674,30 +1741,6 @@
               {
                 "question": "Do you charge for travel within the region?",
                 "answer": "Placeholder answer — confirm travel policy for outlying towns before launch."
-              }
-            ]
-          }
-        },
-        {
-          "name": "ac/partners",
-          "attributes": {
-            "heading": "Our Selling Partner",
-            "background": "paper",
-            "partners": [
-              {
-                "name": "Paddy’s Market — The Appliance Specialist",
-                "url": "https://www.paddysmarket.ca/",
-                "logoUrl": "/logo/partners/paddys-market.png",
-                "area": "Serving Northumberland",
-                "phone": "906.263.8369",
-                "tel": "19062638369",
-                "email": "sales@paddysmarket.ca",
-                "address": [
-                  "2212 Taunton Rd",
-                  "Hampton, ON L0B 1J0"
-                ],
-                "mapEmbedUrl": "https://www.openstreetmap.org/export/embed.html?bbox=-78.7560%2C43.9390%2C-78.7340%2C43.9510&layer=mapnik&marker=43.9450%2C-78.7450",
-                "directionsUrl": "https://www.openstreetmap.org/search?query=2212%20Taunton%20Rd%2C%20Hampton%2C%20ON"
               }
             ]
           }
@@ -1788,6 +1831,12 @@
           }
         },
         {
+          "name": "ac/testimonials",
+          "attributes": {
+            "mode": "all"
+          }
+        },
+        {
           "name": "ac/cta-band",
           "attributes": {
             "heading": "Have a question?",
@@ -1837,23 +1886,7 @@
         {
           "name": "ac/testimonials",
           "attributes": {
-            "eyebrow": "What customers say",
-            "heading": "Recent installs",
-            "items": [
-              {
-                "quote": "Our call was returned first thing Thursday morning and Craig booked us in for the next day. Craig did a beautiful job installing the microwave. Not only did he install the microwave, he also cleaned everything up including hauling away all the packaging! We are very impressed with his services. We highly recommend his services and will be using them again!",
-                "cite": "J R, Google review"
-              },
-              {
-                "quote": "Excellent customer service, quick and fast response time, and educated in fixing the problem and returning my appliance.",
-                "cite": "Ramon C, Google review"
-              },
-              {
-                "quote": "Were able to fit me in quickly. Fast, friendly and very helpful service. Highly recommend!",
-                "cite": "Susie F, Yellow Pages review"
-              }
-            ],
-            "background": "alt"
+            "mode": "all"
           }
         },
         {

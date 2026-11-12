@@ -1,29 +1,90 @@
 ---
-// ac/testimonials — SectionHeader + a row of design-system Testimonial boxes
-// (static port). Attributed "Homeowner, {town}", never a full name.
-// Later: source from the ac_testimonial CPT, filtered by the page's region.
-import SectionHeader from '../SectionHeader.astro';
+// ac/testimonials — one quote at a time on a fixed-height stage. Quotes come
+// from the ac_testimonial CPT (WP admin > Testimonials); the block only chooses
+// which — see lib/testimonials.ts. Attribution is author + town (or source),
+// never a full name.
+//
+// Motion: every letter is its own inline-block. When the section scrolls into
+// view the letters flip (rotateY) in a diagonal wave, top-left to bottom-right;
+// after INTERVAL the same wave flips them away and the next quote flips in.
+// Per-letter delay is measured from each letter's real position (after line
+// wrapping), so the wave stays diagonal at any width.
+//
+// No JS / reduced motion: the first quote is simply shown, static. All quotes
+// are in the HTML either way.
 import type { BlockContext, EditorBlock, TestimonialsAttrs } from '../../lib/blocks/types';
+import { citeFor, selectTestimonials } from '../../lib/testimonials';
 
 interface Props extends TestimonialsAttrs {
   innerBlocks?: EditorBlock[];
   context?: BlockContext;
 }
 
-const { eyebrow, heading, text, linkLabel, linkUrl, items = [], background = 'paper' } = Astro.props;
+const {
+  heading = 'What our customers say',
+  mode,
+  limit,
+  pinned,
+  filterRegion,
+  filterAppliance,
+  isDark = false,
+  showGrid = true,
+  context,
+} = Astro.props;
+
+const items = selectTestimonials(
+  context?.testimonials ?? [],
+  { mode, limit, pinned, filterRegion, filterAppliance },
+  context?.match,
+);
+
+/** Split into words of letters so lines wrap on word boundaries, letters flip alone. */
+const words = (s: string) => s.split(/\s+/).filter(Boolean).map((w) => [...w]);
 ---
 
 {
   items.length > 0 && (
-    <section class:list={['band', { 'band--alt': background === 'alt' }]}>
+    <section class:list={['tm', 'band', { 'grid-paper': showGrid, 'on-dark': isDark }]} data-tm aria-labelledby="tm-heading">
       <div class="container">
-        <SectionHeader eyebrow={eyebrow} heading={heading} text={text} linkLabel={linkLabel} linkUrl={linkUrl} />
-        <div class="tm__row">
-          {items.map((t) => (
-            <blockquote class="ac-quote">
-              <p>“{t.quote}”</p>
-              <cite>{t.cite}</cite>
-            </blockquote>
+        {/* Visually hidden but real: gives the section a heading for SEO + screen readers. */}
+        <h2 id="tm-heading" class="tm__sr">{heading}</h2>
+        <div class="tm__stage">
+          <div class="tm__iconbox" aria-hidden="true">
+            <svg class="tm__icon" viewBox="0 0 24 24" fill="currentColor" focusable="false">
+              <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
+            </svg>
+          </div>
+          {items.map((t, i) => (
+            <figure class:list={['tm__slide', { 'is-active': i === 0, 'tm__slide--short': t.shortReview }]}>
+              <blockquote class="tm__quote">
+                <span class="tm__sr">{`“${t.quote}”`}</span>
+                <p class="tm__text" aria-hidden="true">
+                  {words(`“${t.quote}”`).map((w, wi) => (
+                    <Fragment>
+                      {wi > 0 && ' '}
+                      <span class="tm__w">
+                        {w.map((c) => (
+                          <span class="tm__c">{c}</span>
+                        ))}
+                      </span>
+                    </Fragment>
+                  ))}
+                </p>
+              </blockquote>
+              <figcaption class="tm__cite" aria-hidden="true">
+                {words(citeFor(t)).map((w, wi) => (
+                  <Fragment>
+                    {wi > 0 && ' '}
+                    <span class="tm__w">
+                      {w.map((c) => (
+                        <span class="tm__c">{c}</span>
+                      ))}
+                    </span>
+                  </Fragment>
+                ))}
+              </figcaption>
+              <span class="tm__sr">{citeFor(t)}</span>
+            </figure>
           ))}
         </div>
       </div>
@@ -32,38 +93,75 @@ const { eyebrow, heading, text, linkLabel, linkUrl, items = [], background = 'pa
 }
 
 <style>
-  .tm__row {
-    display: grid;
-    gap: var(--space-xl);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-    margin-top: var(--space-xl);
+  .tm {
+    background-color: var(--color-bg);
+    color: var(--color-text);
   }
-  .ac-quote {
+  .tm__stage {
     position: relative;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border-strong);
-    box-shadow: var(--shadow-sm);
-    padding: var(--space-lg);
-    margin: 0;
+    display: grid;
+    /* Slides share one grid cell, so the stage is as tall as the tallest quote:
+       constant across the rotation. Quotes shrink to fit 22rem first (script);
+       only one that can't at the minimum size grows the stage, so the author
+       line is never clipped. Keep in sync with BASE_REM in the script. */
+    min-height: 22rem;
+    box-sizing: border-box;
+    padding: var(--space-md);
   }
-  .ac-quote::before {
-    content: '';
+
+  /* Big, quiet solid thumbs-up behind the text, pinned to the top-right of the
+     (fixed-size) text column, so it never moves with quote length. currentColor =
+     --color-text, which contrasts the ground in both light and dark. */
+  .tm__iconbox {
+    grid-area: 1 / 1;
+    justify-self: center;
+    width: min(100%, 46rem);
+    height: 100%;
+    position: relative;
+    pointer-events: none;
+  }
+  .tm__icon {
     position: absolute;
     top: 0;
-    left: 0;
-    width: 10px;
-    height: 10px;
-    background: var(--color-accent);
+    right: 0;
+    height: min(100%, 16rem);
+    width: auto;
+    aspect-ratio: 1;
+    color: var(--color-accent);
+    opacity: 0.5;
   }
-  .ac-quote p {
+
+  /* Slides share one grid cell; the text block is centred both ways, left-aligned. */
+  .tm__slide {
+    grid-area: 1 / 1;
+    align-self: center;
+    justify-self: center;
+    width: min(100%, 46rem);
+    margin: 0;
+    position: relative;
+    visibility: hidden;
+  }
+  .tm__slide.is-active {
+    visibility: visible;
+  }
+  .tm__quote {
+    margin: 0;
+  }
+  /* Marked "short" in WP (under 100 characters): set bigger, since there's room. */
+  .tm__slide--short .tm__text {
+    font-size: var(--tm-fs, clamp(1.75rem, 4.2vw, 2.75rem));
+    line-height: var(--leading-tight);
+  }
+  .tm__text {
     font-family: var(--font-display);
     font-weight: var(--weight-display);
-    font-size: var(--text-lg);
+    font-size: var(--tm-fs, clamp(1.25rem, 2.4vw, 1.75rem));
     line-height: var(--leading-snug);
+    text-align: left;
     margin: 0 0 var(--space-md);
     max-width: none;
   }
-  .ac-quote cite {
+  .tm__cite {
     display: block;
     border-top: 1px solid var(--color-border);
     padding-top: var(--space-sm);
@@ -73,5 +171,173 @@ const { eyebrow, heading, text, linkLabel, linkUrl, items = [], background = 'pa
     text-transform: uppercase;
     font-weight: var(--weight-semibold);
     color: var(--color-text-muted);
+    text-align: right;
+  }
+  .tm__w {
+    display: inline-block;
+    white-space: nowrap;
+  }
+  .tm__c {
+    display: inline-block;
+  }
+  .tm__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  /* JS on + motion allowed: letters rest flipped away until their slide is
+     told to flip in. Without .is-js they simply show (static fallback). */
+  .tm.is-js .tm__c {
+    opacity: 0;
+    transform: perspective(500px) rotateY(90deg);
+  }
+  .tm.is-js .tm__slide.is-in .tm__c {
+    animation: tm-in 480ms ease-out both;
+    animation-delay: var(--d, 0ms);
+  }
+  .tm.is-js .tm__slide.is-out .tm__c {
+    animation: tm-out 480ms ease-in both;
+    animation-delay: var(--d, 0ms);
+  }
+  @keyframes tm-in {
+    from {
+      opacity: 0;
+      transform: perspective(500px) rotateY(-90deg);
+    }
+    to {
+      opacity: 1;
+      transform: perspective(500px) rotateY(0);
+    }
+  }
+  @keyframes tm-out {
+    from {
+      opacity: 1;
+      transform: perspective(500px) rotateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: perspective(500px) rotateY(90deg);
+    }
   }
 </style>
+
+<script>
+  const INTERVAL = 30_000; // each quote stays on screen this long
+  const SWEEP = 1000; // top-left letter starts at 0, bottom-right at SWEEP
+  const FLIP = 480; // one letter's flip (matches the CSS keyframes)
+  const MIN_FS = 13;
+  const BASE_REM = 22; // stage min-height (CSS); quotes shrink to fit this before the stage grows
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll<HTMLElement>('[data-tm]').forEach(init);
+  }
+
+  function init(root: HTMLElement) {
+    const stage = root.querySelector<HTMLElement>('.tm__stage')!;
+    const slides = [...root.querySelectorAll<HTMLElement>('.tm__slide')];
+    if (!slides.length) return;
+    root.classList.add('is-js');
+
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    // Shrink a long quote until its slide (quote + author) fits the base height.
+    // Past MIN_FS the stage grows instead (CSS), so nothing is ever clipped.
+    function fit() {
+      const cs = getComputedStyle(stage);
+      const room =
+        BASE_REM * parseFloat(getComputedStyle(document.documentElement).fontSize) -
+        parseFloat(cs.paddingTop) -
+        parseFloat(cs.paddingBottom);
+      for (const slide of slides) {
+        const text = slide.querySelector<HTMLElement>('.tm__text')!;
+        text.style.removeProperty('--tm-fs');
+        let fs = parseFloat(getComputedStyle(text).fontSize);
+        while (slide.offsetHeight > room && fs > MIN_FS) {
+          fs -= 1;
+          text.style.setProperty('--tm-fs', `${fs}px`);
+        }
+      }
+    }
+
+    // Diagonal wave: delay grows with the letter's x and y position in the slide.
+    function stagger(slide: HTMLElement) {
+      const box = slide.getBoundingClientRect();
+      const letters = [...slide.querySelectorAll<HTMLElement>('.tm__c')];
+      const w = Math.max(box.width, 1);
+      const h = Math.max(box.height, 1);
+      for (const el of letters) {
+        const r = el.getBoundingClientRect();
+        const t = ((r.left - box.left) / w + (r.top - box.top) / h) / 2;
+        el.style.setProperty('--d', `${Math.round(Math.min(Math.max(t, 0), 1) * SWEEP)}ms`);
+      }
+    }
+
+    async function flipIn(slide: HTMLElement) {
+      stagger(slide);
+      slide.classList.add('is-active', 'is-in');
+      await wait(SWEEP + FLIP);
+    }
+
+    async function flipOut(slide: HTMLElement) {
+      slide.classList.remove('is-in');
+      slide.classList.add('is-out');
+      await wait(SWEEP + FLIP);
+      slide.classList.remove('is-out', 'is-active');
+    }
+
+    let current = 0;
+    let visible = false;
+    let started = false;
+    let busy = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let due = false; // tick came while off-screen; advance as soon as it returns
+
+    async function advance() {
+      if (busy || slides.length < 2) return;
+      busy = true;
+      due = false;
+      const next = (current + 1) % slides.length;
+      await flipOut(slides[current]);
+      current = next;
+      await flipIn(slides[current]);
+      busy = false;
+      schedule();
+    }
+
+    function schedule() {
+      clearTimeout(timer);
+      if (slides.length < 2) return;
+      timer = setTimeout(() => (visible ? advance() : (due = true)), INTERVAL);
+    }
+
+    fit();
+    let resizeTimer: ReturnType<typeof setTimeout> | undefined;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(fit, 150);
+    });
+    document.fonts?.ready.then(fit);
+
+    new IntersectionObserver(
+      (entries) => {
+        visible = entries[0].isIntersecting;
+        if (!visible) return;
+        if (!started) {
+          started = true;
+          busy = true;
+          flipIn(slides[0]).then(() => {
+            busy = false;
+            schedule();
+          });
+        } else if (due) {
+          advance();
+        }
+      },
+      { threshold: 0.4 },
+    ).observe(stage);
+  }
+</script>

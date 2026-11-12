@@ -1,6 +1,8 @@
-import type { PageData } from './blocks/types';
+import type { PageData, PageMatch, Testimonial } from './blocks/types';
 import { pages as fixturePages } from '../fixtures/pages';
+import seedTestimonials from '../../../cms/scripts/seed/testimonials.json';
 import { gqlQuery } from './graphql/client';
+import { quoteText } from './testimonials';
 import { EDITOR_BLOCKS, normaliseBlocks } from './graphql/blocks';
 import {
   FOOTER_LINKS,
@@ -35,6 +37,8 @@ export interface SiteData {
   phones: Record<RegionSlug, Phone>;
   /** Service path → icon URL (the Service's `ac_icon` meta in WP). */
   serviceIcons: Record<string, string>;
+  /** Published testimonials (ac_testimonial CPT; the committed seed JSON offline). */
+  testimonials: Testimonial[];
 }
 
 const useWordPress = Boolean(import.meta.env.WPGRAPHQL_URL);
@@ -51,7 +55,14 @@ const ALL_CONTENT = /* GraphQL */ `
       nodes { ${SEO} slug uri isFrontPage ${EDITOR_BLOCKS} }
     }
     services(first: 100, where: { orderby: { field: MENU_ORDER, order: ASC } }) {
-      nodes { ${SEO} slug icon ${EDITOR_BLOCKS} }
+      nodes { ${SEO} slug icon appliances { nodes { slug } } ${EDITOR_BLOCKS} }
+    }
+    testimonials(first: 200) {
+      nodes {
+        slug title content date town source sourceUrl reviewDate featured shortReview
+        regions { nodes { slug } }
+        appliances { nodes { slug } }
+      }
     }
     locations(first: 100) {
       nodes {
@@ -84,7 +95,23 @@ interface WpMenuItem {
 }
 interface AllContent {
   pages: { nodes: (WpNode & { uri: string; isFrontPage: boolean })[] };
-  services: { nodes: (WpNode & { icon?: string | null })[] };
+  services: { nodes: (WpNode & { icon?: string | null; appliances: { nodes: { slug: string }[] } })[] };
+  testimonials: {
+    nodes: {
+      slug: string;
+      title: string;
+      content: string | null;
+      date: string;
+      town?: string | null;
+      source?: string | null;
+      sourceUrl?: string | null;
+      reviewDate?: string | null;
+      featured?: boolean | null;
+      shortReview?: boolean | null;
+      regions: { nodes: { slug: string }[] };
+      appliances: { nodes: { slug: string }[] };
+    }[];
+  };
   locations: {
     nodes: (WpNode & {
       phone?: string | null;
@@ -99,10 +126,11 @@ interface AllContent {
 
 const SUFFIX = ' — The Appliance Connection';
 
-const toPage = (n: WpNode, region?: RegionSlug): PageData => ({
+const toPage = (n: WpNode, region?: RegionSlug, match?: PageMatch): PageData => ({
   title: n.seoTitle || `${n.title}${SUFFIX}`,
   description: n.seoDescription || undefined,
   region,
+  match,
   blocks: normaliseBlocks(n.editorBlocks),
 });
 
@@ -143,7 +171,10 @@ async function loadFromWordPress(): Promise<{ pages: Record<string, PageData>; s
   // A service with no icon set in WP keeps the bundled fallback.
   const serviceIcons: Record<string, string> = { ...SERVICE_ICONS };
   for (const s of data.services.nodes) {
-    pages[`/services/${s.slug}`] = toPage(s);
+    // A service matches testimonials through its shared ac_appliance terms.
+    pages[`/services/${s.slug}`] = toPage(s, undefined, {
+      appliances: s.appliances.nodes.map((a) => a.slug),
+    });
     if (s.icon) serviceIcons[`/services/${s.slug}/`] = s.icon;
   }
 
@@ -155,7 +186,9 @@ async function loadFromWordPress(): Promise<{ pages: Record<string, PageData>; s
     if (hub) continue;
     // The ac_region term is the source of truth; the hub slug is the fallback.
     const region = l.regions.nodes.map((r) => r.slug).find(isRegion) ?? l.slug;
-    pages[`/${l.slug}`] = toPage(l, isRegion(region) ? region : undefined);
+    // Testimonials match on the hub's region term, so Kawartha Lakes / Northumberland
+    // hubs match too even though they have no region phone.
+    pages[`/${l.slug}`] = toPage(l, isRegion(region) ? region : undefined, { region, appliances: [] });
     // Region hubs carry the region's phone number (ac_phone meta).
     if (isRegion(l.slug) && l.phone) {
       phones[l.slug] = { ...PHONES[l.slug], phone: l.phone, tel: telFor(l.phone) };
@@ -168,6 +201,20 @@ async function loadFromWordPress(): Promise<{ pages: Record<string, PageData>; s
     legalLinks: data.legal.nodes.length ? toNav(data.legal.nodes) : LEGAL_LINKS,
     phones,
     serviceIcons,
+    testimonials: data.testimonials.nodes.map((t) => ({
+      slug: t.slug,
+      author: t.title,
+      // The editor stores the quote as a paragraph block: render as plain text.
+      quote: quoteText(t.content ?? ''),
+      town: t.town || undefined,
+      source: t.source || undefined,
+      sourceUrl: t.sourceUrl || undefined,
+      date: t.reviewDate || t.date.slice(0, 10),
+      featured: Boolean(t.featured),
+      shortReview: Boolean(t.shortReview),
+      regions: t.regions.nodes.map((r) => r.slug),
+      appliances: t.appliances.nodes.map((a) => a.slug),
+    })),
   };
   return { pages, site };
 }
@@ -192,6 +239,7 @@ function load() {
           legalLinks: LEGAL_LINKS,
           phones: PHONES,
           serviceIcons: SERVICE_ICONS,
+          testimonials: seedTestimonials.testimonials as Testimonial[],
         },
       });
   return cache;

@@ -80,3 +80,30 @@ add_action(
 		}
 	}
 );
+
+/**
+ * Testimonial document sidebar (town / source / date / featured meta).
+ * Not a block: built from its own webpack entry (see webpack.config.js) and
+ * enqueued only when editing an ac_testimonial.
+ */
+add_action(
+	'enqueue_block_editor_assets',
+	function (): void {
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( ! $screen || 'ac_testimonial' !== $screen->post_type ) {
+			return;
+		}
+		$asset_file = __DIR__ . '/build/testimonial-sidebar/index.asset.php';
+		if ( ! file_exists( $asset_file ) ) {
+			return;
+		}
+		$asset = include $asset_file;
+		wp_enqueue_script(
+			'ac-testimonial-sidebar',
+			plugins_url( 'build/testimonial-sidebar/index.js', __FILE__ ),
+			$asset['dependencies'],
+			$asset['version'],
+			true
+		);
+	}
+);
