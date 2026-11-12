@@ -23,6 +23,10 @@ export interface BlockContext {
   phones?: Phone[];
   /** Service path (e.g. "/services/gas-piping/") → icon URL, for service cards. */
   serviceIcons?: Record<string, string>;
+  /** Every published testimonial (the ac_testimonial CPT). Blocks pick from it. */
+  testimonials?: Testimonial[];
+  /** Tags this page matches testimonials on (region term, appliance terms). */
+  match?: PageMatch;
 }
 
 /** Shared by the ruled section bands — paper or the alt (off-white) ground. */
@@ -260,15 +264,55 @@ export interface TownCarouselAttrs {
   towns?: (string | { name: string })[];
 }
 
-export interface TestimonialItem {
+/** One testimonial from the ac_testimonial CPT (title = author, body = quote). */
+export interface Testimonial {
+  slug: string;
+  /** Author as displayed, e.g. "Ramon C". */
+  author: string;
   quote: string;
-  /** "Homeowner, {town}" — never a full name. */
-  cite: string;
+  town?: string;
+  /** e.g. "Google review". */
+  source?: string;
+  sourceUrl?: string;
+  /** ISO date (Y-m-d); falls back to the post date. Used for newest-first sorting. */
+  date?: string;
+  featured?: boolean;
+  /** Quote under 100 characters (ac_short_review meta). */
+  shortReview?: boolean;
+  /** ac_region / ac_appliance term slugs. */
+  regions: string[];
+  appliances: string[];
+  /** Only "publish" is ever shown. Absent = published. */
+  status?: string;
 }
 
-export interface TestimonialsAttrs extends SectionHeaderAttrs {
-  items?: TestimonialItem[];
-  background?: Background;
+/** What a page offers testimonials to match on. */
+export interface PageMatch {
+  region?: string;
+  appliances: string[];
+}
+
+export interface TestimonialsAttrs {
+  /** Visually hidden h2 (SEO / screen readers). No visible title or eyebrow on this section. */
+  heading?: string;
+  /**
+   * all = no filter · region = testimonials tagged with the region · service =
+   * tagged with the service term · manual = exactly `pinned` · auto = legacy
+   * (match whatever tags the page offers). region/service use the overrides
+   * below, else the page's own region / service terms.
+   */
+  mode?: 'all' | 'region' | 'service' | 'manual' | 'auto';
+  /** Max shown (all / region / service / auto). */
+  limit?: number;
+  /** Testimonial slugs, in display order (manual mode). */
+  pinned?: string[];
+  /** Override the page's region / appliance (term slugs). */
+  filterRegion?: string;
+  filterAppliance?: string;
+  /** Ink ground, light text (`.on-dark`). */
+  isDark?: boolean;
+  /** Graph-paper ruling behind the quote. */
+  showGrid?: boolean;
 }
 
 export interface FaqItem {
@@ -311,5 +355,7 @@ export interface PageData {
   title: string;
   description?: string;
   region?: RegionSlug;
+  /** Testimonial matching tags (any region slug, unlike `region`). */
+  match?: PageMatch;
   blocks: EditorBlock[];
 }

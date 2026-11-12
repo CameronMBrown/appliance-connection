@@ -1,0 +1,284 @@
+{
+  "testimonials": [
+    {
+      "slug": "google-cameron-cobourg-2026-11",
+      "status": "publish",
+      "author": "Cameron",
+      "quote": "Craig helped me choose, deliver and install a deep freezer and a small fridge. The fridge matches my other kitchen appliances well and fits like a glove in the cabinet space. I've had both appliances for over a year now with no issues. Fast and friendly service, I'd definitely recommend.",
+      "town": "Cobourg",
+      "source": "Google review",
+      "sourceUrl": "https://maps.app.goo.gl/MY1f59rtbAuw6mhp7",
+      "date": "2026-11-11",
+      "featured": false,
+      "shortReview": false,
+      "regions": [
+        "northumberland"
+      ],
+      "appliances": [
+        "freezer",
+        "kitchen",
+        "refrigerator"
+      ]
+    },
+    {
+      "slug": "google-landon-oshawa-2026-11",
+      "status": "publish",
+      "author": "Landon",
+      "quote": "Craig helped us install a full set of kitchen appliances- fridge, dishwasher, oven and microwave. Everything was installed without any issues, the area was left clean and he was a pleasure to be around. Highly recommend.",
+      "town": "Oshawa",
+      "source": "Google review",
+      "sourceUrl": "",
+      "date": "2026-11-11",
+      "featured": false,
+      "shortReview": false,
+      "regions": [
+        "durham"
+      ],
+      "appliances": [
+        "dishwasher",
+        "fridge",
+        "kitchen",
+        "microwave",
+        "oven"
+      ]
+    },
+    {
+      "slug": "homestars-homeowner-2010-05",
+      "status": "publish",
+      "author": "Homeowner",
+      "quote": "Craig from the outset knew what he was doing, and was very prompt, efficient and pleasant. He found a problem with the venting with the old microwave (previous installer blocked the vent) and ensured that the new vent was completely functional - will use him again.",
+      "town": "Little Britain",
+      "source": "HomeStars review",
+      "sourceUrl": "https://homestars.com/companies/2779721-the-appliance-connection/reviews/55377",
+      "date": "2010-05-28",
+      "featured": false,
+      "shortReview": false,
+      "regions": [
+        "kawartha-lakes"
+      ],
+      "appliances": [
+        "kitchen",
+        "microwave"
+      ]
+    },
+    {
+      "slug": "homestars-homeowner-2013-06",
+      "status": "publish",
+      "author": "Homeowner",
+      "quote": "excellent service, good price, friendly, did no show for first appt booked but apologized profusely (co-worker was to call but never did) and was able to come next day and I am glad we gave him grace b/c he did great work",
+      "town": "Bobcaygeon",
+      "source": "HomeStars review",
+      "sourceUrl": "https://www.homestars.com/profile/2779721-the-appliance-connection",
+      "date": "2013-06-24",
+      "featured": false,
+      "shortReview": false,
+      "regions": [
+        "kawartha-lakes"
+      ],
+      "appliances": [
+        "gas-piping"
+      ]
+    },
+    {
+      "slug": "homestars-homeowner-2013-12",
+      "status": "publish",
+      "author": "Homeowner",
+      "quote": "On Dec. 23 2013, Mr. Craig Holmes came to my house to connect our new gas range. In my furnace room, Craig connected a copper pipe to the main gas feed and ran it above the ceiling tiles in my basement, about 20’. This copper pipe then went up, through the first floor into the kitchen. There he attached a shut-off valve and a flex pipe which attached to the gas range. Mr. Holmes came highly recommended by Paddy’s Market (where we purchased the range from). We made arrangements with him over the phone from Paddy’s Market so that the date the new stove would arrive (and incidentally the old stove would go) would be the day Mr. Holmes would arrive to do the hook up. He gave me an approximate quote of about $350.00 over the phone based on the distance the furnace was from the stove and that, although I have a finished basement, it’s ceiling tiles are removable. When the job was completed, $350.00 is exactly what he charged me. Mr. Holmes was very efficient and personable. He answered all of my questions. In my effort to be helpful, I was probably hanging around him too much. He didn’t seem to mind. He tagged his work in the furnace room and put labels all along the copper pipe to identify it as a gas line. The job took about two and a half hours to complete. Mr. Craig Holmes advertises as “The Appliance Connection “ performing “Complete Appliance Installations”, 905-259-6545. I would highly recommend Mr. Holmes to anyone needing an appliance installed.",
+      "town": "",
+      "source": "HomeStars review",
+      "sourceUrl": "https://www.homestars.com/profile/2779721-the-appliance-connection",
+      "date": "2013-12-24",
+      "featured": false,
+      "shortReview": false,
+      "regions": [],
+      "appliances": [
+        "gas-piping"
+      ]
+    },
+    {
+      "slug": "homestars-homeowner-2014-02",
+      "status": "publish",
+      "author": "Homeowner",
+      "quote": "I called Craig looking to get my new appliances installed into a newly moved in home. Craig was phenomenal! We made an appointment within a week and he showed up fully prepared and professional. Got straight to work and installed all of my major appliances in no time flat, including a quick trip to Home Depot to pick up a couple things. If you live in the Durham Region do not waste your time with anyone else. Craig was fantastic from start to finish with the time and price both being amazing. We couldn't be happier! We will definitely be using Craig again for our gas BBQ and garage door opener.",
+      "town": "Uxbridge",
+      "source": "HomeStars review",
+      "sourceUrl": "https://www.homestars.com/profile/2779721-the-appliance-connection",
+      "date": "2014-02-03",
+      "featured": false,
+      "shortReview": false,
+      "regions": [
+        "durham"
+      ],
+      "appliances": [
+        "plumbing-fixtures"
+      ]
+    },
+    {
+      "slug": "homestars-homeowner-2016-01",
+      "status": "publish",
+      "author": "Homeowner",
+      "quote": "I called a number of companies and e-mailed a few, but when Craig Holmes called me back, he knew exactly what I was talking about and quoted me a price without hesitation. Like Mike from Ajax said, I was charged what he quoted and the work was done super quick. For me, it's very important that contractors are on time, know their business inside and out, are courteous and polite, and get the work done on time--with \"The Appliance Connection\", you get all of that--and the best price too! What more can you ask for? And the rest of his staff are great too!",
+      "town": "Ajax",
+      "source": "HomeStars review",
+      "sourceUrl": "https://homestars.com/companies/2779721-the-appliance-connection/reviews/428597",
+      "date": "2016-01-09",
+      "featured": false,
+      "shortReview": false,
+      "regions": [
+        "durham"
+      ],
+      "appliances": [
+        "gas-piping",
+        "heaters"
+      ]
+    },
+    {
+      "slug": "homestars-homeowner-2016-05",
+      "status": "publish",
+      "author": "Homeowner",
+      "quote": "I had a problem with my hot water but was unable to adjust the temperature due to the device that regulates the mix between hot and cold water as it seemed to be seized. I called The Appliance Connection as I had hired them before to install my gas stove, and I knew they did water plumbing work as well. The owner, (Craig Holmes), called me back and came to assist me the following day since I told him it was not an urgent call. He managed to get the valve adjusted and increase the water temperature which was much too low. He did not charge me for the call saying that we'd square things up the next time he did some work for me as I'd expressed an interest in change the water valves for our outdoor hoses. This is a good old fashioned way of doing business and helping out a customer in need. There is no doubt that I would recommend this outfit to anybody who asks as good service, reasonable prices and quick and reliable service is what it's all about!",
+      "town": "Peterborough",
+      "source": "HomeStars review",
+      "sourceUrl": "https://www.homestars.com/profile/2779721-the-appliance-connection",
+      "date": "2016-05-24",
+      "featured": false,
+      "shortReview": false,
+      "regions": [
+        "peterborough"
+      ],
+      "appliances": [
+        "gas-piping",
+        "plumbing-fixtures"
+      ]
+    },
+    {
+      "slug": "homestars-homeowner-2016-08",
+      "status": "publish",
+      "author": "Homeowner",
+      "quote": "I was impressed with the professionalism, efficiency and good humour of Norm who did the job for me in a timely manner. In one fell swoop everything was taken care of. I did not have to pay separately for delivery of the new appliance, disposal of the old appliance and the installation of the new appliance which had been the case with a large department store in my area. I had bought the dishwasher on Saturday from a smaller local business and today I had it installed. The large department store also had me waiting for delivery until October. Norm tested it to verify that it ran well. The price I paid also included a new water line. I would recommend this company to my friends, family and colleagues and I would use them again as well.",
+      "town": "Bowmanville",
+      "source": "HomeStars review",
+      "sourceUrl": "https://www.homestars.com/profile/2779721-the-appliance-connection",
+      "date": "2016-08-31",
+      "featured": false,
+      "shortReview": false,
+      "regions": [
+        "durham"
+      ],
+      "appliances": [
+        "dishwasher",
+        "kitchen"
+      ]
+    },
+    {
+      "slug": "homestars-homeowner-2019-06",
+      "status": "publish",
+      "author": "Homeowner",
+      "quote": "Craig was prompt in his reply to my voicemail, and to my quick turnaround appointment request. He was focused and friendly and answered all my questions and concerns. The install and connection was completed better then expected. Going forward, I will not only recommend Craig to others but use his company for any future projects. Thrilled at the results!",
+      "town": "Kawartha Lakes",
+      "source": "HomeStars review",
+      "sourceUrl": "https://www.homestars.com/profile/2779721-the-appliance-connection",
+      "date": "2019-06-07",
+      "featured": false,
+      "shortReview": false,
+      "regions": [
+        "kawartha-lakes"
+      ],
+      "appliances": [
+        "gas-piping",
+        "heaters"
+      ]
+    },
+    {
+      "slug": "homestars-peter-teefs-2021-01",
+      "status": "publish",
+      "author": "Peter Teefs",
+      "quote": "Were able to fit me in for an appointment quickly. Technician was fast, friendly and very helpful. Were able to save me money by not using all of the parts I bought. Highly recommend!",
+      "town": "Brighton",
+      "source": "HomeStars review",
+      "sourceUrl": "https://www.homestars.com/profile/2779721-the-appliance-connection",
+      "date": "2021-01-11",
+      "featured": false,
+      "shortReview": false,
+      "regions": [
+        "northumberland"
+      ],
+      "appliances": [
+        "laundry"
+      ]
+    },
+    {
+      "slug": "j-r-google-review",
+      "status": "publish",
+      "author": "J R",
+      "quote": "Our call was returned first thing Thursday morning and Craig booked us in for the next day. Craig did a beautiful job installing the microwave. Not only did he install the microwave, he also cleaned everything up including hauling away all the packaging! We are very impressed with his services. We highly recommend his services and will be using them again!",
+      "town": "Millbrook",
+      "source": "Google review",
+      "sourceUrl": "",
+      "date": "",
+      "featured": false,
+      "shortReview": false,
+      "regions": [
+        "peterborough"
+      ],
+      "appliances": [
+        "kitchen",
+        "microwave"
+      ]
+    },
+    {
+      "slug": "lesf006-yellow-pages-review",
+      "status": "publish",
+      "author": "Les",
+      "quote": "Prompt and friendly service.",
+      "town": "Peterborough",
+      "source": "Yellow Pages review",
+      "sourceUrl": "https://www.yellowpages.ca/bus/Ontario/Hampton/The-Appliance-Connection/5872539.html",
+      "date": "2015-09-28",
+      "featured": false,
+      "shortReview": true,
+      "regions": [
+        "peterborough"
+      ],
+      "appliances": [
+        "laundry"
+      ]
+    },
+    {
+      "slug": "ramon-c-google-review",
+      "status": "publish",
+      "author": "Ramon C",
+      "quote": "Excellent customer service, quick and fast response time, and educated in fixing the problem and returning my appliance.",
+      "town": "Brooklin",
+      "source": "Google review",
+      "sourceUrl": "",
+      "date": "",
+      "featured": false,
+      "shortReview": false,
+      "regions": [
+        "durham"
+      ],
+      "appliances": [
+        "kitchen"
+      ]
+    },
+    {
+      "slug": "susie-f-yellow-pages-review",
+      "status": "publish",
+      "author": "Susie F",
+      "quote": "Were able to fit me in quickly. Fast, friendly and very helpful service. Highly recommend!",
+      "town": "Ohsawa",
+      "source": "Yellow Pages review",
+      "sourceUrl": "https://www.yellowpages.ca/bus/Ontario/Hampton/The-Appliance-Connection/5872539.html",
+      "date": "2021-01-11",
+      "featured": false,
+      "shortReview": true,
+      "regions": [
+        "durham"
+      ],
+      "appliances": [
+        "heaters"
+      ]
+    }
+  ]
+}

@@ -68,6 +68,31 @@ wp eval-file cms/scripts/seed/seed.php force       # (or AC_SEED_FORCE=1)
 
 Posts seeded before the guard existed have no baseline: the first seed reports any whose content differs
 from the fixtures. Run the pull to see what, then port or `force`. Menus aren't guarded (rebuilt every seed).
+
+### Testimonials (the exception: WP is the source of truth)
+
+Testimonials live in the `ac_testimonial` CPT (WP admin → Testimonials): title = author, body = quote,
+optional town / source / source URL / review date / featured (sidebar panel), tagged with **Region** and
+**Appliance** terms (the service tags). A draft/private testimonial is stored but not shown.
+Each `ac/testimonials` block chooses **Show**: *All* (no filter: About, Contact, the generic
+installation page), *Region* (tagged with the page's region, or an override), *Service* (tagged with
+the page's service tag, or an override) or *Pick specific ones*. One quote shows at a time, rotating
+every 30s. The block sits just above the footer CTA on region pages, service pages and About.
+Service pages are mapped to a tag in `SERVICE_TESTIMONIAL_TAG` (`web/src/fixtures/pages.ts`):
+kitchens→`kitchen`, laundry-rooms→`laundry`, plumbing-fixtures, gas-piping, heaters keep their slug;
+a future dishwashers page would use `dishwasher`. Other tags (microwave, oven…) are stored but match
+no page yet. Matching logic: `web/src/lib/testimonials.ts`.
+
+Because the WP DB isn't in git, `cms/scripts/seed/testimonials.json` is the committed backup:
+
+```bash
+wp eval-file cms/scripts/seed/export-testimonials.php   # WP → testimonials.json (incl. drafts). Run after adding/editing, then commit.
+wp eval-file cms/scripts/seed/seed-testimonials.php     # JSON → WP, create-only (also runs at the end of seed.php)
+wp eval-file cms/scripts/seed/seed-testimonials.php force-testimonials   # overwrite existing ones from the JSON
+```
+
+Unlike pages, the seed never overwrites an existing testimonial. With no `WPGRAPHQL_URL`, Astro reads
+`testimonials.json` directly. There is no rebuild webhook yet: rebuild Astro after changing testimonials.
 WP `home` and `siteurl` must both be the URL WordPress actually answers on (Settings → General).
 If they differ, the editor's REST calls go to the wrong host and fail.
 
