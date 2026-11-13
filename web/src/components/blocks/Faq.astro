@@ -13,12 +13,12 @@ interface Props extends FaqAttrs {
   context?: BlockContext;
 }
 
-const { eyebrow, heading, text, linkLabel, linkUrl, items = [], footnote, background = 'alt' } = Astro.props;
+const { eyebrow, heading, text, linkLabel, linkUrl, items = [], footnote, background = 'paper', divider = false } = Astro.props;
 ---
 
 {
   items.length > 0 && (
-    <section class:list={['band', { 'band--alt': background === 'alt' }]}>
+    <section class:list={['band', { 'band--alt': background === 'alt', 'has-divider': divider }]}>
       <div class="container container--narrow">
         <SectionHeader eyebrow={eyebrow} heading={heading} text={text} linkLabel={linkLabel} linkUrl={linkUrl} />
         <div class="faq__list">

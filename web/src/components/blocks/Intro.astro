@@ -9,11 +9,11 @@ interface Props extends IntroAttrs {
   context?: BlockContext;
 }
 
-const { eyebrow, heading, paragraphs = [], photos = [] } = Astro.props;
+const { eyebrow, heading, paragraphs = [], photos = [], divider = false } = Astro.props;
 const [main, ...small]: (PhotoSlot | undefined)[] = photos;
 ---
 
-<section class="intro">
+<section class:list={['intro', { 'has-divider': divider }]}>
   <div class="intro__in">
     <div class="intro__copy">
       {eyebrow && <p class="intro__eyebrow">{eyebrow}</p>}

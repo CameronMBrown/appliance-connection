@@ -13,7 +13,7 @@ import { store as coreStore } from '@wordpress/core-data';
  *   manual = show exactly the pinned ones, in order
  */
 export default function Edit( { attributes, setAttributes } ) {
-	const { heading, mode, limit, pinned, filterRegion, filterAppliance, isDark, showGrid } = attributes;
+	const { heading, mode, limit, pinned, filterRegion, filterAppliance, isDark } = attributes;
 	const blockProps = useBlockProps( { className: 'ac-edit ac-edit--testimonials' } );
 
 	// Published + draft, so a pinned draft is still visible in the picker.
@@ -58,11 +58,6 @@ export default function Edit( { attributes, setAttributes } ) {
 						label={ __( 'Dark', 'ac-blocks' ) }
 						checked={ !! isDark }
 						onChange={ ( v ) => setAttributes( { isDark: v } ) }
-					/>
-					<ToggleControl
-						label={ __( 'Grid background', 'ac-blocks' ) }
-						checked={ !! showGrid }
-						onChange={ ( v ) => setAttributes( { showGrid: v } ) }
 					/>
 				</PanelBody>
 				<PanelBody title={ __( 'Which testimonials', 'ac-blocks' ) }>

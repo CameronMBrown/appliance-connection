@@ -17,7 +17,7 @@ interface Props extends TrustAttrs {
   context?: BlockContext;
 }
 
-const { items = [], heading = 'Why homeowners choose The Appliance Connection' } = Astro.props;
+const { items = [], heading = 'Why homeowners choose The Appliance Connection', divider = false } = Astro.props;
 const roles = ['primary', 'secondary', 'secondary', 'tertiary'] as const;
 // Modes: `stage` is centred in the cell's free space (overflowing a little);
 // `inline` sits in flow above the copy; `bleed` and `backdrop` are oversized,
@@ -40,7 +40,7 @@ const bento = cells.length === roles.length;
 
 {
   cells.length > 0 && (
-    <section class="trust" aria-labelledby={heading ? 'trust-heading' : undefined}>
+    <section class:list={['trust', { 'has-divider': divider }]} aria-labelledby={heading ? 'trust-heading' : undefined}>
       {heading && (
         <h2 id="trust-heading" class="trust__heading">
           {heading}

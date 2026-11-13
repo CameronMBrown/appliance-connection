@@ -28,8 +28,8 @@ const {
   filterRegion,
   filterAppliance,
   isDark = false,
-  showGrid = true,
   context,
+  divider = true,
 } = Astro.props;
 
 const items = selectTestimonials(
@@ -44,7 +44,7 @@ const words = (s: string) => s.split(/\s+/).filter(Boolean).map((w) => [...w]);
 
 {
   items.length > 0 && (
-    <section class:list={['tm', 'band', { 'grid-paper': showGrid, 'on-dark': isDark }]} data-tm aria-labelledby="tm-heading">
+    <section class:list={['tm', 'band', { 'band--alt': !isDark, 'grid-paper': isDark, 'on-dark': isDark, 'has-divider': divider }]} data-tm aria-labelledby="tm-heading">
       <div class="container">
         {/* Visually hidden but real: gives the section a heading for SEO + screen readers. */}
         <h2 id="tm-heading" class="tm__sr">{heading}</h2>
@@ -94,8 +94,12 @@ const words = (s: string) => s.split(/\s+/).filter(Boolean).map((w) => [...w]);
 
 <style>
   .tm {
-    background-color: var(--color-bg);
     color: var(--color-text);
+  }
+  /* Off-white (.band--alt) by default, with a rule along the top edge (.has-divider).
+     Dark paints the ink ground, with its own white ruling from .grid-paper. */
+  .tm.on-dark {
+    background-color: var(--color-bg);
   }
   .tm__stage {
     position: relative;

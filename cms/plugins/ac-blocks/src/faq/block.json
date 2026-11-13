@@ -8,6 +8,10 @@
   "description": "Section header + accordion of questions and answers.",
   "textdomain": "ac-blocks",
   "attributes": {
+    "divider": {
+      "type": "boolean",
+      "default": false
+    },
     "eyebrow": {
       "type": "string",
       "default": ""
@@ -42,7 +46,7 @@
         "paper",
         "alt"
       ],
-      "default": "alt"
+      "default": "paper"
     }
   },
   "supports": {

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ac/image-carousel",
+  "title": "Image carousel",
+  "category": "ac",
+  "icon": "images-alt",
+  "description": "An endless, slow-drifting mosaic of photos in fixed, irregular rectangular tiles (no rounded corners). The photos fill the tiles in order and are cropped to fit, so pick a focal point for each. The heading is visually hidden but read by search engines and screen readers.",
+  "textdomain": "ac-blocks",
+  "attributes": {
+    "divider": {
+      "type": "boolean",
+      "default": false
+    },
+    "heading": { "type": "string", "default": "Recent appliance installations" },
+    "images": { "type": "array", "default": [] }
+  },
+  "supports": {
+    "html": false
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

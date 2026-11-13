@@ -8,6 +8,10 @@
   "description": "Credential row — a Benguiat value over a line of copy; ✓ marks credentials.",
   "textdomain": "ac-blocks",
   "attributes": {
+    "divider": {
+      "type": "boolean",
+      "default": false
+    },
     "stats": {
       "type": "array",
       "default": []

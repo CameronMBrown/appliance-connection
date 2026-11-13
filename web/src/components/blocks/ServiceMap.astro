@@ -25,6 +25,7 @@ const {
   primaryLabel,
   primaryUrl,
   background = 'paper',
+  divider = false,
 } = Astro.props;
 
 // Empty strings (a cleared editor field) mean "no page yet".
@@ -36,7 +37,7 @@ const hrefs = {
 };
 ---
 
-<section class:list={['band', { 'band--alt': background === 'alt' }]}>
+<section class:list={['band', { 'band--alt': background === 'alt', 'has-divider': divider }]}>
   <div class="container sm">
     <div class="sm__copy">
       <SectionHeader eyebrow={eyebrow} heading={heading} text={text} linkLabel={linkLabel} linkUrl={linkUrl} />

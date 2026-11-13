@@ -8,6 +8,10 @@
   "description": "Scroll-stacking showcase: each item is a card (photo + eyebrow, title, copy, optional button) that pins to the top as you scroll, leaving its eyebrow visible under the next card. Use for services or past work. 3 to 8 items.",
   "textdomain": "ac-blocks",
   "attributes": {
+    "divider": {
+      "type": "boolean",
+      "default": false
+    },
     "heading": {
       "type": "string",
       "default": ""

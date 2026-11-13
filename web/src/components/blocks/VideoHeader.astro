@@ -250,10 +250,7 @@ const phone = showPhone && context.region ? context.phones?.[0] : undefined;
 <style>
   .vh {
     position: relative;
-    /* Opaque ground + ruling, same as the illustrated PageHeader. */
-    background-color: var(--color-bg);
-    background-image: var(--grid-image);
-    background-size: var(--grid-size) var(--grid-size);
+    /* No ground of its own: the body's graph paper shows through. */
   }
   .vh__in {
     max-width: var(--container-max);

@@ -9,7 +9,7 @@ interface Props extends PartnersAttrs {
   context?: BlockContext;
 }
 
-const { heading = 'Our Selling Partners', partners = [], background = 'alt' } = Astro.props;
+const { heading = 'Our Selling Partners', partners = [], background = 'paper', divider = false } = Astro.props;
 
 // One partner has room for a map; two or more get a compact card whose address
 // opens Google Maps in a new tab instead.
@@ -20,7 +20,7 @@ const mapsUrl = (address: string[]) =>
 
 {
   partners.length > 0 && (
-    <section class:list={['band', { 'band--alt': background === 'alt' }]}>
+    <section class:list={['band', { 'band--alt': background === 'alt', 'has-divider': divider }]}>
       <div class="container">
         <h2 class="pt__h">{heading}</h2>
         <div class:list={['pt__grid', { 'pt__grid--single': single }]}>

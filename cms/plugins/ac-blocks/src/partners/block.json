@@ -8,6 +8,10 @@
   "description": "Retail partner cells: logo, phone / email / address, and a small map.",
   "textdomain": "ac-blocks",
   "attributes": {
+    "divider": {
+      "type": "boolean",
+      "default": false
+    },
     "heading": {
       "type": "string",
       "default": "Our Selling Partners"
@@ -22,7 +26,7 @@
         "paper",
         "alt"
       ],
-      "default": "alt"
+      "default": "paper"
     }
   },
   "supports": {
