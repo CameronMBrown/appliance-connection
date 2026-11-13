@@ -17,7 +17,7 @@ interface Props extends StatBlockAttrs {
   context?: BlockContext;
 }
 
-const { stats = [] } = Astro.props;
+const { stats = [], divider = false } = Astro.props;
 const art = { years: Years, licensed: Licensed, stamp: Stamp, warranty: Warranty, handshake: Handshake } as const;
 // Licensed and Warranty draw the AC mark from a shared <symbol>.
 const needsTruck = stats.some((s) => s.art && (s.art === 'licensed' || s.art === 'warranty'));
@@ -25,7 +25,7 @@ const needsTruck = stats.some((s) => s.art && (s.art === 'licensed' || s.art ===
 
 {
   stats.length > 0 && (
-    <section class="sb">
+    <section class:list={['sb', { 'has-divider': divider }]}>
       <div class="sb__in">
         {needsTruck && (
           <svg class="ac-stats__defs" width="0" height="0" aria-hidden="true" focusable="false">

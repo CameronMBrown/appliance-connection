@@ -8,6 +8,10 @@
   "description": "Boxed closing pitch with the wood corner tick; dark by default, optional region phone button.",
   "textdomain": "ac-blocks",
   "attributes": {
+    "divider": {
+      "type": "boolean",
+      "default": false
+    },
     "heading": {
       "type": "string",
       "default": ""

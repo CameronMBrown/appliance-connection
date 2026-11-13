@@ -8,6 +8,10 @@
   "description": "Service-area coverage: a slow, looping strip of town names separated by the truck mark. Informational only; towns do not link.",
   "textdomain": "ac-blocks",
   "attributes": {
+    "divider": {
+      "type": "boolean",
+      "default": false
+    },
     "heading": {
       "type": "string",
       "default": "Towns we cover"

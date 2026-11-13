@@ -10,7 +10,7 @@ interface Props extends ContactAttrs {
   context?: BlockContext;
 }
 
-const { formEyebrow, formHeading, formIntro, hours = [], hoursNote, areaText, context = {} } = Astro.props;
+const { formEyebrow, formHeading, formIntro, hours = [], hoursNote, areaText, context = {}, divider = false } = Astro.props;
 const phones = context.phones ?? [];
 // Only pass copy the editor actually set, so the design system's defaults hold.
 const formCopy = Object.fromEntries(
@@ -18,7 +18,7 @@ const formCopy = Object.fromEntries(
 );
 ---
 
-<section class="ct">
+<section class:list={['ct', { 'has-divider': divider }]}>
   <div class="container ct__row">
     <div class="ct__form">
       {/* TODO: wire onSubmit to the lead endpoint (region auto-routed). Until then

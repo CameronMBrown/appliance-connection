@@ -19,6 +19,7 @@ const {
   imagePosition = 'right',
   mobileImagePosition = 'below',
   background = 'paper',
+  divider = false,
 } = Astro.props;
 // Sections left empty in the locked Location template don't render.
 const hasContent = Boolean(heading) || paragraphs.length > 0;
@@ -29,7 +30,7 @@ const hasContent = Boolean(heading) || paragraphs.length > 0;
     <section
       class:list={[
         'band',
-        { 'band--alt': background === 'alt', 'mt--dark': background === 'dark' },
+        { 'band--alt': background === 'alt', 'mt--dark': background === 'dark', 'has-divider': divider },
       ]}
     >
       <div

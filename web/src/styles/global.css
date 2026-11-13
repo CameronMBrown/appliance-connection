@@ -37,17 +37,22 @@ astro-static-slot {
   top: var(--space-md);
 }
 
-/* Section band used by the page templates: a ruled top edge, optional alt
-   ground, fluid block padding. */
+/* Section band used by the page templates: fluid block padding and an optional
+   off-white ground. The page itself (body) carries the graph paper, so a band
+   with the default "paper" background paints NOTHING: two paper sections side by
+   side are one continuous sheet, with no seam and no restarted ruling. A band
+   with another background (off-white, dark) is painted on top of the paper. */
 .band {
-  border-top: 1px solid var(--color-border-strong);
   padding-block: clamp(2.5rem, 6vw, 4.5rem);
 }
 .band--alt {
   background: var(--color-bg-alt);
 }
-.band--flush {
-  border-top: 0;
+/* Optional rule along a section's top edge (the "divider" field on every section
+   block). Off by default; use it where the background changes between neighbours.
+   Inside .on-dark the strong border token is already white. */
+.has-divider {
+  border-top: 1px solid var(--color-border-strong);
 }
 .container--narrow {
   max-width: var(--container-narrow);

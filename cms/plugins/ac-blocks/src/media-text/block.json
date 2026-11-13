@@ -8,6 +8,10 @@
   "description": "Ruled heading and paragraphs beside an illustration.",
   "textdomain": "ac-blocks",
   "attributes": {
+    "divider": {
+      "type": "boolean",
+      "default": false
+    },
     "heading": {
       "type": "string",
       "default": ""

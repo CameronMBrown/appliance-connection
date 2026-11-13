@@ -82,6 +82,28 @@ add_action(
 );
 
 /**
+ * Editor-only "Divider" toggle shared by every ac/ section block that declares a
+ * `divider` attribute (src/divider-control). Built from its own webpack entry.
+ */
+add_action(
+	'enqueue_block_editor_assets',
+	function (): void {
+		$asset_file = __DIR__ . '/build/divider-control/index.asset.php';
+		if ( ! file_exists( $asset_file ) ) {
+			return;
+		}
+		$asset = include $asset_file;
+		wp_enqueue_script(
+			'ac-divider-control',
+			plugins_url( 'build/divider-control/index.js', __FILE__ ),
+			$asset['dependencies'],
+			$asset['version'],
+			true
+		);
+	}
+);
+
+/**
  * Testimonial document sidebar (town / source / date / featured meta).
  * Not a block: built from its own webpack entry (see webpack.config.js) and
  * enqueued only when editing an ac_testimonial.

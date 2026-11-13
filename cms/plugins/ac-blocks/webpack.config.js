@@ -9,6 +9,7 @@ const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 
 const extraEntries = {
 	'testimonial-sidebar/index': path.resolve( __dirname, 'src/testimonial-sidebar/index.js' ),
+	'divider-control/index': path.resolve( __dirname, 'src/divider-control/index.js' ),
 };
 
 const withExtras = ( config ) => {

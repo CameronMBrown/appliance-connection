@@ -34,6 +34,8 @@ export type Background = 'paper' | 'alt';
 
 /** The standard section opener (design-system SectionHeader). */
 export interface SectionHeaderAttrs {
+  /** Rule along the top edge of the section. Off by default: use it where the neighbouring background changes. */
+  divider?: boolean;
   eyebrow?: string;
   heading?: string;
   text?: string;
@@ -125,6 +127,31 @@ export interface FlipbookHeaderAttrs {
   showPhone?: boolean;
 }
 
+/** One photo in the image carousel. Cropped to fit a fixed tile, so the focal point matters. */
+export interface CarouselImage {
+  id?: number;
+  url: string;
+  /** Same-proportion WP sizes only, e.g. "…-768x1024.avif 768w, …-scaled.avif 1920w". */
+  srcset?: string;
+  width?: number;
+  height?: number;
+  /** Required: each photo is content, not decoration. */
+  alt: string;
+  /** Focal point, 0 to 100 (% from the left / top): the part of the photo kept in frame when cropped. */
+  focalX?: number;
+  focalY?: number;
+}
+
+/** ac/image-carousel: endless mosaic of photos in fixed, irregular rectangular tiles. */
+export interface ImageCarouselAttrs {
+  /** Rule along the top edge of the section. Off by default: use it where the neighbouring background changes. */
+  divider?: boolean;
+  /** Visually hidden <h2> for search engines and screen readers. */
+  heading?: string;
+  /** Fill the tiles in order, 15 per set. */
+  images?: CarouselImage[];
+}
+
 /** One bento cell. Position decides the role: 0 primary, 1-2 secondary, 3 tertiary. */
 export interface TrustCell {
   title: string;
@@ -134,6 +161,8 @@ export interface TrustCell {
 }
 
 export interface TrustAttrs {
+  /** Rule along the top edge of the section. Off by default: use it where the neighbouring background changes. */
+  divider?: boolean;
   /** Visually hidden h2 that gives the section its place in the page outline. */
   heading?: string;
   /** Real credentials only — the section renders nothing when empty. */
@@ -157,6 +186,8 @@ export interface StackItem {
 }
 
 export interface StackAttrs {
+  /** Rule along the top edge of the section. Off by default: use it where the neighbouring background changes. */
+  divider?: boolean;
   /** Visually hidden h2 that gives the section its place in the page outline. */
   heading?: string;
   /** 3 to 8 cards; later cards stack over earlier ones as you scroll. */
@@ -171,6 +202,8 @@ export interface PhotoSlot {
 }
 
 export interface IntroAttrs {
+  /** Rule along the top edge of the section. Off by default: use it where the neighbouring background changes. */
+  divider?: boolean;
   eyebrow?: string;
   heading?: string;
   /** Paragraphs; inline HTML (links, bold) from the editor's RichText. */
@@ -196,6 +229,8 @@ export interface Partner {
 }
 
 export interface PartnersAttrs {
+  /** Rule along the top edge of the section. Off by default: use it where the neighbouring background changes. */
+  divider?: boolean;
   heading?: string;
   partners?: Partner[];
   background?: Background;
@@ -210,6 +245,8 @@ export interface Stat {
 }
 
 export interface StatBlockAttrs {
+  /** Rule along the top edge of the section. Off by default: use it where the neighbouring background changes. */
+  divider?: boolean;
   stats?: Stat[];
 }
 
@@ -242,6 +279,8 @@ export interface ServiceCardAttrs {
 }
 
 export interface MediaTextAttrs {
+  /** Rule along the top edge of the section. Off by default: use it where the neighbouring background changes. */
+  divider?: boolean;
   heading?: string;
   /** Paragraphs; inline HTML (links, bold) from the editor's RichText. */
   paragraphs?: string[];
@@ -258,6 +297,8 @@ export interface MediaTextAttrs {
 }
 
 export interface TownCarouselAttrs {
+  /** Rule along the top edge of the section. Off by default: use it where the neighbouring background changes. */
+  divider?: boolean;
   /** Label at the left of the strip; also the section's heading for screen readers. */
   heading?: string;
   /** Towns we cover, in display order. Plain names: they do not link. */
@@ -293,6 +334,8 @@ export interface PageMatch {
 }
 
 export interface TestimonialsAttrs {
+  /** Rule along the top edge of the section. Off by default: use it where the neighbouring background changes. */
+  divider?: boolean;
   /** Visually hidden h2 (SEO / screen readers). No visible title or eyebrow on this section. */
   heading?: string;
   /**
@@ -311,8 +354,6 @@ export interface TestimonialsAttrs {
   filterAppliance?: string;
   /** Ink ground, light text (`.on-dark`). */
   isDark?: boolean;
-  /** Graph-paper ruling behind the quote. */
-  showGrid?: boolean;
 }
 
 export interface FaqItem {
@@ -332,6 +373,8 @@ export interface HoursRow {
 }
 
 export interface ContactAttrs {
+  /** Rule along the top edge of the section. Off by default: use it where the neighbouring background changes. */
+  divider?: boolean;
   formEyebrow?: string;
   formHeading?: string;
   formIntro?: string;
@@ -341,6 +384,8 @@ export interface ContactAttrs {
 }
 
 export interface CtaBandAttrs {
+  /** Rule along the top edge of the section. Off by default: use it where the neighbouring background changes. */
+  divider?: boolean;
   heading?: string;
   text?: string;
   ctaLabel?: string;

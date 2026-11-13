@@ -8,6 +8,10 @@
   "description": "Quote form beside the phone, hours and service-area panels.",
   "textdomain": "ac-blocks",
   "attributes": {
+    "divider": {
+      "type": "boolean",
+      "default": false
+    },
     "formEyebrow": {
       "type": "string",
       "default": ""

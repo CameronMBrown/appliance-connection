@@ -8,6 +8,10 @@
   "description": "Clickable map of the service areas — each region links to its page.",
   "textdomain": "ac-blocks",
   "attributes": {
+    "divider": {
+      "type": "boolean",
+      "default": false
+    },
     "eyebrow": {
       "type": "string",
       "default": ""

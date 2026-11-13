@@ -102,7 +102,7 @@ const PADDYS_MARKET: Partner = {
   address: ['2212 Taunton Rd', 'Hampton, ON L0B 1J0'],
   mapEmbedUrl:
     'https://www.openstreetmap.org/export/embed.html?bbox=-78.7560%2C43.9390%2C-78.7340%2C43.9510&layer=mapnik&marker=43.9450%2C-78.7450',
-  directionsUrl: 'https://www.openstreetmap.org/search?query=2212%20Taunton%20Rd%2C%20Hampton%2C%20ON',
+  directionsUrl: 'https://www.google.com/maps/search/?api=1&query=2212%20Taunton%20Rd%2C%20Hampton%2C%20ON',
 };
 
 const PETERBOROUGH_APPLIANCES: Partner = {
@@ -116,7 +116,7 @@ const PETERBOROUGH_APPLIANCES: Partner = {
   address: ['2849 Lakefield Rd', 'Selwyn, ON K9J 6X5'],
   mapEmbedUrl:
     'https://www.openstreetmap.org/export/embed.html?bbox=-78.3160%2C44.3390%2C-78.2940%2C44.3510&layer=mapnik&marker=44.3450%2C-78.3050',
-  directionsUrl: 'https://www.openstreetmap.org/search?query=2849%20Lakefield%20Rd%2C%20Selwyn%2C%20ON',
+  directionsUrl: 'https://www.google.com/maps/search/?api=1&query=2849%20Lakefield%20Rd%2C%20Selwyn%2C%20ON',
 };
 
 /** Service-area map section — shared by Home and About. */
@@ -256,6 +256,7 @@ const SELLING_PARTNERS: EditorBlock = {
   attributes: {
     heading: 'Our Selling Partners',
     background: 'alt',
+    divider: true,
     partners: [PADDYS_MARKET, PETERBOROUGH_APPLIANCES],
   },
 };
@@ -334,6 +335,150 @@ const home: PageData = {
   ],
 };
 
+/**
+ * Services-page image carousel. Photos fill the carousel's fixed tiles in order (A: tall, wide,
+ * square, narrow, wide, narrow, square; B: wide, narrow, square, tall, square, narrow, square,
+ * narrow), so the order below is deliberate: fridges in tall/narrow tiles, the three landscape shots
+ * in the wide ones, ranges and ovens in squares. focalX/focalY (percent) keep each subject in frame.
+ */
+const CAROUSEL_IMAGES = [
+  {
+    url: 'http://localhost:10018/wp-content/uploads/2026/10/cabinet-fridge-scaled.avif',
+    srcset: 'http://localhost:10018/wp-content/uploads/2026/10/cabinet-fridge-scaled-224x300.avif 224w, http://localhost:10018/wp-content/uploads/2026/10/cabinet-fridge-scaled-765x1024.avif 765w, http://localhost:10018/wp-content/uploads/2026/10/cabinet-fridge-scaled-768x1028.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/cabinet-fridge-scaled-1148x1536.avif 1148w, http://localhost:10018/wp-content/uploads/2026/10/cabinet-fridge-scaled-1530x2048.avif 1530w, http://localhost:10018/wp-content/uploads/2026/10/cabinet-fridge-scaled.avif 1913w',
+    width: 1913,
+    height: 2560,
+    alt: 'Integrated panel-ready refrigerator with white shaker-style cabinet doors and bar handles, installed in a white kitchen.',
+    focalX: 50,
+    focalY: 50
+  },
+  {
+    url: 'http://localhost:10018/wp-content/uploads/2026/11/laundry-room.avif',
+    srcset: 'http://localhost:10018/wp-content/uploads/2026/11/laundry-room-300x200.avif 300w, http://localhost:10018/wp-content/uploads/2026/11/laundry-room-768x512.avif 768w, http://localhost:10018/wp-content/uploads/2026/11/laundry-room-1024x683.avif 1024w, http://localhost:10018/wp-content/uploads/2026/11/laundry-room.avif 1248w',
+    width: 1248,
+    height: 832,
+    alt: 'Laundry room with a navy glossy tile backsplash, a white farmhouse sink with black faucet, and a front-load washer and dryer under a white counter.',
+    focalX: 50,
+    focalY: 55
+  },
+  {
+    url: 'http://localhost:10018/wp-content/uploads/2026/10/huge-stove-scaled.avif',
+    srcset: 'http://localhost:10018/wp-content/uploads/2026/10/huge-stove-scaled-225x300.avif 225w, http://localhost:10018/wp-content/uploads/2026/10/huge-stove-scaled-768x1024.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/huge-stove-scaled-1152x1536.avif 1152w, http://localhost:10018/wp-content/uploads/2026/10/huge-stove-scaled-1536x2048.avif 1536w, http://localhost:10018/wp-content/uploads/2026/10/huge-stove-scaled.avif 1920w',
+    width: 1920,
+    height: 2560,
+    alt: 'Large dual-oven stainless steel gas range with six burners under a stainless steel hood and white marble-look backsplash.',
+    focalX: 50,
+    focalY: 60
+  },
+  {
+    url: 'http://localhost:10018/wp-content/uploads/2026/10/fridge-lrg-scaled.avif',
+    srcset: 'http://localhost:10018/wp-content/uploads/2026/10/fridge-lrg-scaled-225x300.avif 225w, http://localhost:10018/wp-content/uploads/2026/10/fridge-lrg-scaled-768x1024.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/fridge-lrg-scaled-1152x1536.avif 1152w, http://localhost:10018/wp-content/uploads/2026/10/fridge-lrg-scaled-1536x2048.avif 1536w, http://localhost:10018/wp-content/uploads/2026/10/fridge-lrg-scaled.avif 1920w',
+    width: 1920,
+    height: 2560,
+    alt: 'Stainless steel French-door refrigerator with a glass-door wine column, built into light wood cabinetry.',
+    focalX: 50,
+    focalY: 50
+  },
+  {
+    url: 'http://localhost:10018/wp-content/uploads/2026/11/barbecue.avif',
+    srcset: 'http://localhost:10018/wp-content/uploads/2026/11/barbecue-300x200.avif 300w, http://localhost:10018/wp-content/uploads/2026/11/barbecue-768x512.avif 768w, http://localhost:10018/wp-content/uploads/2026/11/barbecue-1024x683.avif 1024w, http://localhost:10018/wp-content/uploads/2026/11/barbecue.avif 1248w',
+    width: 1248,
+    height: 832,
+    alt: 'Built-in outdoor kitchen with a stainless steel gas barbecue set in a charcoal cabinet with open shelving, on a covered deck against white siding.',
+    focalX: 45,
+    focalY: 60
+  },
+  {
+    url: 'http://localhost:10018/wp-content/uploads/2026/10/washers-scaled.avif',
+    srcset: 'http://localhost:10018/wp-content/uploads/2026/10/washers-scaled-210x300.avif 210w, http://localhost:10018/wp-content/uploads/2026/10/washers-scaled-718x1024.avif 718w, http://localhost:10018/wp-content/uploads/2026/10/washers-scaled-768x1096.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/washers-scaled-1076x1536.avif 1076w, http://localhost:10018/wp-content/uploads/2026/10/washers-scaled-1435x2048.avif 1435w, http://localhost:10018/wp-content/uploads/2026/10/washers-scaled.avif 1794w',
+    width: 1794,
+    height: 2560,
+    alt: 'Stainless steel front-load dryer stacked on top of a washer in a narrow laundry closet.',
+    focalX: 50,
+    focalY: 50
+  },
+  {
+    url: 'http://localhost:10018/wp-content/uploads/2026/10/oven.avif',
+    srcset: 'http://localhost:10018/wp-content/uploads/2026/10/oven-250x300.avif 250w, http://localhost:10018/wp-content/uploads/2026/10/oven-768x922.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/oven-853x1024.avif 853w, http://localhost:10018/wp-content/uploads/2026/10/oven.avif 1280w',
+    width: 1280,
+    height: 1537,
+    alt: 'Black and stainless steel wall oven installed in a wooden cabinet surround.',
+    focalX: 50,
+    focalY: 55
+  },
+  {
+    url: 'http://localhost:10018/wp-content/uploads/2026/11/laundry-room-2.avif',
+    srcset: 'http://localhost:10018/wp-content/uploads/2026/11/laundry-room-2-300x225.avif 300w, http://localhost:10018/wp-content/uploads/2026/11/laundry-room-2-768x577.avif 768w, http://localhost:10018/wp-content/uploads/2026/11/laundry-room-2-1024x770.avif 1024w, http://localhost:10018/wp-content/uploads/2026/11/laundry-room-2.avif 1107w',
+    width: 1107,
+    height: 832,
+    alt: 'Compact laundry room with white shaker cabinets, a stainless sink with black spring faucet, a pale tile backsplash and a terracotta-coloured wall beside a front-load washer.',
+    focalX: 45,
+    focalY: 55
+  },
+  {
+    url: 'http://localhost:10018/wp-content/uploads/2026/10/cabinet-friedge-2-scaled.avif',
+    srcset: 'http://localhost:10018/wp-content/uploads/2026/10/cabinet-friedge-2-scaled-225x300.avif 225w, http://localhost:10018/wp-content/uploads/2026/10/cabinet-friedge-2-scaled-768x1024.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/cabinet-friedge-2-scaled-1152x1536.avif 1152w, http://localhost:10018/wp-content/uploads/2026/10/cabinet-friedge-2-scaled-1536x2048.avif 1536w, http://localhost:10018/wp-content/uploads/2026/10/cabinet-friedge-2-scaled.avif 1920w',
+    width: 1920,
+    height: 2560,
+    alt: 'Panel-ready built-in refrigerator with four white cabinet-style doors and brass handles beside a herringbone tile backsplash.',
+    focalX: 50,
+    focalY: 50
+  },
+  {
+    url: 'http://localhost:10018/wp-content/uploads/2026/10/double-oven-alt-scaled.avif',
+    srcset: 'http://localhost:10018/wp-content/uploads/2026/10/double-oven-alt-scaled-260x300.avif 260w, http://localhost:10018/wp-content/uploads/2026/10/double-oven-alt-scaled-768x885.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/double-oven-alt-scaled-889x1024.avif 889w, http://localhost:10018/wp-content/uploads/2026/10/double-oven-alt-scaled-1333x1536.avif 1333w, http://localhost:10018/wp-content/uploads/2026/10/double-oven-alt-scaled-1778x2048.avif 1778w, http://localhost:10018/wp-content/uploads/2026/10/double-oven-alt-scaled.avif 2222w',
+    width: 2222,
+    height: 2560,
+    alt: 'Stainless steel wall oven and microwave combo built into white cabinetry, next to a stainless steel refrigerator.',
+    focalX: 50,
+    focalY: 45
+  },
+  {
+    url: 'http://localhost:10018/wp-content/uploads/2026/10/french-door-fridge-scaled.avif',
+    srcset: 'http://localhost:10018/wp-content/uploads/2026/10/french-door-fridge-scaled-231x300.avif 231w, http://localhost:10018/wp-content/uploads/2026/10/french-door-fridge-scaled-768x998.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/french-door-fridge-scaled-788x1024.avif 788w, http://localhost:10018/wp-content/uploads/2026/10/french-door-fridge-scaled-1183x1536.avif 1183w, http://localhost:10018/wp-content/uploads/2026/10/french-door-fridge-scaled-1577x2048.avif 1577w, http://localhost:10018/wp-content/uploads/2026/10/french-door-fridge-scaled.avif 1971w',
+    width: 1971,
+    height: 2560,
+    alt: 'Tall stainless steel double-door refrigerator built in under wood cabinets beside a window.',
+    focalX: 50,
+    focalY: 50
+  },
+  {
+    url: 'http://localhost:10018/wp-content/uploads/2026/11/gas-range-hood-tile.avif',
+    srcset: 'http://localhost:10018/wp-content/uploads/2026/11/gas-range-hood-tile-225x300.avif 225w, http://localhost:10018/wp-content/uploads/2026/11/gas-range-hood-tile-768x1024.avif 768w, http://localhost:10018/wp-content/uploads/2026/11/gas-range-hood-tile-1152x1536.avif 1152w, http://localhost:10018/wp-content/uploads/2026/11/gas-range-hood-tile-1536x2048.avif 1536w, http://localhost:10018/wp-content/uploads/2026/11/gas-range-hood-tile.avif 1920w',
+    width: 1920,
+    height: 2560,
+    alt: 'Stainless steel gas range under a stainless steel canopy hood, set against a pale green tile backsplash with floating wood shelves and white shaker cabinets.',
+    focalX: 50,
+    focalY: 60
+  },
+  {
+    url: 'http://localhost:10018/wp-content/uploads/2026/10/dishwasher-scaled.avif',
+    srcset: 'http://localhost:10018/wp-content/uploads/2026/10/dishwasher-scaled-237x300.avif 237w, http://localhost:10018/wp-content/uploads/2026/10/dishwasher-scaled-768x973.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/dishwasher-scaled-808x1024.avif 808w, http://localhost:10018/wp-content/uploads/2026/10/dishwasher-scaled-1213x1536.avif 1213w, http://localhost:10018/wp-content/uploads/2026/10/dishwasher-scaled-1617x2048.avif 1617w, http://localhost:10018/wp-content/uploads/2026/10/dishwasher-scaled.avif 2021w',
+    width: 2021,
+    height: 2560,
+    alt: 'Stainless steel dishwasher installed between a black gas range and a wooden cabinet, under a teal countertop.',
+    focalX: 50,
+    focalY: 65
+  },
+  {
+    url: 'http://localhost:10018/wp-content/uploads/2026/10/washer-dryer-scaled.avif',
+    srcset: 'http://localhost:10018/wp-content/uploads/2026/10/washer-dryer-scaled-225x300.avif 225w, http://localhost:10018/wp-content/uploads/2026/10/washer-dryer-scaled-768x1024.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/washer-dryer-scaled-1152x1536.avif 1152w, http://localhost:10018/wp-content/uploads/2026/10/washer-dryer-scaled-1536x2048.avif 1536w, http://localhost:10018/wp-content/uploads/2026/10/washer-dryer-scaled.avif 1920w',
+    width: 1920,
+    height: 2560,
+    alt: 'White front-load washer and dryer side by side on pedestal drawers in a basement laundry area.',
+    focalX: 50,
+    focalY: 60
+  },
+  {
+    url: 'http://localhost:10018/wp-content/uploads/2026/10/wine-fridge-scaled.avif',
+    srcset: 'http://localhost:10018/wp-content/uploads/2026/10/wine-fridge-scaled-225x300.avif 225w, http://localhost:10018/wp-content/uploads/2026/10/wine-fridge-scaled-768x1024.avif 768w, http://localhost:10018/wp-content/uploads/2026/10/wine-fridge-scaled-1152x1536.avif 1152w, http://localhost:10018/wp-content/uploads/2026/10/wine-fridge-scaled-1536x2048.avif 1536w, http://localhost:10018/wp-content/uploads/2026/10/wine-fridge-scaled.avif 1920w',
+    width: 1920,
+    height: 2560,
+    alt: 'Under-counter wine fridge with a glass door in white cabinetry with brass handles.',
+    focalX: 50,
+    focalY: 65
+  }
+];
+
 // --- Services ----------------------------------------------------------------
 
 const servicesIndex: PageData = {
@@ -355,9 +500,10 @@ const servicesIndex: PageData = {
     STATS,
     {
       name: 'ac/service-grid',
-      attributes: { eyebrow: 'What we do', heading: 'Every install, one crew', numbered: true },
+      attributes: { eyebrow: 'What we do', heading: 'Every install, one crew', numbered: true, background: 'paper' },
       innerBlocks: serviceCards(),
     },
+    { name: 'ac/image-carousel', attributes: { heading: 'Recent appliance installations', images: CAROUSEL_IMAGES } },
     // No filtering: any testimonial may appear. Sits above the partners.
     { name: 'ac/testimonials', attributes: { mode: 'all' } },
     SELLING_PARTNERS,
@@ -428,7 +574,37 @@ const WATER_HEATER_ILLUSTRATION = {
   illustrationUrl: '/illustrations/craig-harley-water-heater.avif',
   illustrationAlt: 'Cartoon Harley and Craig work as a team to install a large tank natural gas water heater.',
 };
-const SERVICE_ILLUSTRATIONS: Record<string, { illustrationUrl: string; illustrationAlt: string }> = {
+/**
+ * "Local crew, local calls" illustrations picked in the WP editor (media ids 1098 to 1100),
+ * ported from wp-pull.json. Regions without an entry keep the default illustration.
+ */
+const REGION_CREW_IMAGES: Record<string, { imageId: number; imageUrl: string; imageAlt: string }> = {
+  durham: {
+    imageId: 1098,
+    imageUrl: 'http://localhost:10018/wp-content/uploads/2026/11/craig-harley-working.avif',
+    imageAlt:
+      'Cartoon Craig kneeling behind a freestanding gas range while Harley, screwdriver in hand, stands beside a stainless steel range hood ready to install.',
+  },
+  northumberland: {
+    imageId: 1099,
+    imageUrl: 'http://localhost:10018/wp-content/uploads/2026/11/craig-harley-washing-machine.avif',
+    imageAlt: 'Cartoon Craig, holding a coffee mug, watches with a grin as Harley strains to lift a front-load washer onto a dryer.',
+  },
+  'kawartha-lakes': {
+    imageId: 1100,
+    imageUrl: 'http://localhost:10018/wp-content/uploads/2026/11/craig-harley-unload-truck.avif',
+    imageAlt: 'Cartoon Craig and Harley carry a large cardboard box down the ramp of a white AC delivery truck.',
+  },
+};
+
+const SERVICE_ILLUSTRATIONS: Record<string, { illustrationId?: number; illustrationUrl: string; illustrationAlt: string }> = {
+  // Picked in the WP editor (media id 882), ported from wp-pull.json.
+  'appliance-installation': {
+    illustrationId: 882,
+    illustrationUrl: 'http://localhost:10018/wp-content/uploads/2026/11/craig-and-harley-dishwasher.avif',
+    illustrationAlt:
+      'Craig and Harley work together to unbox a dishwasher. They kneel as they work to remove the appliance from the box it was shipped in.',
+  },
   'gas-piping': WATER_HEATER_ILLUSTRATION,
   heaters: WATER_HEATER_ILLUSTRATION,
 };
@@ -636,19 +812,23 @@ const regionHub = (r: RegionContent): PageData => {
         linkUrl: '/services/',
         numbered: true,
         background: 'alt',
+        divider: true,
       },
       innerBlocks: serviceCards(),
     },
     {
       name: 'ac/media-text',
       attributes: {
+        divider: true,
         heading: 'Local crew, local calls',
         paragraphs: [
           r.body,
           'We quote flat rates before the work starts, we clean up after ourselves, and we warranty everything we install. Same crew on the truck every time — you will know who is coming.',
         ],
-        imageUrl: '/illustrations/harley-dolly-fridge.webp',
-        imageAlt: 'Delivering an appliance',
+        ...(REGION_CREW_IMAGES[r.slug] ?? {
+          imageUrl: '/illustrations/harley-dolly-fridge.webp',
+          imageAlt: 'Delivering an appliance',
+        }),
       },
     },
     {
@@ -665,6 +845,7 @@ const regionHub = (r: RegionContent): PageData => {
       attributes: {
         heading: 'Our Selling Partner',
         background: 'paper',
+        divider: true,
         partners: [{ ...r.partner.partner, area: r.partner.area }],
       },
     },
@@ -713,13 +894,14 @@ const cityPage = (region: RegionSlug, town: string): PageData => ({
         linkUrl: '/services/',
         numbered: true,
         background: 'alt',
+        divider: true,
       },
       innerBlocks: serviceCards(),
     },
-    { name: 'ac/media-text', attributes: {} },
+    { name: 'ac/media-text', attributes: { divider: true } },
     { name: 'ac/town-carousel', attributes: {} },
     { name: 'ac/testimonials', attributes: { mode: 'region', filterRegion: region } },
-    { name: 'ac/partners', attributes: {} },
+    { name: 'ac/partners', attributes: { divider: true } },
     { name: 'ac/faq', attributes: {} },
     contactCta(`Need a hand in ${town}?`, true),
   ],
@@ -765,6 +947,7 @@ const contact: PageData = {
         eyebrow: 'Before you book',
         heading: 'Frequently asked questions',
         background: 'paper',
+        divider: true,
         footnote: 'Still have a question? Call us or send it through the form above.',
         items: [
           {

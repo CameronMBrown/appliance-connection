@@ -270,10 +270,7 @@ const phone = showPhone && context.region ? context.phones?.[0] : undefined;
 <style>
   .fb {
     position: relative;
-    /* Opaque ground + ruling, same as the illustrated PageHeader. */
-    background-color: var(--color-bg);
-    background-image: var(--grid-image);
-    background-size: var(--grid-size) var(--grid-size);
+    /* No ground of its own: the body's graph paper shows through. */
   }
   .fb__in {
     max-width: var(--container-max);
@@ -334,6 +331,7 @@ const phone = showPhone && context.region ? context.phones?.[0] : undefined;
     aspect-ratio: 1;
     border: 1px solid var(--color-border-strong);
     background: var(--color-inverse-bg);
+    box-shadow: inset -1px -1px 0 var(--color-border-strong), var(--shadow-md);
   }
   /* Frames are stacked in DOM order and revealed with a hard cut (no fade): a
      flipbook, not a slideshow. Showing frame N also leaves 0..N-1 on, so a frame that

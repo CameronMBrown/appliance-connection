@@ -18,7 +18,7 @@ interface Props extends TownCarouselAttrs {
   context?: BlockContext;
 }
 
-const { heading = 'Towns we cover', towns = [] } = Astro.props;
+const { heading = 'Towns we cover', towns = [], divider = false } = Astro.props;
 const names = towns.map((t) => (typeof t === 'string' ? t : t.name)).filter(Boolean);
 
 // Estimated width of one pass of the list (name + gaps + mark), used only to
@@ -35,7 +35,7 @@ const copies = Array.from({ length: repeats * 2 }, (_, i) => i);
 
 {
   names.length > 0 && (
-    <section class="tc" aria-labelledby="tc-heading">
+    <section class:list={['tc', { 'has-divider': divider }]} aria-labelledby="tc-heading">
       <svg class="tc__defs" width="0" height="0" aria-hidden="true" focusable="false">
         <symbol id="ac-truck" viewBox="0 0 478 451">
           <path fill-rule="evenodd" d={truckPath} />

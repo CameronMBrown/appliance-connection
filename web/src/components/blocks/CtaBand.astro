@@ -10,11 +10,11 @@ interface Props extends CtaBandAttrs {
   context?: BlockContext;
 }
 
-const { heading, text, ctaLabel, ctaUrl, isDark = true, showPhone = false, context = {} } = Astro.props;
+const { heading, text, ctaLabel, ctaUrl, isDark = true, showPhone = false, context = {}, divider = false } = Astro.props;
 const phone = showPhone ? context.phones?.[0] : undefined;
 ---
 
-<section class:list={['ac-cta-band', 'grid-paper', { 'on-dark': isDark }]}>
+<section class:list={['ac-cta-band', { 'grid-paper': isDark, 'on-dark': isDark, 'has-divider': divider }]}>
   <div class="container">
     <div class="ac-cta-band__box corner-tick">
       <div class="ac-cta-band__copy">
@@ -43,10 +43,13 @@ const phone = showPhone ? context.phones?.[0] : undefined;
 
 <style>
   .ac-cta-band {
-    background-color: var(--color-bg);
     color: var(--color-text);
-    border-top: 1px solid var(--color-border-strong);
     padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  }
+  /* Paper (the default) paints nothing: the body's graph paper shows. Dark paints
+     the ink ground, with its own white ruling from .grid-paper. */
+  .ac-cta-band.on-dark {
+    background-color: var(--color-bg);
   }
   .ac-cta-band__box {
     background: var(--color-bg-alt);

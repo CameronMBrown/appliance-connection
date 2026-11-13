@@ -22,14 +22,14 @@ interface Props extends StackAttrs {
   context?: BlockContext;
 }
 
-const { heading, items = [] } = Astro.props;
+const { heading, items = [], divider = false } = Astro.props;
 // Eyebrow and title are required; an item missing either can't make a strip.
 const cards = items.filter((c) => c.eyebrow && c.title);
 ---
 
 {
   cards.length > 0 && (
-    <section class="stack" aria-labelledby={heading ? 'stack-heading' : undefined}>
+    <section class:list={['stack', { 'has-divider': divider }]} aria-labelledby={heading ? 'stack-heading' : undefined}>
       {heading && (
         <h2 id="stack-heading" class="stack__heading">
           {heading}
@@ -123,7 +123,6 @@ const cards = items.filter((c) => c.eyebrow && c.title);
     --strip-h: 4rem;
     /* Breathing room around every piece of copy (the photo alone is flush). */
     --stack-pad: clamp(1.5rem, 4vw, 3.5rem);
-    border-top: 1px solid var(--color-border-strong);
   }
   .stack__heading {
     position: absolute;
@@ -146,7 +145,6 @@ const cards = items.filter((c) => c.eyebrow && c.title);
      can't read the token, so 84rem here must match it. */
   @media (min-width: 84rem) {
     .stack {
-      border-top: 0;
       padding-block: clamp(2.5rem, 6vw, 4.5rem);
     }
     .stack__list {

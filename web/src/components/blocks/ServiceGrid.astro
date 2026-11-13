@@ -23,9 +23,10 @@ const {
   linkLabel,
   linkUrl,
   numbered = false,
-  background = 'alt',
+  background = 'paper',
   innerBlocks = [],
   context,
+  divider = false,
 } = Astro.props;
 
 // Numbering is a presentation concern, so it's applied here rather than stored
@@ -40,7 +41,7 @@ const cards = numbered
 
 {
   cards.length > 0 && (
-    <section class:list={['band', { 'band--alt': background === 'alt' }]}>
+    <section class:list={['band', { 'band--alt': background === 'alt', 'has-divider': divider }]}>
       <div class="container">
         <SectionHeader eyebrow={eyebrow} heading={heading} text={text} linkLabel={linkLabel} linkUrl={linkUrl} />
         <div class="ac-services__grid">

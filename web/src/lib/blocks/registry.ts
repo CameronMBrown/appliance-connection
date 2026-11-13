@@ -26,6 +26,7 @@ import Testimonials from '../../components/blocks/Testimonials.astro';
 import Faq from '../../components/blocks/Faq.astro';
 import Contact from '../../components/blocks/Contact.astro';
 import CtaBand from '../../components/blocks/CtaBand.astro';
+import ImageCarousel from '../../components/blocks/ImageCarousel.astro';
 import Stack from '../../components/blocks/Stack.astro';
 
 export const registry = {
@@ -47,6 +48,7 @@ export const registry = {
   'ac/contact': Contact,
   'ac/cta-band': CtaBand,
   'ac/stack': Stack,
+  'ac/image-carousel': ImageCarousel,
 } as const;
 
 export type BlockName = keyof typeof registry;
